@@ -1,3 +1,3 @@
 # Pikatilaussysteemi
 
-This is school project
+This is school project!
