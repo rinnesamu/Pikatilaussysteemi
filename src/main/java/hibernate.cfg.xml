@@ -6,8 +6,8 @@
 		<!-- Yhteyden perustiedot: ajuri, palvelin käyttäjätunnus/salasana -->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:2206/testi</property>
-		<property name="hibernate.connection.username">otp</property>
-		<property name="hibernate.connection.password">otp</property>
+		<property name="hibernate.connection.username">o</property>
+		<property name="hibernate.connection.password">o</property>
 
 		<!-- create , create-drop, update tai validate -->
 		<!-- Älä käytä tuotantoversioissa, ts, älä anna Hibernaten enää muuttaa taulurakennetta  -->
