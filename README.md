@@ -1,3 +1,5 @@
-# Pikatilaussysteemi
+# Pikatilaussysteemi 2020 Kevät - OTP
 
-This is school project!
+This is a school project for electronic food ordering software that can be used by restaurants or cafes!
+
+Kouluprojekti elektroniselle pikatilausohjelmistolle, joka esimerkiksi pikaruokalat tai kahvilat voivat käyttää! testi tets test test4 test5
