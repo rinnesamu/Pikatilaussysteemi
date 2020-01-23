@@ -6,13 +6,8 @@
 		<!-- Yhteyden perustiedot: ajuri, palvelin käyttäjätunnus/salasana -->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:2206/testi</property>
-<<<<<<< HEAD
 		<property name="hibernate.connection.username">samu</property>
 		<property name="hibernate.connection.password"></property>
-=======
-		<property name="hibernate.connection.username">ooo</property>
-		<property name="hibernate.connection.password">ooo</property>
->>>>>>> branch 'master' of https://github.com/rinnesamu/Pikatilaussysteemi.git
 
 		<!-- create , create-drop, update tai validate -->
 		<!-- Älä käytä tuotantoversioissa, ts, älä anna Hibernaten enää muuttaa taulurakennetta  -->
