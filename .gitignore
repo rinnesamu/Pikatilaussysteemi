@@ -19,4 +19,4 @@ hibernate.cfg.xml
 *.dll
 *.exe
 *.o
-
+.DS_Store
