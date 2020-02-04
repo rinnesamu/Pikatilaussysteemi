@@ -12,7 +12,7 @@ class FoodItemTest {
 	
     
 	@BeforeEach
-	 public void initTestSystem() {
+	void initTestSystem() {
 		foodItem = new FoodItem("kokis", 2.5, true);
     }
 	
