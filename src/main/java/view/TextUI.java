@@ -5,9 +5,13 @@ import java.util.Scanner;
 import model.*;
 
 public class TextUI {
+	// Artun lisäämä koodi, order luokan, ja orderDAO:n kokeilua lisätty perään
+	static OrderAccessObject orderDao = new OrderAccessObject();
+	// ------
+	
 	static FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
 	static Scanner scanner = new Scanner(System.in);
-
+	
 	public static void main(String[] args) {
 		String name;
 		double price;
@@ -40,6 +44,25 @@ public class TextUI {
 		for (FoodItem f : list) {
 			System.out.println(f.getItemId() + ": " + f.getName());
 		}
+		
+		// Arttu
+		// order luokan, ja orderDAO:n kokeilua
+		System.out.println("Creating order");
+		Order order = new Order(69);
+		order.setAdditionalInfo("5 extra packets of ketchup!");
+		order.addItemToOrder(foodItem);
+		order.addItemToOrder(foodItem);
+		System.out.println("Items in order: " + order.getOrderSize());
+		boolean orderSuccess = orderDao.createOrder(order);
+		
+		if(orderSuccess) {
+			System.out.println("order created");
+		}else {
+			System.out.println("order failed");
+		}
+		
+		// System.out.println(order);
+		// ---------------------
 		
 		
 		// TODO Auto-generated method stub
