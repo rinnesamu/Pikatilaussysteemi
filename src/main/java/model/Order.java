@@ -1,7 +1,11 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
+
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -16,7 +20,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
-	private int OrderId;
+	private int orderId;
 	@Column
 	private int orderNumber;
 	@CreationTimestamp
@@ -26,23 +30,26 @@ public class Order {
 	private String additionalInfo;
 	@Column
 	private boolean status;
+	@ElementCollection
+	private List<Integer> orderContent;
 	
 	public Order() {
 		
 	}
 	
-	public Order(String additionalInfo, boolean status, int orderNumber) {
-		this.additionalInfo = additionalInfo;
-		this.status = status;
+	public Order(int orderNumber) {
+		this.orderContent = new ArrayList<>();
+		this.status = true;
 		this.orderNumber = orderNumber;
+		this.additionalInfo = "";
 	}
 	
 	public int getOrderId() {
-		return OrderId;
+		return orderId;
 	}
 
 	public void setOrderId(int orderId) {
-		OrderId = orderId;
+		this.orderId = orderId;
 	}
 
 	public int getOrderNumber() {
@@ -71,6 +78,22 @@ public class Order {
 
 	public LocalDateTime getDate() {
 		return creationTimeStamp;
+	}
+	
+	public int getOrderSize() {
+		return this.orderContent.size();
+	}
+	
+	public void addItemToOrder(FoodItem foodItem) {
+		orderContent.add(foodItem.getItemId());
+	}
+	public void deleteItemFromOrder(FoodItem foodItem) {
+		orderContent.remove(foodItem.getItemId());
+	}
+	
+	@Override
+	public String toString() {
+		return "Order: " + this.orderId + ", items in order: " + this.getOrderSize() + ", time created " + this.getDate();
 	}
 	
 }
