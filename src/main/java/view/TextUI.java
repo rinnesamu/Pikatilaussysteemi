@@ -35,6 +35,12 @@ public class TextUI {
 			System.out.println("Couldn't add the item!");
 		}
 		
+		System.out.println(foodItemDao.readFoodItems().length);
+		FoodItem[] list = foodItemDao.readFoodItems();
+		for (FoodItem f : list) {
+			System.out.println(f.getItemId() + ": " + f.getName());
+		}
+		
 		
 		// TODO Auto-generated method stub
 

@@ -1,5 +1,6 @@
 package model;
 import java.sql.*;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -42,8 +43,20 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	@Override
 	public FoodItem[] readFoodItems() {
-		// TODO Auto-generated method stub
-		return null;
+		List<FoodItem> foodItems = null;
+		Transaction transaction = null;  
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			foodItems = session.createQuery("From FoodItem").getResultList();
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
+		}
+		FoodItem[] retrunFoodItems = new FoodItem[foodItems.size()];
+		return (FoodItem[])foodItems.toArray(retrunFoodItems);
 	}
 
 	@Override
