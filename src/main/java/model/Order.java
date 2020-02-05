@@ -30,7 +30,13 @@ public class Order {
 	private String additionalInfo;
 	@Column
 	private boolean status;
+
 	@ElementCollection
+	@CollectionTable(
+			name="order_content",
+			joinColumns=@JoinColumn(name="orderId")
+	)
+	@Column(name="itemId")
 	private List<Integer> orderContent;
 	
 	public Order() {
@@ -38,7 +44,7 @@ public class Order {
 	}
 	
 	public Order(int orderNumber) {
-		this.orderContent = new ArrayList<>();
+		this.orderContent = new ArrayList<Integer>();
 		this.status = true;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
@@ -84,9 +90,18 @@ public class Order {
 		return this.orderContent.size();
 	}
 	
+	public List<Integer> getOrderContent() {
+		return this.orderContent;
+	}
+	
+	public void setOrderContent(List<Integer> orderContent) {
+		this.orderContent = orderContent;
+	}
+	
 	public void addItemToOrder(FoodItem foodItem) {
 		orderContent.add(foodItem.getItemId());
 	}
+	
 	public void deleteItemFromOrder(FoodItem foodItem) {
 		orderContent.remove(foodItem.getItemId());
 	}

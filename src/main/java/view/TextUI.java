@@ -1,4 +1,6 @@
 package view;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -47,11 +49,23 @@ public class TextUI {
 		
 		// Arttu
 		// order luokan, ja orderDAO:n kokeilua
+		FoodItem foodItem2 = new FoodItem("pihvi", 20.5, true);
+		success = foodItemDao.createFoodItem(foodItem2);
+		
+		System.out.println(foodItemDao.readFoodItems().length);
+		list = foodItemDao.readFoodItems();
+		for (FoodItem f : list) {
+			System.out.println(f.getItemId() + ": " + f.getName());
+		}
+		
 		System.out.println("Creating order");
 		Order order = new Order(69);
 		order.setAdditionalInfo("5 extra packets of ketchup!");
-		order.addItemToOrder(foodItem);
-		order.addItemToOrder(foodItem);
+		List<Integer> orderContent = new ArrayList<Integer>();
+		orderContent.add(foodItem.getItemId());
+		orderContent.add(foodItem.getItemId());
+		orderContent.add(foodItem2.getItemId());
+		order.setOrderContent(orderContent);
 		System.out.println("Items in order: " + order.getOrderSize());
 		boolean orderSuccess = orderDao.createOrder(order);
 		
@@ -61,7 +75,7 @@ public class TextUI {
 			System.out.println("order failed");
 		}
 		
-		// System.out.println(order);
+		System.out.println(order);
 		// ---------------------
 		
 		
