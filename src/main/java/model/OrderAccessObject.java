@@ -1,5 +1,9 @@
 package model;
 
+import java.util.List;
+
+import javax.persistence.*;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -7,45 +11,57 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+/**
+ * Order luokan "Data Access Object", jonka avulla Order oliot tallennetaan tietokantaan
+ */
 public class OrderAccessObject implements IOrderDao {
 
-	private SessionFactory sessionFactory = null;
-	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+	@PersistenceContext
+	protected EntityManagerFactory emf;
+	protected EntityManager em;
 	
+	/**
+	 * Konstruktori, jossa määritellään "EntityManagerFactory" ja "EntityManager"
+	 */
 	public OrderAccessObject() {
-		try {
-			sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-		} catch(Exception e) {
-			System.out.println("Failed to create session factory");
-			StandardServiceRegistryBuilder.destroy(registry);
-			e.printStackTrace();
-			System.exit(-1);
-		}
+		
+		emf = Persistence.createEntityManagerFactory("orderPersistenceUnit");
+		em = emf.createEntityManager();
 	}
-	
-	
+	/**
+	 * Metodi, jonka avulla order luokan olio tallenetaan tietokantaan.
+	 * 
+	 * @param order - olio, joka sisältää käyttäjän tilauksen tiedot
+	 */
 	@Override
 	public boolean createOrder(Order order) {
-		Transaction transaction = null;
-		try(Session session = sessionFactory.openSession()){
-			transaction = session.beginTransaction();
-			session.saveOrUpdate(order);
-			transaction.commit();	
+		try {
+			em.getTransaction().begin();
+			em.persist(order);
+			em.getTransaction().commit();
+			return true;
 		}catch(Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
+			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
-
+	
+	/**
+	 * Metodi, jonka avulla luetaan kaikki tilaukset tietokannasta
+	 */
 	@Override
-	public Order[] readOrders() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Order> readOrders(){
+		try {
+			List<Order> allOrders = em.createQuery("SELECT o FROM Order o", Order.class)
+			.getResultList();
+			return allOrders;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-
+	
+	/*
 	@Override
 	public Order readOrder(int orderId) {
 		// TODO Auto-generated method stub
@@ -64,6 +80,6 @@ public class OrderAccessObject implements IOrderDao {
 	public boolean deleteOrder(int orderId) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
 }
