@@ -62,5 +62,9 @@ public class FoodItem {
 	public void setInMenu(boolean inMenu) {
 		this.inMenu = inMenu;
 	}
+	
+	public String toString() {
+		return this.name + ", " + this.price + ", " + this.inMenu;
+	}
 
 }
