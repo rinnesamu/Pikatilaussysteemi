@@ -12,7 +12,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 /**
- * Order luokan "Data Access Object", jonka avulla Order oliot tallennetaan tietokantaan
+ * Order luokan "Data Access Object", jonka avulla Order oliot tallennetaan tietokantaan.
+ * Luokka käyttää JPA:n EntityManageria
  */
 public class OrderAccessObject implements IOrderDao {
 
