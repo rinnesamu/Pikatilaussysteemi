@@ -61,8 +61,18 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	@Override
 	public FoodItem readFoodItem(int itemId) {
-		// TODO Auto-generated method stub
-		return null;
+		FoodItem foodItem = null;
+		Transaction transaction = null;
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			foodItem = session.get(FoodItem.class, itemId);
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+		}
+		return foodItem;
 	}
 
 	@Override
@@ -73,8 +83,21 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	@Override
 	public boolean deleteFoodItem(int itemId) {
-		// TODO Auto-generated method stub
-		return false;
+		if (readFoodItem(itemId) == null) {
+			return false;
+		}
+		Transaction transaction = null;
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			session.delete(readFoodItem(itemId));
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return false;
+		}
+		return true;
 	}
 
 }
