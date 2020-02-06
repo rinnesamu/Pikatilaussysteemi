@@ -13,13 +13,25 @@ import java.util.Map;
 public class ShoppingCart {
 	private Map<FoodItem, Integer> cartList;
 
-	/** Creates a new shopping cart object.
+	/**
+	 * Creates a new shopping cart object.
 	 */
 	public ShoppingCart() {
 		cartList = new HashMap<FoodItem, Integer>();
 	}
+	
+	/**
+	 * Getter for the shopping cart.
+	 * 
+	 * @return The shopping cart object.
+	 */
+	
+	public Map<FoodItem, Integer> getShoppingCart() {
+		return cartList;
+	}
 
-	/** Adds a new product to the shopping cart.
+	/**
+	 * Adds a new product to the shopping cart.
 	 * 
 	 * @param foodItem Product object containing various information about the product.
 	 * @param amount Amount of the product.
@@ -35,7 +47,8 @@ public class ShoppingCart {
 		}
 	}
 
-	/** Removes a product from the shopping cart.
+	/** 
+	 * Removes a product from the shopping cart.
 	 * 
 	 * @param foodItem Product to be removed.
 	 */
@@ -50,7 +63,8 @@ public class ShoppingCart {
 		cartList.clear();
 	}
 	
-	/** Returns the amount of a certain product in the shopping cart.
+	/** 
+	 * Returns the amount of a certain product in the shopping cart.
 	 * 
 	 * @param foodItem Product of which amount will be return.
 	 * @return An integer presenting the quantity of the product.
@@ -60,7 +74,8 @@ public class ShoppingCart {
 		return amount;
 	}
 	
-	/** Increases of decreases the amount of a certain product in the shopping cart.
+	/** 
+	 * Increases of decreases the amount of a certain product in the shopping cart.
 	 * 
 	 * @param foodItem Product of which amount will be changed.
 	 * @param newAmount The new amount of the product.
@@ -72,7 +87,8 @@ public class ShoppingCart {
 		}
 	}
 	
-	/** Gets the amount of separate products in the shopping cart.
+	/** 
+	 * Gets the amount of separate products in the shopping cart.
 	 * 
 	 * @return The number of different products in the shopping cart.
 	 */
@@ -81,7 +97,8 @@ public class ShoppingCart {
 	}
 	
 	
-	/** New implementation of toString method
+	/** 
+	 * New implementation of toString method
 	 * 
 	 * @return The shopping cart hashmap in a readable form for the console testing.
 	 */
