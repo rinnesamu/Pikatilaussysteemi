@@ -76,9 +76,37 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	}
 
 	@Override
-	public boolean updateFoodItem(FoodItem foodItem) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean updateFoodItem(int index, FoodItem foodItem) {
+		Transaction transaction = null;
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(foodItem);
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	
+	public FoodItem[] readFoodItemsCategory(String category){
+		List<FoodItem> foodItems = null;
+		Transaction transaction = null;  
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			foodItems = session.createQuery("from FoodItem Where category = :categoryParam").setParameter("categoryParam", category).getResultList();
+			transaction.commit();
+		}catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
+		}
+		FoodItem[] retrunFoodItems = new FoodItem[foodItems.size()];
+		return (FoodItem[])foodItems.toArray(retrunFoodItems);
 	}
 
 	@Override

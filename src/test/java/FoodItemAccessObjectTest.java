@@ -17,10 +17,6 @@ class FoodItemAccessObjectTest {
 	void init() {
 		foodItemDao = new FoodItemAccessObject(); // drops table and creates new.-
 	}
-	@Test
-	void testFoodItemAccessObject() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	@DisplayName("Adding food item to database")
@@ -60,8 +56,36 @@ class FoodItemAccessObjectTest {
 	}
 
 	@Test
+	@DisplayName("Testing updating food item")
 	void testUpdateFoodItem() {
-		fail("Not yet implemented");
+		foodItem = new FoodItem("kokis", 2.5, "juomat", true);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem.setCategory("None");
+		foodItem.setName("Iso Kokis");
+		foodItem.setPrice(3.5);
+		foodItem.setInMenu(false);
+		assertEquals(true, foodItemDao.updateFoodItem(0, foodItem), "couldn't update fooditem");
+		assertEquals("Iso Kokis", foodItemDao.readFoodItems()[0].getName(), "Fooditems name did not update correctyl!");
+		assertEquals(3.5, foodItemDao.readFoodItems()[0].getPrice(), "Fooditems price did not update correctyl!");
+		assertEquals(false, foodItemDao.readFoodItems()[0].isInMenu(), "Fooditems menu acitivity did not update correctyl!");
+		assertEquals("None", foodItemDao.readFoodItems()[0].getCategory(), "Fooditems category did not update correctyl!");
+	}
+	
+	@Test
+	@DisplayName("Getting item with certain category")
+	void testGetByCategory() {
+		foodItem = new FoodItem("kokis", 2.5, "juomat", true);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem = new FoodItem("Iso kokis", 2.5, "juomat", true);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem = new FoodItem("hamppari", 2.5, "hampurilaiset", true);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem = new FoodItem("ranskalaiset", 2.5, true);
+		foodItemDao.createFoodItem(foodItem);
+		assertEquals(2, foodItemDao.readFoodItemsCategory("juomat").length, "Couldn't find all items from category juomat");
+		assertEquals(1, foodItemDao.readFoodItemsCategory("hampurilaiset").length, "Couldn't find all items from category hampurilaiset");
+		assertEquals(1, foodItemDao.readFoodItemsCategory("None").length, "Couldn't find all items from category None");
+		assertEquals(0, foodItemDao.readFoodItemsCategory("Isot Juomat").length, "Found something with incorrect category");
 	}
 
 	@Test
