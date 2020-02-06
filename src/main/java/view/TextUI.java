@@ -1,4 +1,6 @@
 package view;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -47,12 +49,31 @@ public class TextUI {
 		
 		// Arttu
 		// order luokan, ja orderDAO:n kokeilua
+		// KÄYTETTY JPA:TA EI TOIMI ILMAN persistence.xml -TIEDOSTOA
+		FoodItem foodItem2 = new FoodItem("pihvi", 20.5, true);
+		success = foodItemDao.createFoodItem(foodItem2);
+		
+		/*
+		System.out.println(foodItemDao.readFoodItems().length);
+		list = foodItemDao.readFoodItems();
+		for (FoodItem f : list) {
+			System.out.println(f.getItemId() + ": " + f.getName());
+		}*/
+		
 		System.out.println("Creating order");
-		Order order = new Order(69);
+
+		// Tämä tapahtuisi käyttöliittymän shopping cartissa
+		Map<FoodItem, Integer> shoppingCart = new HashMap<FoodItem, Integer>();
+		shoppingCart.put(foodItem, 4);
+		shoppingCart.put(foodItem2, 2);
+		// ----------
+		
+		Order order = new Order(69, shoppingCart);
 		order.setAdditionalInfo("5 extra packets of ketchup!");
-		order.addItemToOrder(foodItem);
-		order.addItemToOrder(foodItem);
+
 		System.out.println("Items in order: " + order.getOrderSize());
+		
+		order.setAdditionalInfo("5 extra packets of ketchup!");
 		boolean orderSuccess = orderDao.createOrder(order);
 		
 		if(orderSuccess) {
@@ -61,7 +82,7 @@ public class TextUI {
 			System.out.println("order failed");
 		}
 		
-		// System.out.println(order);
+		System.out.println(order);
 		// ---------------------
 		
 		

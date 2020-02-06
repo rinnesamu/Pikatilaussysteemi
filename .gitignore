@@ -20,3 +20,4 @@ hibernate.cfg.xml
 *.exe
 *.o
 .DS_Store
+META-INF
