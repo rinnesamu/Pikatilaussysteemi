@@ -8,6 +8,11 @@ import org.junit.jupiter.api.Test;
 import model.FoodItem;
 import model.FoodItemAccessObject;
 
+/**
+ * 
+ * @author Samu Rinne
+ *
+ */
 class FoodItemAccessObjectTest {
 	
 	private FoodItem foodItem;
@@ -30,6 +35,7 @@ class FoodItemAccessObjectTest {
 	}
 
 	@Test
+	@DisplayName("Test reading all food elelments from db")
 	void testReadFoodItems() {
 		foodItem = new FoodItem("kokis", 2.5, true);
 		foodItemDao.createFoodItem(foodItem);
@@ -112,5 +118,19 @@ class FoodItemAccessObjectTest {
 		assertEquals(1, foodItemDao.readFoodItems().length, "Deleted with wrong id!");
 		
 	}
+	
+	 @Test
+	 @DisplayName("Getting item from db with name")
+	 void testGetByName() {
+		foodItem = new FoodItem("kokis", 2.5, true);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem = new FoodItem("Iso kokis", 3.5, false);
+		foodItemDao.createFoodItem(foodItem);
+		foodItem = new FoodItem("hamppari", 2.5, true);
+		foodItemDao.createFoodItem(foodItem);
+		assertEquals(2, foodItemDao.readFoodItemsByName("kokis").length, "Read by name is not working");
+		assertEquals(1, foodItemDao.readFoodItemsByName("hamppari").length, "Read by name is not working");
+		assertEquals(0, foodItemDao.readFoodItemsByName("Bic Mac").length, "Read by name is not working");
+	 }
 
 }

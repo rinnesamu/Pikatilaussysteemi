@@ -9,7 +9,16 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+/**
+ * 
+ * @author Samu Rinne
+ *
+ */
 public class FoodItemAccessObject implements IFoodItemDao {
+	
+	/**
+	 * Access object for FoodItems
+	 */
 	
 	private SessionFactory sessionFactory = null;
 	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -24,6 +33,12 @@ public class FoodItemAccessObject implements IFoodItemDao {
 			System.exit(-1);
 		}
 	}
+	
+	/**
+	 * Stores new food item to db
+	 * @param foodItem Food item that you want to store to your db
+	 * @return true if successful, false if something went wrong 
+	 */
 
 	@Override
 	public boolean createFoodItem(FoodItem foodItem) {
@@ -40,6 +55,11 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		}
 		return true;
 	}
+	
+	/**
+	 * Gets all stored food items.
+	 * @return list of all food items stored in db
+	 */
 
 	@Override
 	public FoodItem[] readFoodItems() {
@@ -59,6 +79,11 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		return (FoodItem[])foodItems.toArray(retrunFoodItems);
 	}
 
+	/**
+	 * Gets item from db with id
+	 * @param itemId Id of item you want to get
+	 * @return FoodItem
+	 */
 	@Override
 	public FoodItem readFoodItem(int itemId) {
 		FoodItem foodItem = null;
@@ -74,6 +99,13 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		}
 		return foodItem;
 	}
+	
+	/**
+	 * Updates item in db with specific id.
+	 * @param index index of item that you want to update
+	 * @param foodItem  New data that you want to store
+	 * @return true if successful, false if not
+	 */
 
 	@Override
 	public boolean updateFoodItem(int index, FoodItem foodItem) {
@@ -91,6 +123,11 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		return true;
 	}
 	
+	/**
+	 * Gets list of food items with specific category
+	 * @param category Category that you want to search for
+	 * @return list of food items with specific category
+	 */
 	
 	public FoodItem[] readFoodItemsCategory(String category){
 		List<FoodItem> foodItems = null;
@@ -108,7 +145,35 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		FoodItem[] retrunFoodItems = new FoodItem[foodItems.size()];
 		return (FoodItem[])foodItems.toArray(retrunFoodItems);
 	}
+	
+	/**
+	 * Gets all food items that include name in them
+	 * @param name Name that you want to search
+	 * @return list of Food items that includes name
+	 */
+	
+	public FoodItem[] readFoodItemsByName(String name){
+		List<FoodItem> foodItems = null;
+		Transaction transaction = null;  
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			foodItems = session.createQuery("from FoodItem Where name like :nameParam").setParameter("nameParam", '%' + name + '%').getResultList();
+			transaction.commit();
+		}catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
+		}
+		FoodItem[] retrunFoodItems = new FoodItem[foodItems.size()];
+		return (FoodItem[])foodItems.toArray(retrunFoodItems);
+	}
 
+	/**
+	 * Deletes item with specific id.
+	 * @param itemId id of the item that you want to delete
+	 * @return true if successful, false otherwise
+	 */
 	@Override
 	public boolean deleteFoodItem(int itemId) {
 		if (readFoodItem(itemId) == null) {
