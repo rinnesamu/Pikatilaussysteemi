@@ -4,13 +4,6 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
 /**
  * Order luokan "Data Access Object", jonka avulla Order oliot tallennetaan tietokantaan.
  * Luokka käyttää JPA:n EntityManageria
@@ -61,26 +54,36 @@ public class OrderAccessObject implements IOrderDao {
 			return null;
 		}
 	}
+	/**
+	 * Metodi, jolla voi päivittää yksittäisen tilauksen statuksen
+	 * 
+	 * @param order - Order olio, joka sisältää tilauksen tiedot
+	 * @param status - päivittyvä status
+	 */
+	@Override
+	public boolean updateOrderStatus(Order order, boolean status) {
+		try {
+			  em.getTransaction().begin();
+			  order.setStatus(status);
+			  em.getTransaction().commit();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 	
-	/*
 	@Override
-	public Order readOrder(int orderId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Order> readOrdersByStatus(boolean status){
+		try {
+			List<Order> allOrders = em.createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+			.setParameter("status", status)
+			.getResultList();
+			return allOrders;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-
-
-	@Override
-	public boolean updateOrder(Order order) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean deleteOrder(int orderId) {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
 
 }

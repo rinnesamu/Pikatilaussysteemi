@@ -55,7 +55,23 @@ class OrderAccessObjectTest {
 		orderDao.createOrder(order);
 		orderDao.createOrder(order2);
 		assertEquals(2, orderDao.readOrders().size(), "read orders doesn't work");
-		
+	}
+	
+	@Test
+	@DisplayName("Updating order status")
+	void testUpdateOrderStatus() {
+		orderDao.createOrder(order);
+		assertEquals(true, orderDao.updateOrderStatus(order, false), "couldn't update order status");
+	}
+	
+	@Test
+	@DisplayName("Reading active orders from db")
+	void testReadOrdersByStatus() {
+		orderDao.createOrder(order);
+		orderDao.createOrder(order2);
+		assertEquals(2, orderDao.readOrdersByStatus(true).size(), "couldn't read order by status");
+		orderDao.updateOrderStatus(order, false);
+		assertEquals(1, orderDao.readOrdersByStatus(true).size(), "couldn't read orders by status after update");
 	}
 	
 }

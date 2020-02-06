@@ -10,7 +10,7 @@ import java.util.List;
 public interface IOrderDao {
 	boolean createOrder(Order order);
 	List<Order> readOrders();
-	/*Order readOrder(int orderId);
-	boolean updateOrder(Order order);
-	boolean deleteOrder(int orderId);*/
+	boolean updateOrderStatus(Order order, boolean status);
+	List<Order> readOrdersByStatus(boolean status);
+
 }
