@@ -10,7 +10,7 @@ public interface IFoodItemDao {
 	boolean createFoodItem(FoodItem foodItem);
 	FoodItem[] readFoodItems();
 	FoodItem readFoodItem(int itemId);
-	boolean updateFoodItem(FoodItem foodItem);
+	boolean updateFoodItem(int index, FoodItem foodItem);
 	boolean deleteFoodItem(int itemId);
 	
 
