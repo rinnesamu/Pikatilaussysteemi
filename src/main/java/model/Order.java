@@ -52,8 +52,8 @@ public class Order implements Serializable{
 	 * @param orderNumber - tilaukselle annettava tilausnumero
 	 * @param orderContent - hashmap, joka sisältää tilauksen tuotteet ja niiden lukumäärän
 	 */
-	public Order(int orderNumber, Map<FoodItem, Integer> orderContent) {
-		this.orderContent = orderContent;
+	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
+		this.orderContent = shoppingCart;
 		this.status = true;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
@@ -104,7 +104,7 @@ public class Order implements Serializable{
 	/**
 	 * Annetaan tilaukselle lisätiedot
 	 * 
-	 * @param additionalInfo - Annettu lisätieto merkkijono
+	 * @param additionalInfo - Annettu lisätietomerkkijono
 	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
