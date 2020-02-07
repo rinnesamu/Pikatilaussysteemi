@@ -3,8 +3,10 @@ package model;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-/** Represents a shopping cart.
+/** 
+ * Represents a shopping cart.
  *
  * @author Kimmo Perälä
  *
@@ -25,9 +27,25 @@ public class ShoppingCart {
 	 * 
 	 * @return The shopping cart object.
 	 */
-	
 	public Map<FoodItem, Integer> getShoppingCart() {
 		return cartList;
+	}
+	
+	/**
+	 *  Getter for all the item id numbers in the shopping cart.
+	 *  
+	 * @return All the item id numbers.
+	 */
+	public Integer[] getAllItemId() {
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+		Integer[] allItemId = new Integer[fItemsArray.length];
+		
+		for(int i = 0; i < fItemsArray.length; i++) {
+			allItemId[i]= fItemsArray[i].getItemId();
+		}
+		System.out.println(Arrays.toString(allItemId));
+		return allItemId;
 	}
 
 	/**
@@ -75,7 +93,7 @@ public class ShoppingCart {
 	}
 	
 	/** 
-	 * Increases of decreases the amount of a certain product in the shopping cart.
+	 * Increases or decreases the amount of a certain product in the shopping cart.
 	 * 
 	 * @param foodItem Product of which amount will be changed.
 	 * @param newAmount The new amount of the product.

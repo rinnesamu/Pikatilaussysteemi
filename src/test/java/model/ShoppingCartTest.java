@@ -29,6 +29,13 @@ class ShoppingCartTest {
     public void printShoppingCart() {
 		System.out.println(sCart);
 	}
+	
+	
+	// KESKEN ##################################
+	@Test
+	@DisplayName("Shopping cart getter")
+	void testGetShoppingCart() {
+	}
 
 	@Test
 	@DisplayName("Adding one product to shopping cart")
