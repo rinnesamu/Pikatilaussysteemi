@@ -53,7 +53,7 @@ public class MenuViewController {
 	
 	private FoodItem[] items;
 	
-	private FoodItem[] AllItems = foodItemAO.readFoodItems();
+	private FoodItem[] allItems = foodItemAO.readFoodItems();
 
 	
 	public MenuViewController() {
@@ -154,7 +154,7 @@ public class MenuViewController {
 					menuItem.setGraphic(mealView);
 				}
 				//menuItem.setText(Integer.toString(menuId));
-				menuItem.setText(AllItems[menuId-1].getName());
+				menuItem.setText(allItems[menuId-1].getName());
 				menuItem.setContentDisplay(ContentDisplay.BOTTOM);
 				menu.getChildren().add(menuItem);
 				menuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -170,20 +170,20 @@ public class MenuViewController {
 						
 						// If item is already there, increase the amount
 						if (Arrays.asList(listOfItemIds).contains(id)) {
-							int oldAmount = shoppingCart.getAmount(AllItems[id-1]);
+							int oldAmount = shoppingCart.getAmount(allItems[id-1]);
 							System.out.println("vanha määrä " + oldAmount);
-							shoppingCart.setAmount(AllItems[id-1], (oldAmount+1));
+							shoppingCart.setAmount(allItems[id-1], (oldAmount+1));
 							System.out.println(shoppingCart);
 						}
 						else {
 							// Otherwise add to the shopping cart
-							shoppingCart.addToShoppingCart(AllItems[id-1], 1);
+							shoppingCart.addToShoppingCart(allItems[id-1], 1);
 							System.out.println(shoppingCart);
 							sCartItem.setMinSize(170, 50);
 							//sCartItem.setId(Integer.toString(id));
 							shoppingCartList.getChildren().add(sCartItem);
 						}
-						sCartItem.setText(AllItems[id-1].getName() + " " + shoppingCart.getAmount(AllItems[id-1]));
+						sCartItem.setText(allItems[id-1].getName() + " " + shoppingCart.getAmount(allItems[id-1]));
 					}
 				});
 				
