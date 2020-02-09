@@ -84,7 +84,7 @@ public class ShoppingCart {
 	/** 
 	 * Returns the amount of a certain product in the shopping cart.
 	 * 
-	 * @param foodItem Product of which amount will be return.
+	 * @param foodItem Product of which amount will be returned.
 	 * @return An integer presenting the quantity of the product.
 	 */
 	public int getAmount(FoodItem foodItem) {
