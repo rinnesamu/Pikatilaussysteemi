@@ -60,11 +60,11 @@ public class MenuViewController {
 	}
 	
 	int menuId;
-	Image cola = new Image("view/Pictures/coca-cola-443123_1280.png");
-	Image fanta = new Image("view/Pictures/aluminum-87987_1280.jpg");
-	Image cheeseBurger = new Image("view/Pictures/barbeque-1239407_1280.jpg");
-	Image dcheeseBurger = new Image("view/Pictures/appetite-1238459_1280.jpg");
-	Image meal = new Image("view/Pictures/cheeseburger-34314_1280.png");
+	Image cola = new Image("../resources/imgs/coca-cola-443123_1280.png");
+	Image fanta = new Image("../resources/imgs/aluminum-87987_1280.jpg");
+	Image cheeseBurger = new Image("../resources/imgs/barbeque-1239407_1280.jpg");
+	Image dcheeseBurger = new Image("../resources/imgs/appetite-1238459_1280.jpg");
+	Image meal = new Image("../resources/imgs/cheeseburger-34314_1280.png");
 
 	ImageView colaView = new ImageView(cola);
 	ImageView fantaView = new ImageView(fanta);
