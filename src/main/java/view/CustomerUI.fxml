@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuViewController">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -40,7 +39,7 @@
    <left>
       <VBox prefHeight="440.0" prefWidth="172.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="ATERIAT">
+            <Button fx:id="meals" mnemonicParsing="false" onAction="#selectMeals" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="ATERIAT">
                <font>
                   <Font name="Avenir Roman" size="17.0" />
                </font>
@@ -48,7 +47,7 @@
                   <Insets bottom="2.0" top="2.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="JUOMAT">
+            <Button fx:id="drinks" mnemonicParsing="false" onAction="#selectDrinks" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="JUOMAT">
                <font>
                   <Font name="Avenir Roman" size="17.0" />
                </font>
@@ -56,7 +55,7 @@
                   <Insets top="5.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="HAMPURILAISET">
+            <Button fx:id="hamburgers" mnemonicParsing="false" onAction="#selectBurgers" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="HAMPURILAISET">
                <font>
                   <Font name="Avenir Roman" size="17.0" />
                </font>
@@ -64,7 +63,7 @@
                   <Insets top="5.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="JÄLKIRUOAT">
+            <Button fx:id="desserts" mnemonicParsing="false" onAction="#selectDesserts" prefHeight="110.0" prefWidth="172.0" style="-fx-background-color: #FF8A65;" text="JÄLKIRUOAT">
                <font>
                   <Font name="Avenir Roman" size="17.0" />
                </font>
@@ -87,7 +86,7 @@
                </font>
             </Label>
             <VBox fx:id="shoppingCartList" prefHeight="200.0" prefWidth="100.0" />
-            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" prefHeight="41.0" prefWidth="221.0" text="Tyhjennä ostoskori">
+            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="41.0" prefWidth="221.0" text="Tyhjennä ostoskori">
                <font>
                   <Font size="14.0" />
                </font>
