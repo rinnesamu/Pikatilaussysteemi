@@ -60,6 +60,8 @@ public class MenuViewController {
 		for (int i = 0; i < fItems.length; i++) {
 			if (fItems[i].isInMenu()) {
 				Button menuItem = new Button();
+				Button sCartItem = new Button();
+
 				menuId = fItems[i].getItemId();
 				menuItem.setId(Integer.toString(menuId));
 				menuItem.setMinSize(150, 150);
@@ -70,12 +72,12 @@ public class MenuViewController {
 					public void handle (ActionEvent event)
 					{
 						// Get all the items in shopping cart
-						Integer[] listOfItems= shoppingCart.getAllItemId();
+						Integer[] listOfItemIds= shoppingCart.getAllItemId();
 						int id = Integer.parseInt(menuItem.getId());
 						System.out.println(shoppingCart);
 						
 						// If item is already there, increase the amount
-						if (Arrays.asList(listOfItems).contains(id)) {
+						if (Arrays.asList(listOfItemIds).contains(id)) {
 							System.out.println("On jo korissa");
 							int oldAmount = shoppingCart.getAmount(fItems[id-1]);
 							shoppingCart.setAmount(fItems[id-1], (oldAmount+1));
@@ -85,12 +87,11 @@ public class MenuViewController {
 							// Otherwise add to the shopping cart
 							shoppingCart.addToShoppingCart(fItems[id-1], 1);
 							System.out.println(shoppingCart);
-							Button sCartItem = new Button();
 							sCartItem.setMinSize(170, 50);
-							sCartItem.setId(Integer.toString(id));
-							sCartItem.setText(fItems[id-1].getName());
+							//sCartItem.setId(Integer.toString(id));
 							shoppingCartList.getChildren().add(sCartItem);
 						}
+						sCartItem.setText(fItems[id-1].getName() + " " + shoppingCart.getAmount(fItems[id-1]));
 					}
 				});
 				
