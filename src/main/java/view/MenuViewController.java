@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Arrays;
 
 import javafx.event.ActionEvent;
@@ -60,11 +61,16 @@ public class MenuViewController {
 	}
 	
 	int menuId;
-	Image cola = new Image("../resources/imgs/coca-cola-443123_1280.png");
-	Image fanta = new Image("../resources/imgs/aluminum-87987_1280.jpg");
-	Image cheeseBurger = new Image("../resources/imgs/barbeque-1239407_1280.jpg");
-	Image dcheeseBurger = new Image("../resources/imgs/appetite-1238459_1280.jpg");
-	Image meal = new Image("../resources/imgs/cheeseburger-34314_1280.png");
+	File colaFile = new File("./src/main/resources/imgs/coca-cola-443123_1280.png");
+	Image cola = new Image(colaFile.toURI().toString());
+	File fantaFile = new File("./src/main/resources/imgs/aluminum-87987_1280.jpg");
+	Image fanta = new Image(fantaFile.toURI().toString());
+	File cheeseFile = new File("./src/main/resources/imgs/barbeque-1239407_1280.jpg");
+	Image cheeseBurger = new Image(cheeseFile.toURI().toString());
+	File dcheeseFile = new File("./src/main/resources/imgs/appetite-1238459_1280.jpg");
+	Image dcheeseBurger = new Image(dcheeseFile.toURI().toString());
+	File mealFile = new File("./src/main/resources/imgs/cheeseburger-34314_1280.png");
+	Image meal = new Image(mealFile.toURI().toString());
 
 	ImageView colaView = new ImageView(cola);
 	ImageView fantaView = new ImageView(fanta);
