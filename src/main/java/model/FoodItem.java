@@ -39,6 +39,15 @@ public class FoodItem {
 		this.sold = 0;
 		this.ready = 0;
 	}
+	
+	public FoodItem(String name, double price, String category, boolean inMenu) {
+		this.price = price;
+		this.name = name;
+		this.inMenu = inMenu;
+		this.category = category;
+		this.sold = 0;
+		this.ready = 0;
+	}
 
 	public double getPrice() {
 		return price;
