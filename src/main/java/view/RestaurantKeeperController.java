@@ -71,7 +71,16 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<FoodItem, Integer> readyColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> buttonColumn;
+	private TableColumn<FoodItem, Void> deleteColumn;
+	@FXML
+	private TableColumn<FoodItem, Void> editColumn;
+	@FXML
+	private TableColumn<FoodItem, Void> cancelColumn;
+	
+	//cellFactoryt nappisarakkeille
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelCellFactory;
 	
 	/**
 	 * Tyhjä kostruktori
@@ -123,43 +132,13 @@ public class RestaurantKeeperController {
 			categoryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 			// inMenuColumn.setCellFactory(new CheckBoxTableCell<FoodItem, Boolean>());
 
-			// Tehdään Poista painike, jokaiselle riville
-			Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-				@Override
-				public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-					final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+			// Nappi sarakkeet
+			createButtonColumns();
+			deleteColumn.setCellFactory(deleteCellFactory);
+			editColumn.setCellFactory(editCellFactory);
+			// cancelColumn.setCellFactory(cancelCellFactory);
 
-	                    private final Button btn = new Button("Poista");
-
-	                    {
-	                        btn.setOnAction((ActionEvent event) -> {
-	                            FoodItem foodItem = getTableView().getItems().get(getIndex());
-	                            System.out.println("selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
-	                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
-	                            if(success) {
-	                            	foodItemTableView.getItems().remove(foodItem);
-	                            	createNotification("Tuote poistettu onnistuneesti!");
-	                            }else {
-	                            	createNotification("Tuotetta ei onnistuttu poistamaan");
-	                            }
-	                        });
-	                    }
-
-	                    @Override
-	                    public void updateItem(Void item, boolean empty) {
-	                        super.updateItem(item, empty);
-	                        if (empty) {
-	                            setGraphic(null);
-	                        } else {
-	                            setGraphic(btn);
-	                        }
-	                    }
-	                };
-					return cell;
-				}
-			};
-			buttonColumn.setCellFactory(cellFactory);
-			// Poistopainike loppuu
+			
 			
 		}catch(NullPointerException e) {
 			System.out.println("ruokalista on tyhjä");
@@ -202,5 +181,110 @@ public class RestaurantKeeperController {
 		}
 	}
 	
-	
+	// Tehdään nappi sarakkeet
+	public void createButtonColumns() {
+		// Tehdään Poista painike, jokaiselle riville
+		deleteCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+
+                    private final Button btn = new Button("Poista");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
+                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
+                            if(success) {
+                            	foodItemTableView.getItems().remove(foodItem);
+                            	createNotification("Tuote poistettu onnistuneesti!");
+                            }else {
+                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// Poistopainike loppuu
+		
+		// Muokkauspainike
+		editCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+
+                    private final Button btn = new Button("Muokkaa");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            /*FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            System.out.println("muokkaus selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
+                            boolean success = foodItemDao.updateFoodItem(foodItem.getItemId(), foodItem);
+                            if(success) {
+                            	createNotification("Tuotetta muokattu onnistuneesti!");
+                            }else {
+                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            }*/
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// Muokkauspainike loppuu
+		
+		// Peruutapainike
+		cancelCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+
+                    private final Button btn = new Button("Peruuta");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	// PERUUTUSNAPIN TOIMINTO
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// Peruutapainike loppuu
+		
+	}
+
 }
