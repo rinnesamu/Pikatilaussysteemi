@@ -1,4 +1,7 @@
 package model;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.*;
 
 /**
@@ -28,7 +31,8 @@ public class FoodItem {
 	private int ready;
 	@Column 
 	private String path;
-	
+	@Column
+	private String ingredients;
 	/**
 	 * Empty constructor for hibernate
 	 */
@@ -220,6 +224,19 @@ public class FoodItem {
 			this.ready--;
 		}
 		
+	}
+	
+	public String[] getIngredientsAsList() {
+		if (this.ingredients.trim().length() == 0) {
+			return null;
+		}
+		List<String> items = Arrays.asList(this.ingredients.split("\\s*,\\s*"));
+		String[] returnList = new String[items.size()];
+		return (String[])items.toArray(returnList);
+	}
+	
+	public void setIngredients(String[] ingredients) {
+		this.ingredients = String.join(",", ingredients);
 	}
 	
 	public String toString() {

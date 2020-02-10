@@ -134,5 +134,20 @@ class FoodItemAccessObjectTest {
 		assertEquals(1, foodItemDao.readFoodItemsByName("hamppari").length, "Read by name is not working");
 		assertEquals(0, foodItemDao.readFoodItemsByName("Bic Mac").length, "Read by name is not working");
 	 }
+	 
+	 @Test
+	 @DisplayName("Getting and setting ingredient list from db")
+	 void testIngredients() {
+		 String[] ingredients = {"Sämpylä", "Pihvi", "juusto", "ketsuppi"};
+		 foodItem = new FoodItem("juustohampurilainen", 1, true);
+		 foodItem.setIngredients(ingredients);
+		 foodItemDao.createFoodItem(foodItem);
+		 assertEquals(4, foodItemDao.readFoodItem(1).getIngredientsAsList().length, "Couldn't get or set ingredients to db");
+		 assertEquals("Sämpylä", foodItemDao.readFoodItem(1).getIngredientsAsList()[0], "Couldn't get or set ingredients to db");
+		 assertEquals("Pihvi", foodItemDao.readFoodItem(1).getIngredientsAsList()[1], "Couldn't get or set ingredients to db");
+		 assertEquals("juusto", foodItemDao.readFoodItem(1).getIngredientsAsList()[2], "Couldn't get or set ingredients to db");
+		 assertEquals("ketsuppi", foodItemDao.readFoodItem(1).getIngredientsAsList()[3], "Couldn't get or set ingredients to db");
+		 
+	 }
 
 }

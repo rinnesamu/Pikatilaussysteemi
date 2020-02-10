@@ -138,6 +138,18 @@ class FoodItemTest {
 		foodItem.setPath(".joku/kiva/path.jpg");
 		assertEquals(".joku/kiva/path.jpg", foodItem.getPath(), "Couldnt get correct path!");
 	}
+	
+	@Test
+	@DisplayName("Test getting and setting incredients")
+	void testIncredients() {
+		String[] list = {"Tomaatti", "kurkku", "pihvi", "sämpylä", "juusto"};
+		foodItem.setIngredients(list);
+		assertEquals("kurkku", foodItem.getIngredientsAsList()[1], "Couldn't get correct incredient list");
+		assertEquals("sämpylä", foodItem.getIngredientsAsList()[3], "Couldn't get correct incredient list");
+		String[] list2 = {};
+		foodItem.setIngredients(list2);
+		assertEquals(null, foodItem.getIngredientsAsList(), "Couldn't get correct incredient list");
+	}
 
 
 }
