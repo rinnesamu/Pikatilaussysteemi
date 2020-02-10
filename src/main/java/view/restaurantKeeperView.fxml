@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
+   <children>
+      <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+            <Tab text="Selaa tuotteita">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="750.0">
+                     <children>
+                        <AnchorPane layoutY="394.0" minHeight="0.0" minWidth="0.0" prefHeight="77.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <VBox alignment="TOP_CENTER" layoutX="6.0" layoutY="-1.0" prefHeight="87.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Label text="Tuotteen lisääminen tietokantaan" />
+                                    <HBox alignment="CENTER" prefHeight="34.0" prefWidth="750.0">
+                                       <children>
+                                          <Label alignment="CENTER" text="Nimi">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="addItemNameTextField" prefHeight="25.0" prefWidth="135.0" />
+                                          <Separator orientation="VERTICAL" prefHeight="200.0">
+                                             <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                             </padding>
+                                          </Separator>
+                                          <Label text="Hinta">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="addItemPriceTextField" prefHeight="25.0" prefWidth="62.0" />
+                                          <Separator orientation="VERTICAL" prefHeight="200.0">
+                                             <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                             </padding>
+                                          </Separator>
+                                          <CheckBox fx:id="addItemCheckBox" mnemonicParsing="false" text="Tuote näkyvillä" />
+                                          <Separator orientation="VERTICAL" prefHeight="34.0" prefWidth="0.0">
+                                             <padding>
+                                                <Insets left="10.0" right="10.0" />
+                                             </padding>
+                                          </Separator>
+                                          <Label text="Tuotekategoria">
+                                             <padding>
+                                                <Insets right="10.0" />
+                                             </padding>
+                                          </Label>
+                                          <TextField fx:id="addItemCategoryTextField" alignment="CENTER" prefHeight="25.0" prefWidth="146.0" />
+                                       </children>
+                                    </HBox>
+                                    <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItem" prefHeight="25.0" prefWidth="237.0" text="Lisää tuote" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                        <StackPane layoutY="-41.0" prefHeight="437.0" prefWidth="750.0" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="foodItemTableView" editable="true" prefHeight="365.0" prefWidth="750.0">
+                                <columns>
+                                  <TableColumn fx:id="idColumn" editable="false" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="nameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="priceColumn" prefWidth="120.0" text="Hinta" />
+                                    <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
+                                    <TableColumn fx:id="categoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
+                                    <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
+                                    <TableColumn fx:id="deleteColumn" editable="false" prefWidth="120.0" text="Poista" />
+                                    <TableColumn fx:id="editColumn" prefWidth="120.0" text="Muokkaa" />
+                                    <TableColumn fx:id="cancelColumn" prefWidth="120.0" text="Peruuta" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children>
+              	</AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Tilaukset">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
