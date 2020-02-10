@@ -1,4 +1,5 @@
 package model;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -205,7 +206,6 @@ public class FoodItem {
 	 */
 	public void increaseSold() {
 		this.sold++;
-		
 	}
 	
 	/**
@@ -213,7 +213,6 @@ public class FoodItem {
 	 */
 	public void increaseReady() {
 		this.ready++;
-		
 	}
 	
 	/**
@@ -223,20 +222,64 @@ public class FoodItem {
 		if (this.ready > 0) {
 			this.ready--;
 		}
-		
 	}
 	
+	/**
+	 * Getter for list of ingredients. transforms from string to list. Removes all empty list items.
+	 * @return list of ingredients
+	 */
 	public String[] getIngredientsAsList() {
+		System.out.println(this.ingredients);
 		if (this.ingredients.trim().length() == 0) {
 			return null;
 		}
 		List<String> items = Arrays.asList(this.ingredients.split("\\s*,\\s*"));
+		int i = 0;
+		int size = items.size();
+		while (i < size) {
+			if (items.get(i).trim().length() == 0) {
+				items.remove(i);
+				size--;
+			}else {
+				i++;
+			}
+		}
+		for (String s : items) {
+			if (s.trim().length() == 0) {
+				items.remove(s);
+			}
+		}
 		String[] returnList = new String[items.size()];
 		return (String[])items.toArray(returnList);
 	}
 	
+	/**
+	 * Sets ingredient string. Transforms from list to string
+	 * @param ingredients list of ingredients.
+	 */
 	public void setIngredients(String[] ingredients) {
-		this.ingredients = String.join(",", ingredients);
+		int i = 0;
+		int size = ingredients.length;
+		while (i < size) {
+			if (ingredients[i].trim().length() == 0) {
+				int a = i;
+				while (a < size-1) {
+					ingredients[a] = ingredients[a+1];
+					a++;
+				}
+				System.out.println(size);
+				size--;
+			}else {
+				i++;
+			}
+			
+		}
+		String[] newIngredients = new String[size];
+		for (int b = 0; b < size; b++) {
+			System.out.println(ingredients[b]);
+			newIngredients[b] = ingredients[b];
+		}
+		this.ingredients = String.join(",", newIngredients);
 	}
 	
 	public String toString() {

@@ -149,6 +149,12 @@ class FoodItemTest {
 		String[] list2 = {};
 		foodItem.setIngredients(list2);
 		assertEquals(null, foodItem.getIngredientsAsList(), "Couldn't get correct incredient list");
+		String[] list3 = {"", "", "kurkku", "", "", "juusto", "", "kanapihvi", ""};
+		foodItem.setIngredients(list3);
+		assertEquals(3, foodItem.getIngredientsAsList().length, "Couldn't get correct incredient list");
+		assertEquals("kurkku", foodItem.getIngredientsAsList()[0], "Couldn't get correct incredient list");
+		assertEquals("juusto", foodItem.getIngredientsAsList()[1], "Couldn't get correct incredient list");
+		assertEquals("kanapihvi", foodItem.getIngredientsAsList()[2], "Couldn't get correct incredient list");
 	}
 
 
