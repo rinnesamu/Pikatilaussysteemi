@@ -2,12 +2,12 @@ package application;
 
 import java.io.IOException;
 
-import controller.RestaurantKeeperController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import view.RestaurantKeeperController;
 
 public class RestaurantKeeperGUI extends Application{
 
