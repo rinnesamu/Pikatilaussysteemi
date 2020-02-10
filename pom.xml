@@ -51,9 +51,9 @@
 			<version>5.4.10.Final</version>
 		</dependency>
 		<dependency>
-	<groupId>org.controlsfx</groupId>
-		<artifactId>controlsfx</artifactId>
-		<version>8.40.16</version>
-	</dependency>
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+			<version>8.40.16</version>
+		</dependency>
 	</dependencies>
 </project>
