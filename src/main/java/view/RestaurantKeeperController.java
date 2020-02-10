@@ -48,8 +48,8 @@ public class RestaurantKeeperController {
 	private TextField addItemPriceTextField;
 	@FXML
 	private CheckBox addItemCheckBox;
-	// @FXML
-	// private TextField addItemCategoryTextField;
+	@FXML
+	private TextField addItemCategoryTextField;
 	
 	private ObservableList<FoodItem> foodItemList;
 	
@@ -174,6 +174,7 @@ public class RestaurantKeeperController {
 		
 		String name = addItemNameTextField.getText();
 		double price = 0.0;
+		String category = addItemCategoryTextField.getText();
 		boolean inMenu = addItemCheckBox.isSelected();
 		try {
 			price = Double.parseDouble(addItemPriceTextField.getText());
@@ -182,23 +183,22 @@ public class RestaurantKeeperController {
 			isNumber = false;
 		}
 		
-		if(!name.contentEquals("") && !addItemPriceTextField.getText().contentEquals("") && isNumber) {
-			FoodItem newFoodItem = new FoodItem(name, price, inMenu);
+		if(!name.contentEquals("") && !addItemPriceTextField.getText().contentEquals("") && !addItemCategoryTextField.getText().contentEquals("")  && isNumber) {
+			FoodItem newFoodItem = new FoodItem(name, price, category, inMenu);
 			foodItemDao.createFoodItem(newFoodItem);
 			
 			// Asetetaan kentät alkutilaan
 			addItemNameTextField.setText("");
 			addItemPriceTextField.setText("");
+			addItemCategoryTextField.setText("");
 			addItemCheckBox.setSelected(false);
 			
 			// Päivitetään tuotteet listassa
 			refreshFoodItems();
 			createNotification("Uusi tuote lisätty!");
 			
-		}else if(name.contentEquals("") || addItemPriceTextField.getText().contentEquals("") && !isNumber) {
-			createNotification("Anna pakolliset tiedot: Nimi ja Hinta. Hinnan tulee olla numero, desimaali erotin on '.' ");
 		}else{
-			createNotification("Hinnan tulee olla numero. Desimaali erotin on '.' ");
+			createNotification("Anna pakolliset tiedot: Nimi, Hinta ja Kategoria. Hinnan tulee olla numero, desimaali erotin on '.' ");
 		}
 	}
 	

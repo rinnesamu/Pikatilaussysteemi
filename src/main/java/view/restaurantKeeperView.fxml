@@ -63,7 +63,7 @@
                                                 <Insets right="10.0" />
                                              </padding>
                                           </Label>
-                                          <TextField fx:id="categoryTextField" alignment="CENTER" prefHeight="25.0" prefWidth="146.0" promptText="Ei käytössä tällä hetkellä" />
+                                          <TextField fx:id="addItemCategoryTextField" alignment="CENTER" prefHeight="25.0" prefWidth="146.0" promptText="Ei käytössä tällä hetkellä" />
                                        </children>
                                     </HBox>
                                     <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItem" prefHeight="25.0" prefWidth="879.0" text="Lisää tuote" />
