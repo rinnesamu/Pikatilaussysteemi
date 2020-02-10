@@ -26,6 +26,8 @@ public class FoodItem {
 	private int sold;
 	@Column
 	private int ready;
+	@Column 
+	private String path;
 	
 	/**
 	 * Empty constructor for hibernate
@@ -179,6 +181,22 @@ public class FoodItem {
 	}
 	
 	/**
+	 * Getter to path for picture
+	 * @return path path to picture
+	 */
+	public String getPath() {
+		return this.path;
+	}
+	
+	/**
+	 * Sets path to pictrue
+	 * @param path path to picture
+	 */
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
+	/**
 	 * Increases sold amount by one
 	 */
 	public void increaseSold() {
@@ -195,7 +213,7 @@ public class FoodItem {
 	}
 	
 	/**
-	 * Decreases reaady amount by one
+	 * Decreases ready amount by one
 	 */
 	public void decreaseReady() {
 		if (this.ready > 0) {

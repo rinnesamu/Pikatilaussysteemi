@@ -69,12 +69,14 @@ class FoodItemAccessObjectTest {
 		foodItem.setCategory("None");
 		foodItem.setName("Iso Kokis");
 		foodItem.setPrice(3.5);
+		foodItem.setPath("Joku/Kiva/Path");
 		foodItem.setInMenu(false);
 		assertEquals(true, foodItemDao.updateFoodItem(0, foodItem), "couldn't update fooditem");
 		assertEquals("Iso Kokis", foodItemDao.readFoodItems()[0].getName(), "Fooditems name did not update correctyl!");
 		assertEquals(3.5, foodItemDao.readFoodItems()[0].getPrice(), "Fooditems price did not update correctyl!");
 		assertEquals(false, foodItemDao.readFoodItems()[0].isInMenu(), "Fooditems menu acitivity did not update correctyl!");
 		assertEquals("None", foodItemDao.readFoodItems()[0].getCategory(), "Fooditems category did not update correctyl!");
+		assertEquals("Joku/Kiva/Path", foodItem.getPath(), "Path didn't update correctly");
 	}
 	
 	@Test

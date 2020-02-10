@@ -1,6 +1,7 @@
 package view;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Arrays;
 
 import javafx.event.ActionEvent;
@@ -135,7 +136,7 @@ public class MenuViewController {
 				menuItem.setId(Integer.toString(menuId));
 				System.out.println("menuid on " + menuId);
 				
-				if (menuId == 1) {
+				/*if (menuId == 1) {
 					menuItem.setGraphic(colaView);
 				}
 				else if (menuId == 2) {
@@ -152,7 +153,13 @@ public class MenuViewController {
 				}
 				else if (menuId == 7 || menuId == 8|| menuId == 9 ) {
 					menuItem.setGraphic(mealView);
-				}
+				}*/
+				File file = new File(items[i].getPath());
+				Image image = new Image(file.toURI().toString());
+				ImageView iv = new ImageView(image);
+				iv.setFitHeight(60);
+				iv.setFitWidth(60);
+				menuItem.setGraphic(iv);
 				//menuItem.setText(Integer.toString(menuId));
 				menuItem.setText(allItems[menuId-1].getName());
 				menuItem.setContentDisplay(ContentDisplay.BOTTOM);

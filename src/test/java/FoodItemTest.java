@@ -127,6 +127,17 @@ class FoodItemTest {
 		foodItem.decreaseReady();
 		assertEquals(0, foodItem.getReady(), "Couldn't get correct ready ammount.");
 	}
+	
+	@Test
+	@DisplayName("Test getter and setter for path")
+	void testGetPath() {
+		foodItem.setPath("joku/kiva/path.jpg");
+		assertEquals("joku/kiva/path.jpg", foodItem.getPath(), "Couldnt get correct path!");
+		foodItem.setPath("");
+		assertEquals("", foodItem.getPath(), "Couldnt get correct path!");
+		foodItem.setPath(".joku/kiva/path.jpg");
+		assertEquals(".joku/kiva/path.jpg", foodItem.getPath(), "Couldnt get correct path!");
+	}
 
 
 }

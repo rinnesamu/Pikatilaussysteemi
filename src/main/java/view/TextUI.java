@@ -1,21 +1,20 @@
 package view;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+import javafx.scene.image.Image;
 import model.*;
 
 public class TextUI {
-	// Artun lisäämä koodi, order luokan, ja orderDAO:n kokeilua lisätty perään
-	static OrderAccessObject orderDao = new OrderAccessObject();
-	// ------
 	
 	static FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
 	static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		String name;
+		/*String name;
 		double price;
 		boolean inMenu;
 		System.out.println("Items name?");
@@ -40,54 +39,30 @@ public class TextUI {
 		}else {
 			System.out.println("Couldn't add the item!");
 		}
-		
+		*/
 		System.out.println(foodItemDao.readFoodItems().length);
 		FoodItem[] list = foodItemDao.readFoodItems();
+		list[0].setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
 		for (FoodItem f : list) {
 			System.out.println(f.getItemId() + ": " + f.getName());
 		}
-		
-		// Arttu
-		// order luokan, ja orderDAO:n kokeilua
-		// KÄYTETTY JPA:TA EI TOIMI ILMAN persistence.xml -TIEDOSTOA
-		FoodItem foodItem2 = new FoodItem("pihvi", 20.5, true);
-		success = foodItemDao.createFoodItem(foodItem2);
-		
-		/*
-		System.out.println(foodItemDao.readFoodItems().length);
-		list = foodItemDao.readFoodItems();
-		for (FoodItem f : list) {
-			System.out.println(f.getItemId() + ": " + f.getName());
-		}*/
-		
-		System.out.println("Creating order");
-
-		// Tämä tapahtuisi käyttöliittymän shopping cartissa
-		Map<FoodItem, Integer> shoppingCart = new HashMap<FoodItem, Integer>();
-		shoppingCart.put(foodItem, 4);
-		shoppingCart.put(foodItem2, 2);
-		// ----------
-		
-		Order order = new Order(69, shoppingCart);
-		order.setAdditionalInfo("5 extra packets of ketchup!");
-
-		System.out.println("Items in order: " + order.getOrderSize());
-		
-		order.setAdditionalInfo("5 extra packets of ketchup!");
-		boolean orderSuccess = orderDao.createOrder(order);
-		
-		if(orderSuccess) {
-			System.out.println("order created");
-		}else {
-			System.out.println("order failed");
+		String path;
+		for (int i = 0; i < list.length; i++) {
+			if (i%5 == 0) {
+				path = "./src/main/resources/imgs/coca-cola-443123_1280.png";
+			} else if (i%5 == 1) {
+				path = "./src/main/resources/imgs/aluminum-87987_1280.jpg";
+			} else if (i%5 == 2) {
+				path = "./src/main/resources/imgs/barbeque-1239407_1280.jpg";
+			} else if (i%5 == 3) {
+				path = "./src/main/resources/imgs/appetite-1238459_1280.jpg";
+			} else {
+				path = "./src/main/resources/imgs/cheeseburger-34314_1280.png";
+			}
+			list[i].setPath(path);
+			foodItemDao.updateFoodItem(i, list[i]);
+			
 		}
-		
-		System.out.println(order);
-		// ---------------------
-		
-		
-		// TODO Auto-generated method stub
-
 	}
 
 }
