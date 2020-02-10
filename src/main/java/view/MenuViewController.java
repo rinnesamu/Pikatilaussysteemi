@@ -62,7 +62,7 @@ public class MenuViewController {
 	}
 	
 	int menuId;
-	File colaFile = new File("./src/main/resources/imgs/coca-cola-443123_1280.png");
+	/*File colaFile = new File("./src/main/resources/imgs/coca-cola-443123_1280.png");
 	Image cola = new Image(colaFile.toURI().toString());
 	File fantaFile = new File("./src/main/resources/imgs/aluminum-87987_1280.jpg");
 	Image fanta = new Image(fantaFile.toURI().toString());
@@ -77,7 +77,7 @@ public class MenuViewController {
 	ImageView fantaView = new ImageView(fanta);
 	ImageView cheeseBurgerView = new ImageView(cheeseBurger);
 	ImageView dcheeseBurgerView = new ImageView(dcheeseBurger);
-	ImageView mealView = new ImageView(meal);
+	ImageView mealView = new ImageView(meal);*/
 	
 	@FXML
 	private void emptyShoppingCart() {
@@ -117,7 +117,7 @@ public class MenuViewController {
 	private void createMenu() {
 		menu.getChildren().clear();
 
-		colaView.setFitHeight(60);
+		/*colaView.setFitHeight(60);
 		colaView.setFitWidth(60);
 		fantaView.setFitHeight(60);
 		fantaView.setFitWidth(60);
@@ -126,7 +126,7 @@ public class MenuViewController {
 		dcheeseBurgerView.setFitHeight(60);
 		dcheeseBurgerView.setFitWidth(60);
 		mealView.setFitHeight(60);
-		mealView.setFitWidth(60);
+		mealView.setFitWidth(60);*/
 		
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
