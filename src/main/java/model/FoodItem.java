@@ -38,7 +38,6 @@ public class FoodItem {
 	 * Empty constructor for hibernate
 	 */
 	public FoodItem() {
-		
 	}
 	
 	/**
@@ -239,9 +238,9 @@ public class FoodItem {
 		while (i < size) {
 			if (items.get(i).trim().length() == 0) {
 				items.remove(i);
-				size--;
+				size--; // reduces size if deletes item so it wont skip one list item
 			}else {
-				i++;
+				i++; // otherwise increase i
 			}
 		}
 		for (String s : items) {
@@ -261,22 +260,22 @@ public class FoodItem {
 		int i = 0;
 		int size = ingredients.length;
 		while (i < size) {
-			if (ingredients[i].trim().length() == 0) {
-				int a = i;
-				while (a < size-1) {
+			if (ingredients[i] == null) {
+				for (int a = i; a < size-1; a++) {
 					ingredients[a] = ingredients[a+1];
-					a++;
 				}
-				System.out.println(size);
-				size--;
+				size--; // reduces size if deletes item so it wont skip one list item
+			}else if (ingredients[i].trim().length() == 0) {
+				for (int a = i; a < size-1; a++) {
+					ingredients[a] = ingredients[a+1];
+				}
+				size--; // reduces size if deletes item so it wont skip one list item
 			}else {
-				i++;
+				i++; // otherwise increase i
 			}
-			
 		}
 		String[] newIngredients = new String[size];
 		for (int b = 0; b < size; b++) {
-			System.out.println(ingredients[b]);
 			newIngredients[b] = ingredients[b];
 		}
 		this.ingredients = String.join(",", newIngredients);
@@ -285,7 +284,4 @@ public class FoodItem {
 	public String toString() {
 		return this.name + ", " + this.price + ", " + this.inMenu;
 	}
-
-	
-
 }
