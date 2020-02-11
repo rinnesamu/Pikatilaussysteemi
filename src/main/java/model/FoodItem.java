@@ -260,20 +260,16 @@ public class FoodItem {
 		int i = 0;
 		int size = ingredients.length;
 		while (i < size) {
-			if (ingredients[i] == null) {
-				for (int a = i; a < size-1; a++) {
-					ingredients[a] = ingredients[a+1];
-				}
-				size--; // reduces size if deletes item so it wont skip one list item
-			}else if (ingredients[i].trim().length() == 0) {
-				for (int a = i; a < size-1; a++) {
-					ingredients[a] = ingredients[a+1];
-				}
-				size--; // reduces size if deletes item so it wont skip one list item
+			if (ingredients[i] != null && ingredients[i].trim().length() != 0) {
+				i++; // if ingredient isn't null or empty
 			}else {
-				i++; // otherwise increase i
+				for (int a = i; a < size-1; a++) {
+					ingredients[a] = ingredients[a+1];
+				}
+				size--; // reduces size if deletes item so it wont skip one list item
 			}
 		}
+		
 		String[] newIngredients = new String[size];
 		for (int b = 0; b < size; b++) {
 			newIngredients[b] = ingredients[b];
