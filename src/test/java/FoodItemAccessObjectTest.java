@@ -22,13 +22,13 @@ import model.FoodItemAccessObject;
 class FoodItemAccessObjectTest {
 	
 	private FoodItem foodItem;
-	private FoodItemAccessObject foodItemDao;
+	private FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
 	
-	@BeforeEach
+	/*@BeforeEach
 	void init() {
 		foodItemDao = new FoodItemAccessObject(); // drops table and creates new.-
 	}
-	
+	*/
 	@AfterEach
 	void after() {
 		foodItemDao.deleteAllFoodItems();
