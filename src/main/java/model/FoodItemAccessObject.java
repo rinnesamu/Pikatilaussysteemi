@@ -21,17 +21,18 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	 */
 	
 	private SessionFactory sessionFactory = null;
-	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+	//private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 	
 	public FoodItemAccessObject() {
-		try {
+		sessionFactory = util.HibernateUtil.buildSessionFactory();
+		/*try {
 			sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 		} catch(Exception e) {
 			System.out.println("Failed to create session factory");
 			StandardServiceRegistryBuilder.destroy(registry);
 			e.printStackTrace();
 			System.exit(-1);
-		}
+		}*/
 	}
 	
 	/**
@@ -152,6 +153,42 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	 * @return list of Food items that includes name
 	 */
 	
+	
+	public FoodItem readFoodItemByName(String name) {
+		List<FoodItem> foodItems = null;
+		FoodItem foodItem = null;
+		Transaction transaction = null;
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			foodItems = session.createQuery("from FoodItem Where name = :nameParam").setParameter("nameParam", name).getResultList();
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+		}
+		if (foodItems.size() != 0) {
+			foodItem = foodItems.get(0);
+		}
+		return foodItem;
+	}
+	/*public FoodItem readFoodItemByName(String name) {
+		FoodItem foodItem = null;
+		Transaction transaction = null;  
+		try(Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			//foodItem = session.get(FoodItem.class, name);
+			foodItem = (FoodItem)session.createQuery("from FoodItem Where name = :nameParam").setParameter("nameParam", name).getResultList().get(0);
+			transaction.commit();
+		}catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
+		}
+		return foodItem;
+	}*/
+	
 	public FoodItem[] readFoodItemsByName(String name){
 		List<FoodItem> foodItems = null;
 		Transaction transaction = null;  
@@ -191,6 +228,18 @@ public class FoodItemAccessObject implements IFoodItemDao {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean deleteAllFoodItems() {
+		FoodItem[] foodItems = this.readFoodItems();
+		if (foodItems == null || foodItems.length == 0) {
+			return true;
+		}else{
+			for (FoodItem f : foodItems) {
+				this.deleteFoodItem(f.getItemId());
+			}
+			return true;
+		}
 	}
 
 }
