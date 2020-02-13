@@ -14,6 +14,12 @@ public class TextUI {
 	static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
+		/*FoodItem f = new FoodItem("BicMac ateria", 7, "Ateriat", false);
+		f.setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
+		foodItemDao.createFoodItem(f);
+		f = new FoodItem("Päärynä pirtelö", 7, "Jälkiruuat", true);
+		f.setPath("./src/main/resources/imgs/appetite-1238459_1280.jpg");
+		foodItemDao.createFoodItem(f);*/
 		/*String name;
 		double price;
 		boolean inMenu;
@@ -40,7 +46,7 @@ public class TextUI {
 			System.out.println("Couldn't add the item!");
 		}
 		*/
-		System.out.println(foodItemDao.readFoodItems().length);
+		/*System.out.println(foodItemDao.readFoodItems().length);
 		FoodItem[] list = foodItemDao.readFoodItems();
 		list[0].setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
 		for (FoodItem f : list) {
@@ -62,7 +68,8 @@ public class TextUI {
 			list[i].setPath(path);
 			foodItemDao.updateFoodItem(i, list[i]);
 			
-		}
+			
+		}*/
 	}
 
 }
