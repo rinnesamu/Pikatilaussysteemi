@@ -40,6 +40,9 @@ class FoodItemAccessObjectTest {
 		foodItem = new FoodItem("Iso Kokis", 3.5, false);
 		assertEquals(true, foodItemDao.createFoodItem(foodItem), "couldn't create food item");
 		assertEquals(2, foodItemDao.readFoodItems().length, "createFoodItem does not work!");
+		foodItem = new FoodItem("kokis", 2.5, true);
+		assertEquals(false, foodItemDao.createFoodItem(foodItem), "couldn't create food item");
+		assertEquals(2, foodItemDao.readFoodItems().length, "createFoodItem does not work!");
 
 	}
 
@@ -61,7 +64,8 @@ class FoodItemAccessObjectTest {
 
 	}
 
-	//@Disabled("Broken after util.HibernateUtil. Cant drop and create new table anymore, so ids wont reset")
+	// @Disabled("Broken after util.HibernateUtil. Cant drop and create new table
+	// anymore, so ids wont reset")
 	@Test
 	@DisplayName("Reading only one item")
 	void testReadFoodItem() {
@@ -69,8 +73,11 @@ class FoodItemAccessObjectTest {
 		foodItemDao.createFoodItem(foodItem);
 		foodItem = new FoodItem("Iso kokis", 3.5, false);
 		foodItemDao.createFoodItem(foodItem);
-		assertEquals("kokis", foodItemDao.readFoodItem(foodItemDao.readFoodItemByName("kokis").getItemId()).getName(), "Couldn't read first item from list!");
-		assertEquals("Iso kokis", foodItemDao.readFoodItem(foodItemDao.readFoodItemByName("Iso kokis").getItemId()).getName(), "Couldn't read last item from list!");
+		assertEquals("kokis", foodItemDao.readFoodItem(foodItemDao.readFoodItemByName("kokis").getItemId()).getName(),
+				"Couldn't read first item from list!");
+		assertEquals("Iso kokis",
+				foodItemDao.readFoodItem(foodItemDao.readFoodItemByName("Iso kokis").getItemId()).getName(),
+				"Couldn't read last item from list!");
 		assertEquals(null, foodItemDao.readFoodItem(234567), "Found item with wrong id!");
 	}
 
@@ -114,7 +121,8 @@ class FoodItemAccessObjectTest {
 				"Found something with incorrect category");
 	}
 
-	//@Disabled("Broken after util.HibernateUtil. Cant drop and create new table anymore, so ids wont reset")
+	// @Disabled("Broken after util.HibernateUtil. Cant drop and create new table
+	// anymore, so ids wont reset")
 	@Test
 	@DisplayName("Deleting from database")
 	void testDeleteFoodItem() {
@@ -123,7 +131,8 @@ class FoodItemAccessObjectTest {
 		foodItem = new FoodItem("Iso kokis", 3.5, false);
 		foodItemDao.createFoodItem(foodItem);
 		assertEquals(2, foodItemDao.readFoodItems().length, "read all food items does not work!(wrong size)");
-		assertEquals(true, foodItemDao.deleteFoodItem(foodItemDao.readFoodItemByName("kokis").getItemId()), "Deleting item doesn't return true!");
+		assertEquals(true, foodItemDao.deleteFoodItem(foodItemDao.readFoodItemByName("kokis").getItemId()),
+				"Deleting item doesn't return true!");
 		assertEquals(1, foodItemDao.readFoodItems().length, "Deleting first item doesn't work");
 		assertEquals("Iso kokis", foodItemDao.readFoodItems()[0].getName(), "Deleted worng object!");
 		foodItemDao.deleteFoodItem(foodItemDao.readFoodItemByName("Iso kokis").getItemId());

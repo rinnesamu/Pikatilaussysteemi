@@ -45,6 +45,9 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	@Override
 	public boolean createFoodItem(FoodItem foodItem) {
+		if (readFoodItemByName(foodItem.getName()) != null) {
+			return false;
+		}
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
@@ -155,10 +158,9 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	}
 
 	/**
-	 * Gets all food items that include name in them
-	 * 
-	 * @param name Name that you want to search
-	 * @return list of Food items that includes name
+	 * Gets one FoodItem with name
+	 * @param name Items name
+	 * @return FoodItem
 	 */
 
 	public FoodItem readFoodItemByName(String name) {
@@ -190,7 +192,13 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	 * }catch (Exception e) { if (transaction != null) { transaction.rollback();
 	 * throw e; } } return foodItem; }
 	 */
-
+	
+	/**
+	 * Gets all food items that include name in them
+	 * 
+	 * @param name Name that you want to search
+	 * @return list of Food items that includes name
+	 */
 	public FoodItem[] readFoodItemsByName(String name) {
 		List<FoodItem> foodItems = null;
 		Transaction transaction = null;
@@ -235,7 +243,7 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	}
 
 	public boolean deleteAllFoodItems() {
-		FoodItem[] foodItems = this.readFoodItems();
+		FoodItem[] foodItems = readFoodItems();
 		if (foodItems == null || foodItems.length == 0) {
 			return true;
 		} else {

@@ -11,7 +11,11 @@ public interface IFoodItemDao {
 	FoodItem[] readFoodItems();
 	FoodItem readFoodItem(int itemId);
 	boolean updateFoodItem(int index, FoodItem foodItem);
+	boolean deleteAllFoodItems();
 	boolean deleteFoodItem(int itemId);
+	FoodItem[] readFoodItemsByName(String name);
+	public FoodItem readFoodItemByName(String name);
+	public FoodItem[] readFoodItemsCategory(String category);
 	
 
 }
