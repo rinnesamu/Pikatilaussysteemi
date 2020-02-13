@@ -11,14 +11,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class IngredientDao implements IIngredientDao {
 
-	private SessionFactory sessionFacto = null;
+	private SessionFactory sessionFactory = null;
 	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
 	public IngredientDao() {
 		// sessionFactory = util.HibernateUtil.buildSessionFactory();
 
 		try {
-			sessionFacto = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+			sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 		} catch (Exception e) {
 			System.out.println("Failed to create session factory");
 			StandardServiceRegistryBuilder.destroy(registry);
@@ -34,7 +34,7 @@ public class IngredientDao implements IIngredientDao {
 			return false;
 		}
 		Transaction transaction = null;
-		try (Session session = sessionFacto.openSession()) {
+		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			session.saveOrUpdate(ingredient);
 			transaction.commit();
@@ -51,7 +51,7 @@ public class IngredientDao implements IIngredientDao {
 	public Ingredient[] readIngredients() {
 		List<Ingredient> ingredients = null;
 		Transaction transaction = null;
-		try (Session session = sessionFacto.openSession()) {
+		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			ingredients = session.createQuery("From Ingredient").getResultList();
 			transaction.commit();
@@ -77,7 +77,7 @@ public class IngredientDao implements IIngredientDao {
 			return false;
 		}
 		Transaction transaction = null;
-		try (Session session = sessionFacto.openSession()) {
+		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			session.delete(readIngredient(id));
 			transaction.commit();
@@ -100,7 +100,7 @@ public class IngredientDao implements IIngredientDao {
 	public Ingredient readIngredient(int itemId) {
 		Ingredient ingredient = null;
 		Transaction transaction = null;
-		try (Session session = sessionFacto.openSession()) {
+		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();
 			ingredient = session.get(Ingredient.class, itemId);
 			transaction.commit();
