@@ -91,7 +91,7 @@ class FoodItemAccessObjectTest {
 		foodItem.setPrice(3.5);
 		foodItem.setPath("Joku/Kiva/Path");
 		foodItem.setInMenu(false);
-		assertEquals(true, foodItemDao.updateFoodItem(0, foodItem), "couldn't update fooditem");
+		assertEquals(true, foodItemDao.updateFoodItem(foodItem), "couldn't update fooditem");
 		assertEquals("Iso Kokis", foodItemDao.readFoodItems()[0].getName(), "Fooditems name did not update correctyl!");
 		assertEquals(3.5, foodItemDao.readFoodItems()[0].getPrice(), "Fooditems price did not update correctyl!");
 		assertEquals(false, foodItemDao.readFoodItems()[0].isInMenu(),

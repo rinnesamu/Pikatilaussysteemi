@@ -117,7 +117,7 @@ public class FoodItemAccessObject implements IFoodItemDao {
 	 */
 
 	@Override
-	public boolean updateFoodItem(int index, FoodItem foodItem) {
+	public boolean updateFoodItem(FoodItem foodItem) {
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();

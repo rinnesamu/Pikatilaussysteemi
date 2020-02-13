@@ -66,7 +66,7 @@ public class IngredientDao implements IIngredientDao {
 	}
 
 	@Override
-	public boolean updateIngredient(int id, Ingredient ingredient) {
+	public boolean updateIngredient(Ingredient ingredient) {
 		Transaction transaction = null;
 		try (Session session = sessionFactory.openSession()) {
 			transaction = session.beginTransaction();

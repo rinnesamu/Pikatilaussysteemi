@@ -291,7 +291,7 @@ public class RestaurantKeeperController {
                             btn.setOnAction((ActionEvent event) -> {
                                 FoodItem foodItem = getTableView().getItems().get(getIndex());
                                 System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
-                                boolean success = foodItemDao.updateFoodItem(foodItem.getItemId(), foodItem);
+                                boolean success = foodItemDao.updateFoodItem(foodItem);
                                 if(success) {
                                 	createNotification("Tuotetta muokattu onnistuneesti!");
                                 }else {
