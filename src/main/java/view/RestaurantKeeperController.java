@@ -15,6 +15,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -34,8 +35,9 @@ import model.*;
 public class RestaurantKeeperController {
 	
 	private FoodItemAccessObject foodItemDao;
-	
-	// Omistaja solmu ilmoitus popupeille
+	private ObservableList<FoodItem> foodItemList;
+
+	// Omistaja solmu ilmoitus pop-upeille
 	@FXML
 	private TabPane tabPane;
 	
@@ -50,9 +52,7 @@ public class RestaurantKeeperController {
 	private CheckBox addItemCheckBox;
 	@FXML
 	private TextField addItemCategoryTextField;
-	
-	private ObservableList<FoodItem> foodItemList;
-	
+		
 	// Ruokalistataulukko ja sarakkeet
 	@FXML
 	private TableView<FoodItem> foodItemTableView;
@@ -73,7 +73,7 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<FoodItem, Void> deleteColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> editColumn;
+	private TableColumn<FoodItem, Void> saveEditColumn;
 	@FXML
 	private TableColumn<FoodItem, Void> cancelColumn;
 	
@@ -96,8 +96,51 @@ public class RestaurantKeeperController {
 	public void initialize() {		
 		foodItemDao = new FoodItemAccessObject();
 		
+		// alustetaan sarakkeiden CellFactoryt
+		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
+		priceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
+		inMenuColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Boolean>("inMenu"));
+		categoryColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("category"));
+		soldColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("sold"));
+		readyColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ready"));
+		
+		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		categoryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		// inMenuColumn.setCellFactory(new CheckBoxTableCell<FoodItem, Boolean>());
+
+		// Nappi sarakkeet
+		createButtonColumns();
+		deleteColumn.setCellFactory(deleteCellFactory);
+		saveEditColumn.setCellFactory(editCellFactory);
+		// cancelColumn.setCellFactory(cancelCellFactory);
+		
+		// haetaan itemit taulukkoon
 		refreshFoodItems();
 	}
+	
+	// tapahtumakuuntelijat muokkaustapahtumille soluissa
+	@FXML
+	public void onEditCommitNameColumn(CellEditEvent<?,String> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+	}
+	@FXML
+	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
+	}
+	@FXML
+	public void onEditCommitCategoryColumn(CellEditEvent<?,String> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setCategory(event.getNewValue());
+	}
+	/*
+	@FXML
+	public void onEditCommitCheckBoxColumn(CellEditEvent<?,Boolean> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setInMenu(event.getNewValue());
+
+	}*/
+
+
 	/**
 	 * Paikallinen metodi ilmoituksen luomiseksi
 	 * @param msg - ilmoituksen teksti
@@ -115,30 +158,10 @@ public class RestaurantKeeperController {
 	 */
 	public void refreshFoodItems() {
 		try {
-			// Määritetään tableView:n sarakkeet
+			// asetetaan foodItemList taulukkoon
 			foodItemList = FXCollections.observableArrayList(Arrays.asList(foodItemDao.readFoodItems()));
 			foodItemTableView.setItems(foodItemList);
 			foodItemTableView.setEditable(true);
-			idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
-			nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
-			priceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
-			inMenuColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Boolean>("inMenu"));
-			categoryColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("category"));
-			soldColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("sold"));
-			readyColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ready"));
-			
-			nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-			priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-			categoryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-			// inMenuColumn.setCellFactory(new CheckBoxTableCell<FoodItem, Boolean>());
-
-			// Nappi sarakkeet
-			createButtonColumns();
-			deleteColumn.setCellFactory(deleteCellFactory);
-			editColumn.setCellFactory(editCellFactory);
-			// cancelColumn.setCellFactory(cancelCellFactory);
-
-			
 			
 		}catch(NullPointerException e) {
 			System.out.println("ruokalista on tyhjä");
@@ -187,30 +210,25 @@ public class RestaurantKeeperController {
 		deleteCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-
-                    private final Button btn = new Button("Poista");
-
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            FoodItem foodItem = getTableView().getItems().get(getIndex());
-                            System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
-                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
-                            if(success) {
-                            	foodItemTableView.getItems().remove(foodItem);
-                            	createNotification("Tuote poistettu onnistuneesti!");
-                            }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
-                            }
-                        });
-                    }
-
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    Button btn = new Button("Poista");
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty) {
                             setGraphic(null);
                         } else {
+                            btn.setOnAction((ActionEvent event) -> {
+                                FoodItem foodItem = getTableView().getItems().get(getIndex());
+                                System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
+                                boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
+                                if(success) {
+                                	foodItemTableView.getItems().remove(foodItem);
+                                	createNotification("Tuote poistettu onnistuneesti!");
+                                }else {
+                                	createNotification("Tuotetta ei onnistuttu poistamaan");
+                                }
+                            });
                             setGraphic(btn);
                         }
                     }
@@ -224,23 +242,21 @@ public class RestaurantKeeperController {
 		editCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-
-                    private final Button btn = new Button("Muokkaa");
-
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    private final Button btn = new Button("Tallenna");
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            /*FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("muokkaus selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
                             boolean success = foodItemDao.updateFoodItem(foodItem.getItemId(), foodItem);
                             if(success) {
                             	createNotification("Tuotetta muokattu onnistuneesti!");
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
-                            }*/
+                            	createNotification("Tuotetta ei onnistuttu muokkaamaan");
+                            }
+                            refreshFoodItems();
                         });
                     }
-
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -260,16 +276,13 @@ public class RestaurantKeeperController {
 		cancelCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				final TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
                     private final Button btn = new Button("Peruuta");
-
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	// PERUUTUSNAPIN TOIMINTO
                         });
                     }
-
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -284,7 +297,6 @@ public class RestaurantKeeperController {
 			}
 		};
 		// Peruutapainike loppuu
-		
 	}
 
 }

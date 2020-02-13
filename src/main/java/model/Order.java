@@ -47,14 +47,14 @@ public class Order implements Serializable{
 	}
 	
 	/**
-	 * Order -luokan konstruktori
+	 * Order -luokan konstruktori.
 	 * 
 	 * @param orderNumber - tilaukselle annettava tilausnumero
 	 * @param orderContent - hashmap, joka sisältää tilauksen tuotteet ja niiden lukumäärän
 	 */
 	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
 		this.orderContent = shoppingCart;
-		this.status = true;
+		this.status = false;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
 	}
