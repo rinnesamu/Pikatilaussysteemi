@@ -5,8 +5,9 @@ import java.util.List;
 import javax.persistence.*;
 
 /**
- * Order luokan "Data Access Object", jonka avulla Order oliot tallennetaan tietokantaan.
- * Luokka käyttää JPA:n EntityManageria
+ * DataAccessObject for Order class. It is used for storing order information to a database.
+ * The class uses JPA EntityManager
+ * 
  */
 public class OrderAccessObject implements IOrderDao {
 
@@ -15,7 +16,7 @@ public class OrderAccessObject implements IOrderDao {
 	protected EntityManager em;
 	
 	/**
-	 * Konstruktori, jossa määritellään "EntityManagerFactory" ja "EntityManager"
+	 * Constructor where EntityMAnager and EntityManagerFactory are defined
 	 */
 	public OrderAccessObject() {
 		
@@ -23,9 +24,9 @@ public class OrderAccessObject implements IOrderDao {
 		em = emf.createEntityManager();
 	}
 	/**
-	 * Metodi, jonka avulla order luokan olio tallenetaan tietokantaan.
+	 * Method for adding an order to the database
 	 * 
-	 * @param order - olio, joka sisältää käyttäjän tilauksen tiedot
+	 * @param order - order object that contains the information on the order
 	 */
 	@Override
 	public boolean createOrder(Order order) {
@@ -41,7 +42,7 @@ public class OrderAccessObject implements IOrderDao {
 	}
 	
 	/**
-	 * Metodi, jonka avulla luetaan kaikki tilaukset tietokannasta
+	 * Method for fetching all the orders from the database
 	 */
 	@Override
 	public List<Order> readOrders(){
@@ -55,10 +56,10 @@ public class OrderAccessObject implements IOrderDao {
 		}
 	}
 	/**
-	 * Metodi, jolla voi päivittää yksittäisen tilauksen statuksen
+	 * Method for updating the status of a single order
 	 * 
-	 * @param order - Order olio, joka sisältää tilauksen tiedot
-	 * @param status - päivittyvä status
+	 * @param order - Order object whose status is updated
+	 * @param status - the status
 	 */
 	@Override
 	public boolean updateOrderStatus(Order order, boolean status) {
@@ -73,6 +74,9 @@ public class OrderAccessObject implements IOrderDao {
 		return true;
 	}
 	
+	/**
+	 * Method for fetching orders from the database based on its status
+	 */
 	@Override
 	public List<Order> readOrdersByStatus(boolean status){
 		try {

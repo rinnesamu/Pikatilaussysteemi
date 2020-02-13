@@ -82,7 +82,7 @@
                                     <TableColumn fx:id="categoryColumn" onEditCommit="#onEditCommitCategoryColumn" prefWidth="120.0" text="Kategoria" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
-                                    <TableColumn fx:id="saveEditColumn" prefWidth="120.0" text="Muokkaa" />
+                                    <TableColumn fx:id="saveEditColumn" prefWidth="120.0" text="Tallenna" />
                                     <TableColumn fx:id="cancelColumn" prefWidth="120.0" text="Peruuta" />
                                     <TableColumn fx:id="deleteColumn" editable="false" prefWidth="120.0" text="Poista" />
                                 </columns>
