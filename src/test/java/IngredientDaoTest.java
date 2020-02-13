@@ -16,10 +16,10 @@ class IngredientDaoTest {
 	private Ingredient ingredient;
 	private IngredientDao ingredientDao = new IngredientDao();
 	
-	/*@AfterEach
+	@AfterEach
 	void afterEach() {
 		ingredientDao.deleteAllIngredients();
-	}*/
+	}
 
 	@Test
 	@DisplayName("Creating new ingredient")
@@ -58,8 +58,8 @@ class IngredientDaoTest {
 		ingredient.setRemovealbe(false);
 		assertEquals(true, ingredientDao.updateIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId(), ingredient));
 		assertEquals(null, ingredientDao.readIngredientByName("Sipuli"), "Couldn't add ingredient");
-		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Siuolakurkku").getName(), "Couldn't add ingredient");
-		assertEquals(false, ingredientDao.readIngredientByName("Siuolakurkku").isRemovealbe(), "Couldn't add ingredient");
+		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Suolakurkku").getName(), "Couldn't update ingredient");
+		assertEquals(false, ingredientDao.readIngredientByName("Suolakurkku").isRemovealbe(), "Couldn't update ingredient");
 	}
 
 	@Test
@@ -75,7 +75,7 @@ class IngredientDaoTest {
 		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
 		assertEquals(true, ingredientDao.deleteIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId()), "Couldn't delete item");
 		assertEquals(1, ingredientDao.readIngredients().length, "Couldn't delete ingredient");
-		assertEquals(false, ingredientDao.deleteIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId()), "Couldn't delete item");
+		assertEquals(false, ingredientDao.deleteIngredient(53234), "Couldn't delete item");
 	}
 
 	@Test
@@ -102,7 +102,6 @@ class IngredientDaoTest {
 		assertEquals("Suolakurkku", ingredientDao.readIngredient(ingredientDao.readIngredientByName("Suolakurkku").getItemId()).getName(), "Couldn't read item by id");
 		assertEquals("Sipuli", ingredientDao.readIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId()).getName(), "Couldn't read item by id");
 		assertEquals(null, ingredientDao.readIngredient(234567876), "found item with wrong id");
-		fail("Not yet implemented");
 	}
 	
 	@Test

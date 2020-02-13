@@ -67,8 +67,18 @@ public class IngredientDao implements IIngredientDao {
 
 	@Override
 	public boolean updateIngredient(int id, Ingredient ingredient) {
-		// TODO Auto-generated method stub
-		return false;
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(ingredient);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -87,13 +97,27 @@ public class IngredientDao implements IIngredientDao {
 			}
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override
 	public Ingredient readIngredientByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		Transaction transaction = null;
+		Ingredient ingredient = null;
+		List<Ingredient> ingredients = null;
+		try (Session session = sessionFactory.openSession()){
+			transaction = session.beginTransaction();
+			ingredients = session.createQuery("From Ingredient Where name = :nameParam").setParameter("nameParam", name).getResultList();
+			transaction.commit();
+		}catch(Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+		}
+		if (ingredients.size() != 0) {
+			ingredient = ingredients.get(0);
+		}
+		return ingredient;
 	}
 
 	@Override
