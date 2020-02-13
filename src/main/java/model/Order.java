@@ -11,8 +11,8 @@ import javax.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * Order luokka sisältää käyttäjän tekemän tilauksen tilaus tunnuksen(orderId), tilausnumeron,
- * aikaleiman tilauksen luonti ajankohdalle, tilauksen lisätieto merkkijonon ja tilauksen tilan totuusarvona
+ * Order class that is created by the user.
+ * 
  * 
  * @author Arttu Seuna
  */
@@ -47,113 +47,105 @@ public class Order implements Serializable{
 	}
 	
 	/**
-	 * Order -luokan konstruktori
+	 * Constructor for the Order -class
 	 * 
-	 * @param orderNumber - tilaukselle annettava tilausnumero
-	 * @param orderContent - hashmap, joka sisältää tilauksen tuotteet ja niiden lukumäärän
+	 * @param orderNumber - ordernumber that is given for the order
+	 * @param orderContent - hashmap that contains food items and their amount
 	 */
 	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
 		this.orderContent = shoppingCart;
-		this.status = true;
+		this.status = false;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
 	}
 	
 	/**
-	 * Tilauksen tunnusnumeron haku
+	 * Getter for the order id
 	 * 
-	 * @return orderId - tilauksen tunnusnumero
+	 * @return orderId - order id
 	 */
 	public int getOrderId() {
 		return orderId;
 	}
 
 	/**
-	 * Tilauksen tunnusnumeron asettaminen
+	 * Getter for the order number
 	 * 
-	 * @param orderId - annettu tunnusnumero
-	 */
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
-	}
-	/**
-	 * Tilauksen numeron haku
-	 * 
-	 * @return orderNumber - tilauksen numero
+	 * @return orderNumber - order number
 	 */
 	public int getOrderNumber() {
 		return orderNumber;
 	}
 	/**
-	 * Asetetaan tilauksen numero
+	 * Setter for the order number
 	 * 
-	 * @param orderNumber - annettu tilauksen numero
+	 * @param orderNumber - order number
 	 */
 	public void setOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
 	}
 
 	/**
-	 * Tilauksen lisätietojen haku
+	 * Getter for additional info
 	 * 
-	 * @return additionalInfo - tilauksen lisätieto merkkijono
+	 * @return additionalInfo - additional info of the order
 	 */
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}
 	/**
-	 * Annetaan tilaukselle lisätiedot
+	 * Setter for the additional info
 	 * 
-	 * @param additionalInfo - Annettu lisätietomerkkijono
+	 * @param additionalInfo - given additional info
 	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
 	/**
-	 * Tilauksen statuksen haku.
+	 * Getter for the status of the order, the order is completed when true
 	 * 
-	 * @return status - Tilauksen status totuusarvona
+	 * @return status - status of the order
 	 */
 	public boolean isStatus() {
 		return status;
 	}
 	/**
-	 * Asetetaan tilaukselle status
+	 * Setter for the order status
 	 * 
-	 * @param status - asetettu status
+	 * @param status - given status
 	 */
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
 	/**
-	 * Tilauksen luontiajan haku 
+	 * Getter for the order creation timestamp 
 	 * 
-	 * @return creationTimeStamp - tilauksen luontiaika
+	 * @return creationTimeStamp - timestamp of the order creation
 	 */
 	public LocalDateTime getDate() {
 		return creationTimeStamp;
 	}
 	
 	/**
-	 * Tilauksen erillisten tuotteiden lukumäärän haku
+	 * Getter for the unique items in the order
 	 * 
-	 * @return erillisten tuotteiden lukumäärä
+	 * @return amount of unique items in the order
 	 */
 	public int getOrderSize() {
 		return this.orderContent.size();
 	}
 	/**
-	 * Tilauksen sisällön haku
+	 * Getter for the content of the order in hashmap
 	 * 
-	 * @return Tilauksen sisältö HashMap muodossa
+	 * @return order content as an hashmap
 	 */
 	public HashMap<FoodItem, Integer> getOrderContent() {
 		return (HashMap<FoodItem, Integer>)this.orderContent;
 	}
 	/**
-	 * Tilauksen sisällön asettaminen
+	 * Setter for the order content
 	 * 
-	 * @param orderContent - tilauksen sisältö
+	 * @param orderContent - order content
 	 */
 	public void setOrderContent(Map<FoodItem, Integer> orderContent) {
 		this.orderContent = orderContent;

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
+<AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
    <children>
       <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -76,15 +76,15 @@
                               <TableView fx:id="foodItemTableView" editable="true" prefHeight="365.0" prefWidth="750.0">
                                 <columns>
                                   <TableColumn fx:id="idColumn" editable="false" prefWidth="120.0" text="Tunnus #" />
-                                  <TableColumn fx:id="nameColumn" prefWidth="120.0" text="Nimi" />
-                                    <TableColumn fx:id="priceColumn" prefWidth="120.0" text="Hinta" />
+                                  <TableColumn fx:id="nameColumn" onEditCommit="#onEditCommitNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="priceColumn" onEditCommit="#onEditCommitPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="categoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="categoryColumn" onEditCommit="#onEditCommitCategoryColumn" prefWidth="120.0" text="Kategoria" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
-                                    <TableColumn fx:id="deleteColumn" editable="false" prefWidth="120.0" text="Poista" />
-                                    <TableColumn fx:id="editColumn" prefWidth="120.0" text="Muokkaa" />
+                                    <TableColumn fx:id="saveEditColumn" prefWidth="120.0" text="Tallenna" />
                                     <TableColumn fx:id="cancelColumn" prefWidth="120.0" text="Peruuta" />
+                                    <TableColumn fx:id="deleteColumn" editable="false" prefWidth="120.0" text="Poista" />
                                 </columns>
                               </TableView>
                            </children>
