@@ -6,10 +6,10 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateUtil {
-	
+
 	private static SessionFactory sessionFactory = null;
 	private static final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-	
+
 	public static SessionFactory buildSessionFactory() {
 		if (sessionFactory == null) {
 			try {
@@ -20,21 +20,20 @@ public class HibernateUtil {
 				e.printStackTrace();
 				System.exit(-1);
 			}
-		
-		}else {
+
+		} else {
 		}
 		return sessionFactory;
 	}
-	
+
 	public static SessionFactory getSessionFactory() {
 		if (sessionFactory == null) {
 		}
 		return sessionFactory;
 	}
-	
+
 	public static void closeSessionFactory() {
 		sessionFactory.close();
 	}
-	
 
 }
