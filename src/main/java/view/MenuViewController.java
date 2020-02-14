@@ -1,14 +1,18 @@
 package view;
 
 import java.io.File;
-import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -46,6 +50,9 @@ public class MenuViewController {
 	@FXML
 	private Button emptyButton;
 	
+	@FXML
+	private Button buyButton;
+	
 	private MainApp mainApp;
 	
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
@@ -62,23 +69,7 @@ public class MenuViewController {
 	}
 	
 	int menuId;
-	/*File colaFile = new File("./src/main/resources/imgs/coca-cola-443123_1280.png");
-	Image cola = new Image(colaFile.toURI().toString());
-	File fantaFile = new File("./src/main/resources/imgs/aluminum-87987_1280.jpg");
-	Image fanta = new Image(fantaFile.toURI().toString());
-	File cheeseFile = new File("./src/main/resources/imgs/barbeque-1239407_1280.jpg");
-	Image cheeseBurger = new Image(cheeseFile.toURI().toString());
-	File dcheeseFile = new File("./src/main/resources/imgs/appetite-1238459_1280.jpg");
-	Image dcheeseBurger = new Image(dcheeseFile.toURI().toString());
-	File mealFile = new File("./src/main/resources/imgs/cheeseburger-34314_1280.png");
-	Image meal = new Image(mealFile.toURI().toString());
 
-	ImageView colaView = new ImageView(cola);
-	ImageView fantaView = new ImageView(fanta);
-	ImageView cheeseBurgerView = new ImageView(cheeseBurger);
-	ImageView dcheeseBurgerView = new ImageView(dcheeseBurger);
-	ImageView mealView = new ImageView(meal);*/
-	
 	@FXML
 	private void emptyShoppingCart() {
 		shoppingCart.emptyShoppingCart();
@@ -111,88 +102,124 @@ public class MenuViewController {
 	private void selectDesserts() {
 		FoodItem[] desserts = foodItemAO.readFoodItemsCategory("Jälkiruuat");
 		items = desserts;
+		System.out.println("desserts on " + items);
 		createMenu();
+	}
+	
+	@FXML
+	private void initialize() {
+		selectMeals();
 	}
 	
 	private void createMenu() {
 		menu.getChildren().clear();
-
-		/*colaView.setFitHeight(60);
-		colaView.setFitWidth(60);
-		fantaView.setFitHeight(60);
-		fantaView.setFitWidth(60);
-		cheeseBurgerView.setFitHeight(60);
-		cheeseBurgerView.setFitWidth(60);
-		dcheeseBurgerView.setFitHeight(60);
-		dcheeseBurgerView.setFitWidth(60);
-		mealView.setFitHeight(60);
-		mealView.setFitWidth(60);*/
-		
+		/*for (FoodItem item: allItems) {
+			System.out.println("menuid on " + item.toString());
+			System.out.println("itemid on " + item.getItemId());
+		}*/
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
 				Button menuItem = new Button();
-
-				menuId = items[i].getItemId();
-				menuItem.setId(Integer.toString(menuId));
-				System.out.println("menuid on " + menuId);
 				
-				/*if (menuId == 1) {
-					menuItem.setGraphic(colaView);
-				}
-				else if (menuId == 2) {
-					menuItem.setGraphic(dcheeseBurgerView);
-				}
-				else if (menuId == 3) {
-					menuItem.setGraphic(dcheeseBurgerView);
-				}
-				else if (menuId == 4) {
-					menuItem.setGraphic(cheeseBurgerView);
-				}
-				else if (menuId == 5 || menuId == 6|| menuId == 10) {
-					menuItem.setGraphic(fantaView);
-				}
-				else if (menuId == 7 || menuId == 8|| menuId == 9 ) {
-					menuItem.setGraphic(mealView);
-				}*/
-				File file = new File(items[i].getPath());
+				// FoodItem from the category
+				FoodItem fItem = items[i];
+				//System.out.println("fItem on " + fItem);
+
+				// Taking item id of that FoodItem and setting that as "menuId"
+				menuId = fItem.getItemId();
+				menuItem.setId(Integer.toString(menuId));
+				
+				// Adding that item to the menulist
+				File file = new File(fItem.getPath());
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(60);
 				iv.setFitWidth(60);
 				menuItem.setGraphic(iv);
 				//menuItem.setText(Integer.toString(menuId));
-				menuItem.setText(allItems[menuId-1].getName());
+				menuItem.setText(fItem.getName());
 				menuItem.setContentDisplay(ContentDisplay.BOTTOM);
 				menu.getChildren().add(menuItem);
-				menuItem.setOnAction(new EventHandler<ActionEvent>() {
+				
+				EventHandler<ActionEvent> menuButtonHandler = new EventHandler<ActionEvent>() {
 					
 					@Override
 					public void handle (ActionEvent event)
 					{
-						Button sCartItem = new Button("aea");
-						// Get all the items in shopping cart
-						Integer[] listOfItemIds= shoppingCart.getAllItemId();
+						// Getting the id back
+						Button sCartItem = new Button("");
 						int id = Integer.parseInt(menuItem.getId());
-						System.out.println(shoppingCart);
+						sCartItem.setId(Integer.toString(id));
+						
+						// Get all the item numbers in shopping cart
+						int[] listOfItemIds= shoppingCart.getAllItemId();
+						System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
+						boolean found = false;
+						for (int i = 0; i < listOfItemIds.length; i++) {
+							if (id == listOfItemIds[i]) {
+								found = true;
+							}	
+						}
 						
 						// If item is already there, increase the amount
-						if (Arrays.asList(listOfItemIds).contains(id)) {
-							int oldAmount = shoppingCart.getAmount(allItems[id-1]);
-							System.out.println("vanha määrä " + oldAmount);
-							shoppingCart.setAmount(allItems[id-1], (oldAmount+1));
-							System.out.println(shoppingCart);
+						if (found) {
+							int oldAmount = shoppingCart.getAmount(id);
+							shoppingCart.setAmount(fItem, (oldAmount+1));
+							sCartItem.setText(fItem.getName() + " " + shoppingCart.getAmount(id));
 						}
+						// Otherwise add to the shopping cart
 						else {
-							// Otherwise add to the shopping cart
-							shoppingCart.addToShoppingCart(allItems[id-1], 1);
+							shoppingCart.addToShoppingCart(fItem, 1);
 							System.out.println(shoppingCart);
 							sCartItem.setMinSize(170, 50);
-							//sCartItem.setId(Integer.toString(id));
+							sCartItem.setText(fItem.getName() + " " + shoppingCart.getAmount(id));
 							shoppingCartList.getChildren().add(sCartItem);
 						}
-						sCartItem.setText(allItems[id-1].getName() + " " + shoppingCart.getAmount(allItems[id-1]));
+						System.out.println(shoppingCart);
+						// Pressing the items on the shoppingCartList
+						EventHandler<ActionEvent> sCartButtonHandler = new EventHandler<ActionEvent>() {
+							
+							@Override
+							public void handle (ActionEvent event)
+							{
+								Alert options = new Alert(AlertType.CONFIRMATION);
+								options.setTitle("Valitse " + fItem.getName() + " määrä");
+								int amountNow = shoppingCart.getAmount(id);
+								options.setHeaderText("Määrä:  " + amountNow);
+								options.setContentText("Valitse lisäys tai vähennys");
+
+								ButtonType increase = new ButtonType("Lisää");
+								ButtonType decrease = new ButtonType("Vähennä");
+								ButtonType okay = new ButtonType("OK",ButtonData.OK_DONE);
+								ButtonType cancel = new ButtonType("Peruuta", ButtonData.CANCEL_CLOSE);
+								
+								options.getButtonTypes().setAll(increase, decrease, okay, cancel);
+								Optional<ButtonType> result = options.showAndWait();
+								
+								if (result.get() == increase) {
+									amountNow += 1;
+									shoppingCart.setAmount(fItem, amountNow);
+								}
+								if (result.get() == decrease) {
+									amountNow -= 1;
+									shoppingCart.setAmount(fItem, amountNow);
+								}
+								if (result.get() == okay) {
+									
+								}
+								if (result.get() == cancel){
+									
+								}
+							}
+						};
+						sCartItem.setOnAction (sCartButtonHandler);
+						if (shoppingCart.getAmount(id) == 0) {
+							// then is removed from shoppingCartList
+						};
 					}
-				});
+				};
+				// Setting a mouse event
+				menuItem.setOnAction(menuButtonHandler);
 				
 			}
 			

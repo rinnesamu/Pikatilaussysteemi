@@ -36,15 +36,14 @@ public class ShoppingCart {
 	 *  
 	 * @return All the item id numbers.
 	 */
-	public Integer[] getAllItemId() {
+	public int[] getAllItemId() {
 		Set<FoodItem> foodItems = cartList.keySet();
 		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
-		Integer[] allItemId = new Integer[fItemsArray.length];
+		int[] allItemId = new int[fItemsArray.length];
 		
 		for(int i = 0; i < fItemsArray.length; i++) {
 			allItemId[i]= fItemsArray[i].getItemId();
 		}
-		System.out.println(Arrays.toString(allItemId));
 		return allItemId;
 	}
 
@@ -81,14 +80,23 @@ public class ShoppingCart {
 		cartList.clear();
 	}
 	
-	/** 
+	/**
 	 * Returns the amount of a certain product in the shopping cart.
 	 * 
-	 * @param foodItem Product of which amount will be returned.
+	 * @param itemId ItemId of the product of which amount will be returned.
 	 * @return An integer presenting the quantity of the product.
 	 */
-	public int getAmount(FoodItem foodItem) {
-		int amount = cartList.get(foodItem);
+	public int getAmount(int itemId) {
+		FoodItem fItem = new FoodItem();
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+		
+		for(int i = 0; i < fItemsArray.length; i++) {
+			if (itemId == fItemsArray[i].getItemId()) {
+				fItem = fItemsArray[i];
+			}
+		}
+		int amount = (int) cartList.get(fItem);
 		return amount;
 	}
 	
