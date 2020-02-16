@@ -1,14 +1,9 @@
 package view;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -63,7 +58,7 @@ public class MenuViewController {
 	private ShoppingCart shoppingCart = new ShoppingCart();
 	
 	private FoodItem[] items;
-		
+			
 	public MenuViewController() {
 		
 	}
@@ -136,14 +131,21 @@ public class MenuViewController {
 				iv.setFitHeight(60);
 				iv.setFitWidth(60);
 				menuItem.setGraphic(iv);
-				menuItem.setText(Integer.toString(menuId));
-				//menuItem.setText(fItem.getName());
+				//menuItem.setText(Integer.toString(menuId));
+				menuItem.setText(fItem.getName());
 				menuItem.setContentDisplay(ContentDisplay.BOTTOM);
 				menu.getChildren().add(menuItem);
 				menuItem.setOnAction(event -> menuButtonHandler(fItem, menuItem));
 			}
 		}
 	}
+	
+	/**
+	 * Button handler for the menubuttons
+	 * 
+	 * @param foodItem
+	 * @param button
+	 */
 	
 	private void menuButtonHandler(FoodItem foodItem, Button button) {
 		
@@ -164,63 +166,81 @@ public class MenuViewController {
 			if (found) {
 				int oldAmount = shoppingCart.getAmount(id);
 				shoppingCart.setAmount(foodItem, (oldAmount+1));
-				shoppingCartList.getChildren().remove(sCartItem);
 				System.out.println("scl on " + shoppingCartList.getChildren());
-				// korvaa id -> fItem.getName()
-				System.out.println("getID ON " + sCartItem.getId());
+				//System.out.println("getID ON " + sCartItem.getId());
 				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 					if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().remove(i);
+						shoppingCartList.getChildren().set(i, sCartItem);
+						sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 					}
-				}				
-				sCartItem.setText(id + " " + shoppingCart.getAmount(id));
-				shoppingCartList.getChildren().add(sCartItem);
+				}	
+				System.out.println("scl JÄLKEEN on " + shoppingCartList.getChildren());
 			}
 			// Otherwise add to the shopping cart
 			else {
 				shoppingCart.addToShoppingCart(foodItem, 1);
 				System.out.println(shoppingCart);
 				sCartItem.setMinSize(170, 50);
-				sCartItem.setText(id + " " + shoppingCart.getAmount(id));
+				sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 				shoppingCartList.getChildren().add(sCartItem);
 			}
 			System.out.println(shoppingCart);
-			sCartItem.setOnAction(event -> sCartButtonHandler(foodItem, id));
+			sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
 	}
 	
-	private void sCartButtonHandler (FoodItem foodItem, int id) {
+	/**
+	 * Button Handler for the shopping cart buttons
+	 * 
+	 * @param button
+	 * @param foodItem
+	 * @param id
+	 */
+	
+	private void sCartButtonHandler (Button button, FoodItem foodItem, int id) {
 
-		Alert options = new Alert(AlertType.CONFIRMATION);
+		Alert options = new Alert(AlertType.INFORMATION);
 		options.setTitle("Valitse " + foodItem.getName() + " määrä");
 		int amountNow = shoppingCart.getAmount(id);
-		options.setHeaderText("Määrä:  " + amountNow);
-		options.setContentText("Valitse lisäys tai vähennys");
+		options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
+		options.setContentText("Valitse lisäys, vähennys tai poisto");
 	
 		ButtonType increase = new ButtonType("Lisää");
 		ButtonType decrease = new ButtonType("Vähennä");
-		ButtonType okay = new ButtonType("OK",ButtonData.OK_DONE);
+		ButtonType remove = new ButtonType("Poista");
 		ButtonType cancel = new ButtonType("Peruuta", ButtonData.CANCEL_CLOSE);
 		
-		options.getButtonTypes().setAll(increase, decrease, okay, cancel);
+		options.getButtonTypes().setAll(increase, decrease, remove, cancel);
 		Optional<ButtonType> result = options.showAndWait();
 		
 		if (result.get() == increase) {
 			amountNow += 1;
 			shoppingCart.setAmount(foodItem, amountNow);
 		}
-		if (result.get() == decrease) {
+		else if (result.get() == decrease) {
 			amountNow -= 1;
 			shoppingCart.setAmount(foodItem, amountNow);
 		}
-		if (result.get() == okay) {
-			
+		else if (result.get() == remove) {
+			shoppingCart.setAmount(foodItem, 0);
 		}
-		if (result.get() == cancel){
-			
+		else if (result.get() == cancel){
 		}
 		
-		if (shoppingCart.getAmount(id) == 0) {
-			// then is removed from shoppingCartList
+		if (shoppingCart.getAmount(id) != 0) {
+			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
+
+			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+					shoppingCartList.getChildren().set(i, button);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+					shoppingCartList.getChildren().remove(i);
+				}
+			}
 		}
 	}
 	

@@ -87,17 +87,21 @@ public class ShoppingCart {
 	 * @return An integer presenting the quantity of the product.
 	 */
 	public int getAmount(int itemId) {
-		FoodItem fItem = new FoodItem();
-		Set<FoodItem> foodItems = cartList.keySet();
-		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
-		
-		for(int i = 0; i < fItemsArray.length; i++) {
-			if (itemId == fItemsArray[i].getItemId()) {
-				fItem = fItemsArray[i];
+		try {
+			FoodItem fItem = new FoodItem();
+			Set<FoodItem> foodItems = cartList.keySet();
+			FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+			
+			for(int i = 0; i < fItemsArray.length; i++) {
+				if (itemId == fItemsArray[i].getItemId()) {
+					fItem = fItemsArray[i];
+				}
 			}
+			int amount = (int) cartList.get(fItem);
+			return amount;
+		} catch (NullPointerException e) {
+			return 0;
 		}
-		int amount = (int) cartList.get(fItem);
-		return amount;
 	}
 	
 	/** 
