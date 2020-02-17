@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import model.FoodItem;
+import model.FoodItemAccessObject;
 import model.ShoppingCart;
 
 /**
@@ -17,6 +18,8 @@ import model.ShoppingCart;
  */
 
 class ShoppingCartTest {
+	
+	FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
 	
 	private static ShoppingCart sCart = new ShoppingCart();
 	FoodItem foodItem, foodItem2, foodItem3;
@@ -55,11 +58,12 @@ class ShoppingCartTest {
 		assertEquals(2, sCart.sizeShoppingCart(), "Wrong size");
 	}
 	
+	// KESKEN ##################################
 	@Test
 	@DisplayName("Adding same product again")
 	void testSameProductToShoppingCart() {
 		sCart.addToShoppingCart(foodItem, 5);
-		assertEquals(9, sCart.getAmount(foodItem), "Wrong size");
+		assertEquals(9, sCart.getAmount(foodItem.getItemId()), "Wrong size");
 	}
 
 	@Test
@@ -83,19 +87,23 @@ class ShoppingCartTest {
 		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size");
 	}
 
+	// KESKEN ##################################
 	@Test
 	@DisplayName("Getting the amount of a product")
 	void testGetAmount() {
-		assertEquals(4, sCart.getAmount(foodItem), "Amount is wrong");
+		assertEquals(true, foodItemAO.createFoodItem(foodItem), "couldn't create food item");
+		System.out.println("itemId on" + foodItemAO.readFoodItem(foodItemAO.readFoodItemByName("Juustohampurilainen").getItemId()));
+		assertEquals(4, sCart.getAmount(foodItem.getItemId()), "Amount is wrong");
 	}
 	
+	// KESKEN ##################################
 	@Test
 	@DisplayName("Changing the amount of a product")
 	void testChangeAmount() {
 		foodItem2 = new FoodItem("Pieni kahvi", 2, true);
 		sCart.addToShoppingCart(foodItem2, 2);
-		sCart.setAmount(foodItem2, 5);
-		assertEquals(5, sCart.getAmount(foodItem2), "Wrong amount");
+		sCart.setAmount(foodItem2.getItemId(), 5);
+		assertEquals(5, sCart.getAmount(foodItem.getItemId()), "Wrong amount");
 	}
 	
 	@Test
@@ -107,12 +115,13 @@ class ShoppingCartTest {
 		
 	}
 	
+	// KESKEN ##################################
 	@Test
 	@DisplayName("Changing the amount of a product to zero")
 	void testChangeAmountToZero() {
 		foodItem2 = new FoodItem("Iso kahvi", 2.5, true);
 		sCart.addToShoppingCart(foodItem2, 4);
-		sCart.setAmount(foodItem2, 0);
+		sCart.setAmount(foodItem2.getItemId(), 0);
 		assertEquals(1, sCart.sizeShoppingCart(), "Wrong size");
 	}
 }

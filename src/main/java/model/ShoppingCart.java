@@ -110,11 +110,23 @@ public class ShoppingCart {
 	 * @param foodItem Product of which amount will be changed.
 	 * @param newAmount The new amount of the product.
 	 */
-	public void setAmount(FoodItem foodItem, int newAmount) {
-		cartList.put(foodItem, newAmount);
-		if (newAmount == 0) {
-			cartList.entrySet().removeIf(e -> e.getKey().equals(foodItem));
+	public void setAmount(int itemId, int newAmount) {
+		FoodItem fItem = new FoodItem();
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+
+		for(int i = 0; i < fItemsArray.length; i++) {
+			if (itemId == fItemsArray[i].getItemId()) {
+				fItem = fItemsArray[i];
+			}
 		}
+		if (newAmount == 0) {
+			cartList.keySet().remove(fItem);
+		}
+		else {
+			cartList.put(fItem, newAmount);
+		}
+		
 	}
 	
 	/** 
@@ -128,7 +140,7 @@ public class ShoppingCart {
 	
 	
 	/** 
-	 * New implementation of toString method
+	 * New implementation of toString method.
 	 * 
 	 * @return The shopping cart hashmap in a readable form for the console testing.
 	 */

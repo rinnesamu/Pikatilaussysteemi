@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuViewController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@CustomerTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuViewController">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -79,10 +79,10 @@
       <BorderPane prefHeight="43.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <FlowPane fx:id="menu" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <FlowPane fx:id="menu" prefHeight="200.0" prefWidth="200.0" styleClass="menu" stylesheets="@CustomerTheme.css" BorderPane.alignment="CENTER" />
    </center>
    <right>
-      <VBox prefHeight="391.0" prefWidth="258.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="400.0" prefWidth="250.0" BorderPane.alignment="CENTER">
          <children>
             <Label prefHeight="77.0" prefWidth="361.0" style="-fx-background-color: red;" text="Ostoskori" textFill="WHITE">
                <font>

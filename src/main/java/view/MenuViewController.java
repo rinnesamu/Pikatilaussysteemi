@@ -20,6 +20,7 @@ import model.FoodItemAccessObject;
 import model.ShoppingCart;
 
 /**
+ * Controller for the customer user interface.
  * 
  * @author Kimmo Perälä
  *
@@ -58,12 +59,14 @@ public class MenuViewController {
 	private ShoppingCart shoppingCart = new ShoppingCart();
 	
 	private FoodItem[] items;
+
+	private int menuId;
+
 			
 	public MenuViewController() {
 		
 	}
 	
-	int menuId;
 
 	@FXML
 	private void emptyShoppingCart() {
@@ -97,7 +100,6 @@ public class MenuViewController {
 	private void selectDesserts() {
 		FoodItem[] desserts = foodItemAO.readFoodItemsCategory("Jälkiruuat");
 		items = desserts;
-		System.out.println("desserts on " + items);
 		createMenu();
 	}
 	
@@ -106,30 +108,31 @@ public class MenuViewController {
 		selectMeals();
 	}
 	
+	/**
+	 * Method for creating the menu of the selected category.
+	 */
+	
 	private void createMenu() {
 		menu.getChildren().clear();
-		/*for (FoodItem item: allItems) {
-			System.out.println("menuid on " + item.toString());
-			System.out.println("itemid on " + item.getItemId());
-		}*/
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
+				// Creating new menubutton.
 				Button menuItem = new Button();
 
 				// FoodItem from the category
 				FoodItem fItem = items[i];
-				//System.out.println("fItem on " + fItem);
-
-				// Taking item id of that FoodItem and setting that as "menuId"
+				
+				// Taking item id of the foodItem and setting that as "menuId".
 				menuId = fItem.getItemId();
 				menuItem.setId(Integer.toString(menuId));
+				menuItem.getStyleClass().add("menubutton");
 				
-				// Adding that item to the menulist
+				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
 				File file = new File(fItem.getPath());
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
-				iv.setFitHeight(60);
-				iv.setFitWidth(60);
+				iv.setFitHeight(120);
+				iv.setFitWidth(120);
 				menuItem.setGraphic(iv);
 				//menuItem.setText(Integer.toString(menuId));
 				menuItem.setText(fItem.getName());
@@ -141,10 +144,10 @@ public class MenuViewController {
 	}
 	
 	/**
-	 * Button handler for the menubuttons
+	 * Button handler for the menubuttons.
 	 * 
-	 * @param foodItem
-	 * @param button
+	 * @param foodItem The fooditem tied to the particular button.
+	 * @param button The created menubutton.
 	 */
 	
 	private void menuButtonHandler(FoodItem foodItem, Button button) {
@@ -152,48 +155,48 @@ public class MenuViewController {
 			Button sCartItem = new Button("");
 			int id = Integer.parseInt(button.getId());
 			sCartItem.setId(Integer.toString(id));
+			sCartItem.setMinSize(240, 40);
+			sCartItem.getStyleClass().add("cartbutton");
 			
-			// Get all the item numbers in shopping cart
+			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 			int[] listOfItemIds= shoppingCart.getAllItemId();
-			System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
+			//System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
 			boolean found = false;
 			for (int i = 0; i < listOfItemIds.length; i++) {
 				if (id == listOfItemIds[i]) {
 					found = true;
 				}	
 			}
-			// If item is already there, increase the amount
+			// If item is already there, increase the amount in the shopping cart.
 			if (found) {
 				int oldAmount = shoppingCart.getAmount(id);
-				shoppingCart.setAmount(foodItem, (oldAmount+1));
-				System.out.println("scl on " + shoppingCartList.getChildren());
-				//System.out.println("getID ON " + sCartItem.getId());
+				shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
+				//System.out.println("scl on " + shoppingCartList.getChildren());
 				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 					if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 						shoppingCartList.getChildren().set(i, sCartItem);
 						sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 					}
 				}	
-				System.out.println("scl JÄLKEEN on " + shoppingCartList.getChildren());
 			}
-			// Otherwise add to the shopping cart
+			// Otherwise add the item to the shopping cart.
 			else {
 				shoppingCart.addToShoppingCart(foodItem, 1);
-				System.out.println(shoppingCart);
-				sCartItem.setMinSize(170, 50);
 				sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 				shoppingCartList.getChildren().add(sCartItem);
 			}
+			
+			// Add a handler for the shopping cart item buttons.
 			System.out.println(shoppingCart);
 			sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
 	}
 	
 	/**
-	 * Button Handler for the shopping cart buttons
+	 * Button Handler for the shopping cart item buttons.
 	 * 
-	 * @param button
-	 * @param foodItem
-	 * @param id
+	 * @param button The created shopping cart item button.
+	 * @param foodItem The foodItem tied to that particular button.
+	 * @param id The item id of the foodItem.
 	 */
 	
 	private void sCartButtonHandler (Button button, FoodItem foodItem, int id) {
@@ -204,8 +207,8 @@ public class MenuViewController {
 		options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
 		options.setContentText("Valitse lisäys, vähennys tai poisto");
 	
-		ButtonType increase = new ButtonType("Lisää");
-		ButtonType decrease = new ButtonType("Vähennä");
+		ButtonType increase = new ButtonType("+");
+		ButtonType decrease = new ButtonType("-");
 		ButtonType remove = new ButtonType("Poista");
 		ButtonType cancel = new ButtonType("Peruuta", ButtonData.CANCEL_CLOSE);
 		
@@ -214,14 +217,14 @@ public class MenuViewController {
 		
 		if (result.get() == increase) {
 			amountNow += 1;
-			shoppingCart.setAmount(foodItem, amountNow);
+			shoppingCart.setAmount(foodItem.getItemId(), amountNow);
 		}
 		else if (result.get() == decrease) {
 			amountNow -= 1;
-			shoppingCart.setAmount(foodItem, amountNow);
+			shoppingCart.setAmount(foodItem.getItemId(), amountNow);
 		}
 		else if (result.get() == remove) {
-			shoppingCart.setAmount(foodItem, 0);
+			shoppingCart.setAmount(foodItem.getItemId(), 0);
 		}
 		else if (result.get() == cancel){
 		}
@@ -242,6 +245,7 @@ public class MenuViewController {
 				}
 			}
 		}
+		System.out.println(shoppingCart);
 	}
 	
 	public void setMainApp(MainApp mainApp) {
