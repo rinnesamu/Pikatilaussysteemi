@@ -36,9 +36,7 @@ class CategoryAccessObjectTest {
 		assertEquals(1, categoryDao.readCategories().length, "Couldn't read all items");
 		category = new Category("Hampurilaiset");
 		assertEquals(true, categoryDao.createCategory(category), "Couldn't add category to db");
-		assertEquals(1, categoryDao.readCategories().length, "Couldn't read all items");
-		assertEquals("Juomat", categoryDao.readCategories()[0].getName(), "Couldn't read all items");
-		assertEquals("Hampurilaiset", categoryDao.readCategories()[1].getName(), "Couldn't read all items");
+		assertEquals(2, categoryDao.readCategories().length, "Couldn't read all items");
 
 	}
 
@@ -75,6 +73,7 @@ class CategoryAccessObjectTest {
 		assertEquals(1, categoryDao.readCategories().length, "Couldn't read all");
 		assertEquals(true, categoryDao.deleteAllCategories(), "Couldn't delete all");
 		assertEquals(0, categoryDao.readCategories().length, "Couldn't delete all");
+		category = new Category("Juomat");
 		assertEquals(true, categoryDao.createCategory(category), "Couldn't add category to db");
 		category = new Category("Hampurilaiset");
 		assertEquals(true, categoryDao.createCategory(category), "Couldn't add category to db");
@@ -87,10 +86,10 @@ class CategoryAccessObjectTest {
 	@Test
 	@DisplayName("Delete by name")
 	void testDeleteCategoryByName() {
-		assertEquals(true, categoryDao.deleteCategoryByName("Juomat"), "Deleted non existing category");
+		assertEquals(false, categoryDao.deleteCategoryByName("Juomat"), "Deleted non existing category");
 		category = new Category("Juomat");
 		assertEquals(true, categoryDao.createCategory(category), "Couldn't add category to db");
-		assertEquals("Juomat", categoryDao.readCategoryByName("Juomat"), "Couldnt read one");
+		assertEquals("Juomat", categoryDao.readCategoryByName("Juomat").getName(), "Couldnt read one");
 		assertEquals(true, categoryDao.deleteCategoryByName("Juomat"), "Couldn't delete one");
 		assertEquals(false, categoryDao.deleteCategoryByName("Juomat"), "Deleted same category twice");
 		
