@@ -123,13 +123,14 @@ public class RestaurantKeeperController {
 		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 
-		// Button and checkbox column cellFactories for manu TableView
+		// choicebox, Button and checkbox column cellFactories for menu TableView
 		createCellFactories();
 		inMenuColumn.setCellFactory(inMenuCellFactory);
 		deleteColumn.setCellFactory(deleteCellFactory);
 		saveEditColumn.setCellFactory(editCellFactory);
 		categoryColumn.setCellFactory(categoryCellFactory);
 		// cancelColumn.setCellFactory(cancelCellFactory);
+		
 		// fetching foodItems from database
 		refreshFoodItems();
 		
