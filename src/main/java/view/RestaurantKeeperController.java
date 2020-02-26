@@ -1,6 +1,8 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.controlsfx.control.Notifications;
 import javafx.collections.FXCollections;
@@ -32,23 +34,11 @@ public class RestaurantKeeperController {
 	private FoodItemAccessObject foodItemDao;
 	private ObservableList<FoodItem> foodItemList;
 
-	// Owned node for notification pop-ups
+	// Owner node for notification pop-ups
 	@FXML
 	private TabPane tabPane;
-	
-	// Defining variables for adding a new item to database
-	@FXML
-	private Button addItemButton;
-	@FXML
-	private TextField addItemNameTextField;
-	@FXML
-	private TextField addItemPriceTextField;
-	@FXML
-	private CheckBox addItemCheckBox;
-	@FXML
-	private TextField addItemCategoryTextField;
 		
-	// Table and columns for restarant menu
+	// Table and columns for restaurant menu
 	@FXML
 	private TableView<FoodItem> foodItemTableView;
 	@FXML
@@ -77,6 +67,30 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuCellFactory;
+	// cellFactory for category choice box
+	//Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryCellFactory;
+	
+	// Table and columns for adding a new item to database
+	@FXML
+	private TableView<FoodItem> addFoodItemTableView;
+	@FXML
+	private TableColumn<FoodItem, String> addNameColumn;
+	@FXML
+	private TableColumn<FoodItem, Double> addPriceColumn;
+	@FXML
+	private TableColumn<FoodItem, Void> addInMenuColumn;
+	@FXML
+	private TableColumn<FoodItem, String> addCategoryColumn;
+	@FXML
+	private TableColumn<FoodItem, Void> addButtonColumn;
+	
+	// observable list containing one dummy item that is set to addFoodItemTableView
+	private ObservableList<FoodItem> addItemObList;
+	
+	// cellFactories for adding an Item
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addInMenuCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addButtonCellFactory;
+
 	
 	/**
 	 * Empty constructor
@@ -91,13 +105,13 @@ public class RestaurantKeeperController {
 	 */
 	@FXML
 	public void initialize() {		
+		
 		foodItemDao = new FoodItemAccessObject();
 		
-		// initializing cellFActories
+		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
 		priceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
-
 		categoryColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("category"));
 		soldColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("sold"));
 		readyColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ready"));
@@ -106,47 +120,30 @@ public class RestaurantKeeperController {
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		categoryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-		// Button and checkbox columns
-		createButtonColumns();
+		// Button and checkbox column cellFactories for manu TableView
+		createCellFactories();
 		inMenuColumn.setCellFactory(inMenuCellFactory);
 		deleteColumn.setCellFactory(deleteCellFactory);
 		saveEditColumn.setCellFactory(editCellFactory);
 		// cancelColumn.setCellFactory(cancelCellFactory);
-		
 		// fetching foodItems from database
 		refreshFoodItems();
+		
+		// add Item cellFactories for addFoodItemTableView
+		addNameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
+		addPriceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
+		addCategoryColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("category"));
+		
+		addNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		addPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		addCategoryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		createAddItemCellFactories();
+		addInMenuColumn.setCellFactory(addInMenuCellFactory);
+		addButtonColumn.setCellFactory(addButtonCellFactory);
+		refreshDummyFoodItem();
 	}
 	
-	// event handlers for editing tablecells
-	/**
-	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
-	 * 
-	 * @param event
-	 */
-	@FXML
-	public void onEditCommitNameColumn(CellEditEvent<?,String> event) {
-		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
-	}
-	/**
-	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
-	 * 
-	 * @param event
-	 */
-	@FXML
-	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
-		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
-	}
-	/**
-	 * Event handler for the changes in category column. When the change is committed the current object will be updated.
-	 * 
-	 * @param event
-	 */
-	@FXML
-	public void onEditCommitCategoryColumn(CellEditEvent<?,String> event) {
-		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setCategory(event.getNewValue());
-	}
-
-
 	/**
 	 * Private helper method for creating popup toast notifications.
 	 * @param msg - ilmoituksen teksti
@@ -158,6 +155,71 @@ public class RestaurantKeeperController {
 		.owner(tabPane)
 		.showWarning();
 	}
+	
+	// event handlers for editing tablecells in menu TableView
+	/**
+	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
+	 * Method for updating menu FoodItems.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitNameColumn(CellEditEvent<?,String> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+	}
+	/**
+	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
+	 * Method for updating menu FoodItems.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
+	}
+	/**
+	 * Event handler for the changes in category column. When the change is committed the current object will be updated.
+	 * Method for updating menu FoodItems.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitCategoryColumn(CellEditEvent<?,String> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setCategory(event.getNewValue());
+	}
+	
+	// event handlers for editing table cells in addFoodItemTableView
+	/**
+	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
+	 * This method is for adding new FoodItems.
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddNameColumn(CellEditEvent<?,String> event) {
+		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+	}
+	/**
+	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
+	 * This method is for adding new FoodItems.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddPriceColumn(CellEditEvent<?,Double> event) {
+		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
+	}
+	/**
+	 * Event handler for the changes in category column. When the change is committed the current object will be updated.
+	 * Method for adding new FoodItems.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddCategoryColumn(CellEditEvent<?,String> event) {
+		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setCategory(event.getNewValue());
+	}
+	
+	
 	
 	/**
 	 * Method for fetching foodItems from the database
@@ -173,50 +235,93 @@ public class RestaurantKeeperController {
 			System.out.println("ruokalista on tyhjä");
 		}
 	}
-
+	
 	/**
-	 * Method for adding a food item into the database
+	 * Method for clearing table cells for adding new FoodItem in addFoodItemTableView
 	 */
-	public void addItem() {
-		boolean isNumber;
-		
-		String name = addItemNameTextField.getText();
-		double price = 0.0;
-		String category = addItemCategoryTextField.getText();
-		boolean inMenu = addItemCheckBox.isSelected();
-		try {
-			price = Double.parseDouble(addItemPriceTextField.getText());
-			isNumber = true;
-		}catch(Exception e) {
-			isNumber = false;
-		}
-		
-		if(!name.contentEquals("") && !addItemPriceTextField.getText().contentEquals("") && !addItemCategoryTextField.getText().contentEquals("")  && isNumber) {
-			FoodItem newFoodItem = new FoodItem(name, price, category, inMenu);
-			foodItemDao.createFoodItem(newFoodItem);
-			
-			// setting fields to the initial state
-			addItemNameTextField.setText("");
-			addItemPriceTextField.setText("");
-			addItemCategoryTextField.setText("");
-			addItemCheckBox.setSelected(false);
-			
-			// refreshing menu table
-			refreshFoodItems();
-			createNotification("Uusi tuote lisätty!");
-			
-		}else{
-			createNotification("Anna pakolliset tiedot: Nimi, Hinta ja Kategoria. Hinnan tulee olla numero, desimaali erotin on '.' ");
-		}
+	public void refreshDummyFoodItem() {
+		FoodItem dummyFoodItem = new FoodItem("Uusi tuote", 0.0, true);
+		List<FoodItem> tempList = new ArrayList<FoodItem>(0);
+		tempList.add(dummyFoodItem);
+		addItemObList = FXCollections.observableArrayList(tempList);
+		addFoodItemTableView.setItems(addItemObList);
+		addFoodItemTableView.setEditable(true);
 	}
 	
-	// Creating button column cellfactories
-	
 	/**
-	 * Method for creating custom cellFactories for button and checkbox columns. Buttons and checkbox are created within Callback objects.
+	 * Method for creating custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
+	 * addButton CellFactory contains onAction method for adding item to database.
 	 * 
 	 */
-	public void createButtonColumns() {
+	public void createAddItemCellFactories() {
+		// creating checkbox cellFactory
+		addInMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    CheckBox cb = new CheckBox();
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(cb);
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            cb.setSelected(foodItem.isInMenu());
+                            cb.setOnAction((ActionEvent event) -> {
+                            	// current foodItem object - getTableView().getItems().get(getIndex())
+                                getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
+                            });
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// checkbox ends
+		
+		// creating cellFactory for addButton
+		addButtonCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    Button btn = new Button("Lisää Tuote");
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            btn.setOnAction((ActionEvent event) -> {
+                                FoodItem foodItem = getTableView().getItems().get(getIndex());
+                                System.out.println("lisäys selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
+                                boolean success = foodItemDao.createFoodItem(foodItem);
+                                if(success) {
+                                	createNotification("Tuotetta lisätty onnistuneesti!");
+                                }else {
+                                	createNotification("Tuotetta ei onnistuttu lisäämään");
+                                }
+                                refreshFoodItems();
+                                refreshDummyFoodItem();
+                            });
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// addButton ends
+		
+	}
+	
+	// Creating cellfactories for button and checkbox columns
+	/**
+	 * Method for creating custom cellFactories for button and checkbox columns in menu TableView. Buttons and checkbox are created within Callback objects.
+	 * 
+	 */
+	public void createCellFactories() {
 		// creating checkbox cellFactory
 		inMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
