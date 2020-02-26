@@ -23,7 +23,7 @@
                                   <TableColumn fx:id="nameColumn" onEditCommit="#onEditCommitNameColumn" prefWidth="120.0" text="Nimi" />
                                     <TableColumn fx:id="priceColumn" onEditCommit="#onEditCommitPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="categoryColumn" onEditCommit="#onEditCommitCategoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="categoryColumn" prefWidth="120.0" text="Kategoria" />
                                     <TableColumn prefWidth="120.0" text="Ainekset" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
@@ -42,7 +42,7 @@
                                   <TableColumn fx:id="addNameColumn" onEditCommit="#onEditCommitAddNameColumn" prefWidth="120.0" text="Nimi" />
                                     <TableColumn fx:id="addPriceColumn" onEditCommit="#onEditCommitAddPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="addInMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="addCategoryColumn" onEditCommit="#onEditCommitAddCategoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="addCategoryColumn" prefWidth="120.0" text="Kategoria" />
                                     <TableColumn prefWidth="120.0" text="Ainekset" />
                                     <TableColumn prefWidth="120.0" />
                                     <TableColumn prefWidth="120.0" />
