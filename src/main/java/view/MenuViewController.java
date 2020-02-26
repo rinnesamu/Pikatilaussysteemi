@@ -8,13 +8,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import model.FoodItem;
 import model.FoodItemAccessObject;
 import model.ShoppingCart;
@@ -188,8 +193,111 @@ public class MenuViewController {
 			
 			// Add a handler for the shopping cart item buttons.
 			System.out.println(shoppingCart);
-			sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
+			//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
+			sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
 	}
+	
+	
+	private void showPopUp(Button button, FoodItem foodItem) {
+		Stage popUp = new Stage();
+		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
+		
+		Label nameAndAmount = new Label("Valitse " + foodItem.getName() + " määrä: " + amountNow);
+		nameAndAmount.setFont(new Font(20));
+		Label pick = new Label("Valitse lisäys tai vähennys");
+		pick.setFont(new Font(20));
+		VBox boxWhole = new VBox();
+		HBox boxButtons = new HBox();
+		HBox boxOkCancel = new HBox();
+		boxButtons.setSpacing(80);
+		Button increase = new Button("+");
+		increase.setMinSize(100, 60);
+		Button decrease = new Button("-");
+		decrease.setMinSize(100, 60);
+		Button delete = new Button("POISTA");
+		delete.setMinSize(100, 60);
+		Button okay = new Button("OK");
+		okay.setMinSize(100, 60);
+		Button cancel = new Button("Peruuta");
+		cancel.setMinSize(100, 60);
+		
+		increase.setOnAction(event -> {
+			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			amount += 1;
+			nameAndAmount.setText("Valitse " + foodItem.getName() + " määrä: " + amount);
+			shoppingCart.setAmount(foodItem.getItemId(), amount);
+		});
+		decrease.setOnAction(event -> {
+			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			
+			if (amount != 1) {
+				amount -= 1;
+			}
+			nameAndAmount.setText("Valitse " + foodItem.getName() + " määrä: " + amount);
+			shoppingCart.setAmount(foodItem.getItemId(), amount);
+		});
+		delete.setOnAction(event -> {
+			Alert options = new Alert(AlertType.CONFIRMATION);
+			options.setTitle("Haluatko varmasti poistaa tuotteen " + foodItem.getName() + " ostoskorista?");
+			options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
+			options.setContentText("Valitse OK tai Cancel");
+		
+			ButtonType okayDel = new ButtonType("OK");
+			ButtonType cancelDel = new ButtonType("Cancel");
+			
+			options.getButtonTypes().setAll(okayDel, cancelDel);
+			Optional<ButtonType> result = options.showAndWait();
+			
+			if (result.get() == okayDel) {
+				shoppingCart.removeFromShoppingCart(foodItem);
+				nameAndAmount.setText(foodItem.getName() + " poistettu!");
+				increase.setDisable(true);
+				decrease.setDisable(true);
+				delete.setDisable(true);
+				cancel.setDisable(true);
+				pick.setText("Poistu painamalla OK");
+			}
+			else if (result.get() == cancelDel) {
+			}
+
+		});
+		okay.setOnAction(event -> {
+			if (shoppingCart.getAmount(foodItem.getItemId()) != 0) {
+				button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
+
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().set(i, button);
+					}
+				}
+			}
+			else {
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().remove(i);
+					}
+				}
+			}
+			popUp.close();
+		});
+		cancel.setOnAction(event -> {
+			popUp.close();
+		});
+		
+		boxButtons.getChildren().addAll(increase, decrease);
+		boxOkCancel.getChildren().addAll(delete, okay, cancel);
+		
+		boxWhole.getChildren().addAll(nameAndAmount, pick, boxButtons, boxOkCancel);
+		Scene popUpScene = new Scene(boxWhole, 600, 300);
+		popUp.setScene(popUpScene);
+		popUp.show();
+		
+		
+		System.out.println(shoppingCart);
+	}
+	
+	
+	// VANHA ######################################
 	
 	/**
 	 * Button Handler for the shopping cart item buttons.
@@ -198,10 +306,12 @@ public class MenuViewController {
 	 * @param foodItem The foodItem tied to that particular button.
 	 * @param id The item id of the foodItem.
 	 */
-	
+	/*
 	private void sCartButtonHandler (Button button, FoodItem foodItem, int id) {
+		
+		showPopUp(button, foodItem);
 
-		Alert options = new Alert(AlertType.INFORMATION);
+		Alert options = new Alert(AlertType.CONFIRMATION);
 		options.setTitle("Valitse " + foodItem.getName() + " määrä");
 		int amountNow = shoppingCart.getAmount(id);
 		options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
@@ -246,7 +356,7 @@ public class MenuViewController {
 			}
 		}
 		System.out.println(shoppingCart);
-	}
+	}*/
 	
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
