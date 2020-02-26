@@ -32,7 +32,6 @@ import model.*;
 public class RestaurantKeeperController {
 	
 	private FoodItemAccessObject foodItemDao;
-	private ObservableList<FoodItem> foodItemObList;
 	private CategoryAccessObject categoryDao;
 	
 	// Owner node for notification pop-ups
@@ -51,7 +50,7 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<FoodItem, Void> inMenuColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> categoryColumn;
+	private TableColumn<FoodItem, Void> categoriesColumn;
 	@FXML
 	private TableColumn<FoodItem, Integer> soldColumn;
 	@FXML
@@ -62,15 +61,16 @@ public class RestaurantKeeperController {
 	private TableColumn<FoodItem, Void> saveEditColumn;
 	@FXML
 	private TableColumn<FoodItem, Void> cancelColumn;
+
+	// ObservableList for foodItems
+	private ObservableList<FoodItem> foodItemObList;
 	
-	//cellFactories for buttons in the menu table
+	//cellFactories for widgets in the menu table
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryCellFactory;
-	// cellFactory for category choice box
-	//Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryCellFactory;
 	
 	// Table and columns for adding a new item to database
 	@FXML
@@ -92,8 +92,38 @@ public class RestaurantKeeperController {
 	// cellFactories for adding an Item
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addInMenuCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addButtonCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addCategoryCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addCategoryChoiceBoxCellFactory;
 
+	// Table and columns for food categories
+	@FXML
+	private TableView<Category> categoryTableView;
+	@FXML
+	private TableColumn<Category, Integer> categoryIdColumn;
+	@FXML
+	private TableColumn<Category, String> categoryNameColumn;
+	@FXML
+	private TableColumn<Category, Void> categoryDeleteColumn;
+	
+	// ObservableList for categories
+	private ObservableList<Category> categoryObList;
+	
+	// CellFactories for widget columns in category table
+	Callback<TableColumn<Category, Void>, TableCell<Category, Void>> categoryDeleteCellFactory;
+	
+	// Table and columns for adding food categories
+	@FXML
+	private TableView<Category> addCategoryTableView;
+	@FXML
+	private TableColumn<Category, String> addCategoryNameColumn;
+	@FXML
+	private TableColumn<Category, Void> addCategoryButtonColumn;
+	
+	// Observable list for one dummy category object
+	private ObservableList<Category> addCategoryObList;
+	
+	// cellfactories for adding category
+	Callback<TableColumn<Category, Void>, TableCell<Category, Void>> addCategoryButtonCellFactory;
+	
 	
 	/**
 	 * Empty constructor
@@ -128,7 +158,7 @@ public class RestaurantKeeperController {
 		inMenuColumn.setCellFactory(inMenuCellFactory);
 		deleteColumn.setCellFactory(deleteCellFactory);
 		saveEditColumn.setCellFactory(editCellFactory);
-		categoryColumn.setCellFactory(categoryCellFactory);
+		categoriesColumn.setCellFactory(categoryCellFactory);
 		// cancelColumn.setCellFactory(cancelCellFactory);
 		
 		// fetching foodItems from database
@@ -141,11 +171,28 @@ public class RestaurantKeeperController {
 		addNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		addPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		
+		// cellfactories for widget columns in food item adding table
 		createAddItemCellFactories();
 		addInMenuColumn.setCellFactory(addInMenuCellFactory);
 		addButtonColumn.setCellFactory(addButtonCellFactory);
-		addCategoryColumn.setCellFactory(addCategoryCellFactory);
+		addCategoryColumn.setCellFactory(addCategoryChoiceBoxCellFactory);
 		refreshDummyFoodItem();
+		
+		// initializing category column cellfactories
+		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
+		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
+		
+		createCategoryCellFactories();
+		categoryDeleteColumn.setCellFactory(categoryDeleteCellFactory);
+		refreshCategories();
+		
+		// init category adding columns
+		addCategoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
+		addCategoryNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		// cellFActory for category adding button
+		createAddCategoryCellFactories();
+		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
+		refreshDummyCategory();
 	}
 	
 	/**
@@ -204,6 +251,16 @@ public class RestaurantKeeperController {
 	}
 	
 	/**
+	 * Event handler for the changes in adding new category name column.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddCategoryNameColumn(CellEditEvent<?,String> event) {
+		addCategoryTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+	}
+	
+	/**
 	 * Method for fetching foodItems from the database
 	 */
 	public void refreshFoodItems() {
@@ -229,6 +286,27 @@ public class RestaurantKeeperController {
 		addItemObList = FXCollections.observableArrayList(tempList);
 		addFoodItemTableView.setItems(addItemObList);
 		addFoodItemTableView.setEditable(true);
+	}
+	
+	/**
+	 * Method for fetching categories from database, and setting them on TableView
+	 */
+	public void refreshCategories() {
+		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
+		categoryTableView.setItems(categoryObList);
+		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
+	}
+	
+	/**
+	 * Instantiates a dummy category object for category adding table
+	 */
+	public void refreshDummyCategory() {
+		Category dummyCategory = new Category("Uusi kategoria");
+		List<Category> tempList = new ArrayList<Category>(0);
+		tempList.add(dummyCategory);
+		addCategoryObList = FXCollections.observableArrayList(tempList);
+		addCategoryTableView.setItems(addCategoryObList);
+		addCategoryTableView.setEditable(true);
 	}
 	
 	/**
@@ -302,7 +380,7 @@ public class RestaurantKeeperController {
 		// addButton ends
 		
 		//category choiceBox
-		addCategoryCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+		addCategoryChoiceBoxCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
@@ -514,4 +592,84 @@ public class RestaurantKeeperController {
 		// cancel button ends
 	}
 
+	
+	/**
+	 * Method for creating custom CellFactories for widget columns in category table
+	 */
+	public void createCategoryCellFactories() {
+		// delete category cellfactory
+		categoryDeleteCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
+			@Override
+			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
+				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
+                    Button btn = new Button("Poista");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	Category category = getTableView().getItems().get(getIndex());
+                            System.out.println("kategorian poisto selectedData: " + category.getName());
+                            boolean success = categoryDao.deleteCategoryByName(category.getName());
+                            if(success) {
+                            	categoryTableView.getItems().remove(category);
+                            	createNotification("Tuote poistettu onnistuneesti!");
+                            }else {
+                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            }
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// delete category ends
+		
+	}
+	
+	/**
+	 * Method for creating custom cellFactories for widget columns in category adding table
+	 */
+	public void createAddCategoryCellFactories() {
+		// add category cellfactory
+		addCategoryButtonCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
+			@Override
+			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
+				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
+                    Button btn = new Button("Lisää kategoria");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	Category category = getTableView().getItems().get(getIndex());
+                            System.out.println("kategorian lisäys selectedData: " + category.getName());
+                            boolean success = categoryDao.createCategory(category);
+                            if(success) {
+                            	createNotification("Kategoria lisätty onnistuneesti!");
+                            }else {
+                            	createNotification("Kategoriaa ei onnistuttu lisäämään");
+                            }
+                            refreshCategories();
+                            refreshDummyCategory();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// add category ends
+	}
 }

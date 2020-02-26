@@ -23,7 +23,7 @@
                                   <TableColumn fx:id="nameColumn" onEditCommit="#onEditCommitNameColumn" prefWidth="120.0" text="Nimi" />
                                     <TableColumn fx:id="priceColumn" onEditCommit="#onEditCommitPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="categoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="categoriesColumn" prefWidth="120.0" text="Kategoria" />
                                     <TableColumn prefWidth="120.0" text="Ainekset" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
@@ -56,9 +56,33 @@
               	</AnchorPane>
               </content>
             </Tab>
-            <Tab text="Tilaukset">
+            <Tab onSelectionChanged="#initialize" text="Kategoriat">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="categoryTableView" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="categoryIdColumn" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="categoryNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="categoryDeleteColumn" prefWidth="120.0" text="Poista" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                        <StackPane prefHeight="70.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <TableView fx:id="addCategoryTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="120.0" />
+                                  <TableColumn fx:id="addCategoryNameColumn" onEditCommit="#onEditCommitAddCategoryNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addCategoryButtonColumn" prefWidth="120.0" text="Lisää kategoria" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children></AnchorPane>
               </content>
             </Tab>
         </tabs>
