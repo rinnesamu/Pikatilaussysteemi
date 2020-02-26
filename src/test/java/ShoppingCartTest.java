@@ -82,6 +82,13 @@ class ShoppingCartTest {
 		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size");
 	}
 
+	// ####################KESKEN#############################
+	@Test
+	@DisplayName("Getting the FoodItems of the shopping cart")
+	void testGetFoodItems() {
+		
+	}
+	
 	@Test
 	@DisplayName("Getting the amount of a product")
 	void testGetAmount() {

@@ -3,6 +3,7 @@ package view;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -73,6 +74,30 @@ public class MenuViewController {
 		
 	}
 	
+	@FXML
+	private void readyToPayShoppingCart() {
+		Stage readyToPay = new Stage();
+		VBox readyList = new VBox(20);
+		
+		FoodItem[] items = shoppingCart.getFoodItems();
+		for (int i=0; i<items.length; i++) {
+			HBox readySingleItem = new HBox();
+			Label payItem = new Label(items[i].getName() + ", lukumäärä on " + shoppingCart.getAmount(items[i].getItemId()));
+			File file = new File(items[i].getPath());
+			Image image = new Image(file.toURI().toString());
+			ImageView iv = new ImageView(image);
+			iv.setFitHeight(50);
+			iv.setFitWidth(50);
+			readySingleItem.getChildren().addAll(payItem, iv);
+			readyList.getChildren().add(readySingleItem);
+		}
+		Button payButton = new Button("Maksa ostokset");
+		readyList.getChildren().add(payButton);
+
+		Scene payScene = new Scene(readyList, 600, 500);
+		readyToPay.setScene(payScene);
+		readyToPay.show();
+	}
 
 	@FXML
 	private void emptyShoppingCart() {

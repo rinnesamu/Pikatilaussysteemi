@@ -101,7 +101,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="buyButton" mnemonicParsing="false" prefHeight="76.0" prefWidth="400.0" text="MAKSA">
+            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="76.0" prefWidth="400.0" text="MAKSA">
                <font>
                   <Font size="31.0" />
                </font>

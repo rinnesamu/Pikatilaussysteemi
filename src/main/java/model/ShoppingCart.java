@@ -82,6 +82,17 @@ public class ShoppingCart {
 	}
 	
 	/**
+	 * Returns all the foodItems in the shopping cart.
+	 * 
+	 * @return All the foodItems of the shopping cart.
+	 */
+	public FoodItem[] getFoodItems() {
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+		return fItemsArray;
+	}
+	
+	/**
 	 * Returns the amount of a certain product in the shopping cart.
 	 * 
 	 * @param itemId ItemId of the product of which amount will be returned.
@@ -138,7 +149,6 @@ public class ShoppingCart {
 	public int sizeShoppingCart() {
 		return cartList.size();
 	}
-	
 	
 	/** 
 	 * New implementation of toString method.
