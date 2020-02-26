@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
@@ -136,8 +137,8 @@ public class MenuViewController {
 				File file = new File(fItem.getPath());
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
-				iv.setFitHeight(120);
-				iv.setFitWidth(120);
+				iv.setFitHeight(150);
+				iv.setFitWidth(150);
 				menuItem.setGraphic(iv);
 				//menuItem.setText(Integer.toString(menuId));
 				menuItem.setText(fItem.getName());
@@ -156,75 +157,96 @@ public class MenuViewController {
 	 */
 	
 	private void menuButtonHandler(FoodItem foodItem, Button button) {
+		//HBox sCartRow = new HBox();
+		Button sCartItem = new Button("");
+		//Button deleteButton = new Button("DELETE");
+		//sCartRow.getChildren().addAll(sCartItem, deleteButton);
 		
-			Button sCartItem = new Button("");
-			int id = Integer.parseInt(button.getId());
-			sCartItem.setId(Integer.toString(id));
-			sCartItem.setMinSize(240, 40);
-			sCartItem.getStyleClass().add("cartbutton");
-			
-			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
-			int[] listOfItemIds= shoppingCart.getAllItemId();
-			//System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
-			boolean found = false;
-			for (int i = 0; i < listOfItemIds.length; i++) {
-				if (id == listOfItemIds[i]) {
-					found = true;
-				}	
-			}
-			// If item is already there, increase the amount in the shopping cart.
-			if (found) {
-				int oldAmount = shoppingCart.getAmount(id);
-				shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
-				//System.out.println("scl on " + shoppingCartList.getChildren());
-				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-					if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().set(i, sCartItem);
-						sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
-					}
-				}	
-			}
-			// Otherwise add the item to the shopping cart.
-			else {
-				shoppingCart.addToShoppingCart(foodItem, 1);
-				sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
-				shoppingCartList.getChildren().add(sCartItem);
-			}
-			
-			// Add a handler for the shopping cart item buttons.
-			System.out.println(shoppingCart);
-			//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
-			sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
+		int id = Integer.parseInt(button.getId());
+		sCartItem.setId(Integer.toString(id));
+		sCartItem.setFont(new Font(25));
+		sCartItem.setMinSize(375, 60);
+		sCartItem.getStyleClass().add("cartbutton");
+		
+		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
+		int[] listOfItemIds= shoppingCart.getAllItemId();
+		//System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
+		boolean found = false;
+		for (int i = 0; i < listOfItemIds.length; i++) {
+			if (id == listOfItemIds[i]) {
+				found = true;
+			}	
+		}
+		// If item is already there, increase the amount in the shopping cart.
+		if (found) {
+			int oldAmount = shoppingCart.getAmount(id);
+			shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
+			//System.out.println("scl on " + shoppingCartList.getChildren());
+			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+					shoppingCartList.getChildren().set(i, sCartItem);
+					sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
+				}
+			}	
+		}
+		// Otherwise add the item to the shopping cart.
+		else {
+			shoppingCart.addToShoppingCart(foodItem, 1);
+			sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
+			shoppingCartList.getChildren().add(sCartItem);
+		}
+		
+		// Add a handler for the shopping cart item buttons.
+		System.out.println(shoppingCart);
+		//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
+		sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
 	}
 	
+	
+	/**
+	 * Shopping cart item menu for editing shopping list
+	 * 
+	 * @param button Button of the item in the shopping cart.
+	 * @param foodItem The foodItem connected to that particular button.
+	 */
 	
 	private void showPopUp(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
 		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
+		int originalAmount = amountNow;
 		
-		Label nameAndAmount = new Label("Valitse " + foodItem.getName() + " määrä: " + amountNow);
-		nameAndAmount.setFont(new Font(20));
-		Label pick = new Label("Valitse lisäys tai vähennys");
-		pick.setFont(new Font(20));
-		VBox boxWhole = new VBox();
-		HBox boxButtons = new HBox();
-		HBox boxOkCancel = new HBox();
-		boxButtons.setSpacing(80);
+		Label nameAndAmount = new Label("Valitse " + foodItem.getName() + " määrä: ");
+		nameAndAmount.setFont(new Font(25));
+		nameAndAmount.setPadding(new Insets(0,0,0,20));
+		Label pick = new Label(Integer.toString(amountNow));
+		pick.setFont(new Font(30));
+		pick.setPadding(new Insets(0,0,0,20));
+		VBox boxWhole = new VBox(20);
+		HBox boxButtons = new HBox(20);
+		boxButtons.setPadding(new Insets(10,0,0,10));
+		HBox boxOkCancel = new HBox(20);
+		boxOkCancel.setPadding(new Insets(10,0,0,10));
 		Button increase = new Button("+");
-		increase.setMinSize(100, 60);
+		increase.setFont(new Font(20));
+		increase.setMinSize(80, 80);
 		Button decrease = new Button("-");
-		decrease.setMinSize(100, 60);
+		decrease.setFont(new Font(20));
+		decrease.setMinSize(80, 80);
 		Button delete = new Button("POISTA");
-		delete.setMinSize(100, 60);
+		delete.setStyle("-fx-background-color: #ff0000;");
+		delete.setFont(new Font(20));
+		delete.setMinSize(80, 80);
 		Button okay = new Button("OK");
-		okay.setMinSize(100, 60);
+		okay.setFont(new Font(20));
+		okay.setMinSize(80, 80);
 		Button cancel = new Button("Peruuta");
-		cancel.setMinSize(100, 60);
+		cancel.setFont(new Font(20));
+		cancel.setMinSize(80, 80);
 		
 		increase.setOnAction(event -> {
 			int amount = shoppingCart.getAmount(foodItem.getItemId());
 			amount += 1;
-			nameAndAmount.setText("Valitse " + foodItem.getName() + " määrä: " + amount);
+			pick.setText(Integer.toString(amount));
 			shoppingCart.setAmount(foodItem.getItemId(), amount);
 		});
 		decrease.setOnAction(event -> {
@@ -233,7 +255,7 @@ public class MenuViewController {
 			if (amount != 1) {
 				amount -= 1;
 			}
-			nameAndAmount.setText("Valitse " + foodItem.getName() + " määrä: " + amount);
+			pick.setText(Integer.toString(amount));
 			shoppingCart.setAmount(foodItem.getItemId(), amount);
 		});
 		delete.setOnAction(event -> {
@@ -251,6 +273,7 @@ public class MenuViewController {
 			if (result.get() == okayDel) {
 				shoppingCart.removeFromShoppingCart(foodItem);
 				nameAndAmount.setText(foodItem.getName() + " poistettu!");
+				
 				increase.setDisable(true);
 				decrease.setDisable(true);
 				delete.setDisable(true);
@@ -281,14 +304,15 @@ public class MenuViewController {
 			popUp.close();
 		});
 		cancel.setOnAction(event -> {
+			shoppingCart.setAmount(foodItem.getItemId(), originalAmount);
 			popUp.close();
 		});
 		
-		boxButtons.getChildren().addAll(increase, decrease);
-		boxOkCancel.getChildren().addAll(delete, okay, cancel);
+		boxButtons.getChildren().addAll(increase, decrease, delete);
+		boxOkCancel.getChildren().addAll(okay, cancel);
 		
 		boxWhole.getChildren().addAll(nameAndAmount, pick, boxButtons, boxOkCancel);
-		Scene popUpScene = new Scene(boxWhole, 600, 300);
+		Scene popUpScene = new Scene(boxWhole, 600, 350);
 		popUp.setScene(popUpScene);
 		popUp.show();
 		
@@ -296,67 +320,6 @@ public class MenuViewController {
 		System.out.println(shoppingCart);
 	}
 	
-	
-	// VANHA ######################################
-	
-	/**
-	 * Button Handler for the shopping cart item buttons.
-	 * 
-	 * @param button The created shopping cart item button.
-	 * @param foodItem The foodItem tied to that particular button.
-	 * @param id The item id of the foodItem.
-	 */
-	/*
-	private void sCartButtonHandler (Button button, FoodItem foodItem, int id) {
-		
-		showPopUp(button, foodItem);
-
-		Alert options = new Alert(AlertType.CONFIRMATION);
-		options.setTitle("Valitse " + foodItem.getName() + " määrä");
-		int amountNow = shoppingCart.getAmount(id);
-		options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
-		options.setContentText("Valitse lisäys, vähennys tai poisto");
-	
-		ButtonType increase = new ButtonType("+");
-		ButtonType decrease = new ButtonType("-");
-		ButtonType remove = new ButtonType("Poista");
-		ButtonType cancel = new ButtonType("Peruuta", ButtonData.CANCEL_CLOSE);
-		
-		options.getButtonTypes().setAll(increase, decrease, remove, cancel);
-		Optional<ButtonType> result = options.showAndWait();
-		
-		if (result.get() == increase) {
-			amountNow += 1;
-			shoppingCart.setAmount(foodItem.getItemId(), amountNow);
-		}
-		else if (result.get() == decrease) {
-			amountNow -= 1;
-			shoppingCart.setAmount(foodItem.getItemId(), amountNow);
-		}
-		else if (result.get() == remove) {
-			shoppingCart.setAmount(foodItem.getItemId(), 0);
-		}
-		else if (result.get() == cancel){
-		}
-		
-		if (shoppingCart.getAmount(id) != 0) {
-			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
-
-			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-					shoppingCartList.getChildren().set(i, button);
-				}
-			}
-		}
-		else {
-			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-					shoppingCartList.getChildren().remove(i);
-				}
-			}
-		}
-		System.out.println(shoppingCart);
-	}*/
 	
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
