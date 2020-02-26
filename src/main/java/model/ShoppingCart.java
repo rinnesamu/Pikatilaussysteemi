@@ -44,6 +44,7 @@ public class ShoppingCart {
 		for(int i = 0; i < fItemsArray.length; i++) {
 			allItemId[i]= fItemsArray[i].getItemId();
 		}
+		Arrays.sort(allItemId);
 		return allItemId;
 	}
 
@@ -107,7 +108,7 @@ public class ShoppingCart {
 	/** 
 	 * Increases or decreases the amount of a certain product in the shopping cart.
 	 * 
-	 * @param foodItem Product of which amount will be changed.
+	 * @param itemId ItemId of the product of which amount will be set.
 	 * @param newAmount The new amount of the product.
 	 */
 	public void setAmount(int itemId, int newAmount) {
@@ -130,7 +131,7 @@ public class ShoppingCart {
 	}
 	
 	/** 
-	 * Gets the amount of separate products in the shopping cart.
+	 * Gets the amount of different products in the shopping cart.
 	 * 
 	 * @return The number of different products in the shopping cart.
 	 */

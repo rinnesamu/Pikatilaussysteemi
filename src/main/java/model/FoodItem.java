@@ -71,6 +71,22 @@ public class FoodItem {
 		this.sold = 0;
 		this.ready = 0;
 	}
+	
+	/**
+	 * Constructor in case you need to add ItemId also
+	 * @param name Items name
+	 * @param price Items price
+	 * @param inMenu Is item in active menu
+	 * @param itemId ItemId number
+	 */
+	public FoodItem(String name, double price, boolean inMenu, int itemId) {
+		this.price = price;
+		this.name = name;
+		this.inMenu = inMenu;
+		this.ItemId = itemId;
+		this.sold = 0;
+		this.ready = 0;
+	}
 
 	/**
 	 * Getter of price
@@ -278,6 +294,6 @@ public class FoodItem {
 	}
 	
 	public String toString() {
-		return this.name + ", " + this.price + ", " + this.inMenu;
+		return this.name + ", " + this.price + ", " + this.inMenu + ", " + this.ItemId;
 	}
 }
