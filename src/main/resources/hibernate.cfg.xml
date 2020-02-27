@@ -1,0 +1,26 @@
+<hibernate-configuration>
+	<session-factory>
+		<!-- Käytä MySQL-tietokantaa -->
+		<property name="hibernate.dialect"> org.hibernate.dialect.MySQL5Dialect</property>
+
+		<!-- Yhteyden perustiedot: ajuri, palvelin käyttäjätunnus/salasana -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://10.114.32.16:3306/jenkinstest</property>
+		<property name="hibernate.connection.username">jenkins</property>
+		<property name="hibernate.connection.password">salasana</property>
+
+		<!-- create , create-drop, update tai validate -->
+		<!-- Älä käytä tuotantoversioissa, ts, älä anna Hibernaten enää muuttaa taulurakennetta  -->
+		<!-- Ekalla kerralla create, kun kanta olemassa validate -->
+		<property name="hbm2ddl.auto">create-drop</property>
+
+		<!-- kun true, kaiuta kaikki SQL-lauseet stdout:iin -->
+		<property name="show_sql">true</property>
+
+		<!-- Mallitason DTO-oliot, pakkausnimet mukaan -->
+		<mapping class="model.FoodItem" />
+		<mapping class="model.Ingredient"/>
+		<mapping class="model.Category"/>
+		<mapping class="model.Order"/>
+	</session-factory>
+</hibernate-configuration>
