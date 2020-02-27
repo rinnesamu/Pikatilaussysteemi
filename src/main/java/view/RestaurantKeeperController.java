@@ -55,6 +55,8 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<FoodItem, Void> categoriesColumn;
 	@FXML
+	private TableColumn<FoodItem, String> pathColumn;
+	@FXML
 	private TableColumn<FoodItem, Integer> soldColumn;
 	@FXML
 	private TableColumn<FoodItem, Integer> readyColumn;
@@ -86,6 +88,8 @@ public class RestaurantKeeperController {
 	private TableColumn<FoodItem, Void> addInMenuColumn;
 	@FXML
 	private TableColumn<FoodItem, Void> addCategoryColumn;
+	@FXML
+	private TableColumn<FoodItem, String> addPathColumn;
 	@FXML
 	private TableColumn<FoodItem, Void> addButtonColumn;
 	
@@ -215,11 +219,13 @@ public class RestaurantKeeperController {
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
 		priceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
+		pathColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("path"));
 		soldColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("sold"));
 		readyColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ready"));
 		
 		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		pathColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		// choicebox, Button and checkbox column cellFactories for menu TableView
 		createFoodItemCellFactories();
 		inMenuColumn.setCellFactory(inMenuFoodItemCellFactory);
@@ -232,12 +238,14 @@ public class RestaurantKeeperController {
 		// add Item cellFactories for addFoodItemTableView
 		addNameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
 		addPriceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
+		addPathColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("path"));
 		
 		addNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		addPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		addPathColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		
 		// cellfactories for widget columns in food item adding table
-		createAddItemCellFactories();
+		createAddFoodItemCellFactories();
 		addInMenuColumn.setCellFactory(addInMenuCellFactory);
 		addButtonColumn.setCellFactory(addButtonCellFactory);
 		addCategoryColumn.setCellFactory(addCategoryChoiceBoxCellFactory);
@@ -301,7 +309,7 @@ public class RestaurantKeeperController {
 	// event handlers for editing tablecells in menu TableView
 	/**
 	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
-	 * Method for updating menu FoodItems.
+	 * Method for updating a menu FoodItem.
 	 * 
 	 * @param event - event object containing information on the edit
 	 */
@@ -311,7 +319,7 @@ public class RestaurantKeeperController {
 	}
 	/**
 	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
-	 * Method for updating menu FoodItems.
+	 * Method for updating a menu FoodItem.
 	 * 
 	 * @param event - event object containing information on the edit
 	 */
@@ -319,11 +327,21 @@ public class RestaurantKeeperController {
 	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
 		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
 	}
+	/**
+	 * Event handler for the changes in path column. When the change is committed the current object will be updated.
+	 * Method for updating a menu FoodItem.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitPathColumn(CellEditEvent<?, String> event) {
+		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPath(event.getNewValue());
+	}
 	
 	// event handlers for editing table cells in addFoodItemTableView
 	/**
 	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
-	 * This method is for adding new FoodItems.
+	 * This method is for adding a new FoodItem.
 	 * @param event - event object containing information on the edit
 	 */
 	@FXML
@@ -332,7 +350,7 @@ public class RestaurantKeeperController {
 	}
 	/**
 	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
-	 * This method is for adding new FoodItems.
+	 * This method is for adding a new FoodItem.
 	 * 
 	 * @param event - event object containing information on the edit
 	 */
@@ -340,7 +358,18 @@ public class RestaurantKeeperController {
 	public void onEditCommitAddPriceColumn(CellEditEvent<?,Double> event) {
 		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
 	}
+	/**
+	 * Event handler for the changes in path column. When the change is committed the current object will be updated.
+	 * Method for adding new FoodItem.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddPathColumn(CellEditEvent<?, String> event) {
+		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setPath(event.getNewValue());
+	}
 	
+	// Event handlers for adding a new category
 	/**
 	 * Event handler for the changes in adding new category name column.
 	 * 
@@ -351,6 +380,7 @@ public class RestaurantKeeperController {
 		addCategoryTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
 	
+	// Event handlers for adding a new ingredient
 	/**
 	 * Event handler for the changes in adding new ingredient name column.
 	 * 
@@ -616,7 +646,7 @@ public class RestaurantKeeperController {
 	 * addButton CellFactory contains onAction method for adding item to database.
 	 * 
 	 */
-	public void createAddItemCellFactories() {
+	public void createAddFoodItemCellFactories() {
 		// creating checkbox cellFactory
 		addInMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
