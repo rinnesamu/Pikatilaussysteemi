@@ -96,12 +96,12 @@
                <content>
                   <VBox fx:id="shoppingCartList" prefHeight="299.0" prefWidth="376.0" />
                </content></ScrollPane>
-            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="63.0" prefWidth="400.0" text="Tyhjennä ostoskori">
+            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="63.0" prefWidth="400.0" style="-fx-background-color: yellow;" text="Peruuta ostostapahtuma">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="76.0" prefWidth="400.0" text="MAKSA">
+            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="76.0" prefWidth="400.0" style="-fx-background-color: red;" text="MAKSA" textFill="WHITE">
                <font>
                   <Font size="31.0" />
                </font>

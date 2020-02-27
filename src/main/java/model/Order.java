@@ -38,9 +38,9 @@ public class Order implements Serializable{
 
 	@ElementCollection
 	@JoinTable(name="order_content", joinColumns=@JoinColumn(name="orderId"))
-	@MapKeyColumn (name="foodItemId")
+	//@MapKeyColumn (name="foodItemId")
 	@Column(name="amount")
-	private Map<FoodItem, Integer> orderContent;
+	private Map<String, Integer> orderContent;
 	
 	public Order() {
 		
@@ -53,7 +53,16 @@ public class Order implements Serializable{
 	 * @param orderContent - hashmap that contains food items and their amount
 	 */
 	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
-		this.orderContent = shoppingCart;
+		Map<String, Integer> orderContent = new HashMap<String, Integer>();
+		
+		for(Map.Entry<FoodItem, Integer> entry : shoppingCart.entrySet()) {
+			orderContent.put(entry.getKey().getName(), entry.getValue());
+		}
+		
+		this.orderContent = orderContent;
+		
+		
+		
 		this.status = false;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
@@ -139,15 +148,15 @@ public class Order implements Serializable{
 	 * 
 	 * @return order content as an hashmap
 	 */
-	public HashMap<FoodItem, Integer> getOrderContent() {
-		return (HashMap<FoodItem, Integer>)this.orderContent;
+	public HashMap<String, Integer> getOrderContent() {
+		return (HashMap<String, Integer>)this.orderContent;
 	}
 	/**
 	 * Setter for the order content
 	 * 
 	 * @param orderContent - order content
 	 */
-	public void setOrderContent(Map<FoodItem, Integer> orderContent) {
+	public void setOrderContent(Map<String, Integer> orderContent) {
 		this.orderContent = orderContent;
 	}
 	

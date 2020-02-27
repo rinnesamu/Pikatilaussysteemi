@@ -1,8 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -73,10 +71,10 @@ class OrderTest {
 	@Test
 	@DisplayName("Changing the status of the order")
 	void testsetStatus() {
-		order.setStatus(true);
-		assertEquals(true, order.isStatus(), "Couldn't change the order status");
+		order.setStatus(false);
+		assertEquals(false, order.isStatus(), "Couldn't change the order status");
 	}
-	
+	/*
 	@Test
 	@DisplayName("Adding order content as list")
 	void testSetOrderContent() {
@@ -89,6 +87,6 @@ class OrderTest {
 	void testGetOrderSize() {
 		order.setOrderContent(shoppingCart);
 		assertEquals(2, order.getOrderSize(), DELTA, "Couldn't get order size");
-	}
+	}*/
 
 }

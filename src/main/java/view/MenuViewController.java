@@ -5,19 +5,24 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -77,12 +82,20 @@ public class MenuViewController {
 	@FXML
 	private void readyToPayShoppingCart() {
 		Stage readyToPay = new Stage();
+		ScrollPane sPane = new ScrollPane();
 		VBox readyList = new VBox(20);
+		readyList.setPadding(new Insets(30,0,0,30));
+		double price;
+		double priceSum = 0;
+		int amount;
 		
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
-			Label payItem = new Label(items[i].getName() + ", lukumäärä on " + shoppingCart.getAmount(items[i].getItemId()));
+			amount = shoppingCart.getAmount(items[i].getItemId());
+			price = items[i].getPrice();
+			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
+			priceSum += amount*price;
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
@@ -91,19 +104,38 @@ public class MenuViewController {
 			readySingleItem.getChildren().addAll(payItem, iv);
 			readyList.getChildren().add(readySingleItem);
 		}
+		Label sumText = new Label("Summa: " + priceSum + " euroa");
+		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
-		readyList.getChildren().add(payButton);
+		readyList.getChildren().addAll(sumText, payButton);
+		sPane.setContent(readyList);
 
-		Scene payScene = new Scene(readyList, 600, 500);
+		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
 		readyToPay.show();
 	}
 
 	@FXML
 	private void emptyShoppingCart() {
-		shoppingCart.emptyShoppingCart();
-		shoppingCartList.getChildren().clear();
-		System.out.println(shoppingCart);
+		Alert options = new Alert(AlertType.CONFIRMATION);
+		options.setTitle("Lopetus");
+		options.setHeaderText("Haluatko varmasti lopettaa tilauksesi?");
+		options.setContentText("Valitse OK tai Cancel");
+	
+		ButtonType okayDel = new ButtonType("OK");
+		ButtonType cancelDel = new ButtonType("Cancel");
+		
+		options.getButtonTypes().setAll(okayDel, cancelDel);
+		Optional<ButtonType> result = options.showAndWait();
+		
+		if (result.get() == okayDel) {
+			shoppingCart.emptyShoppingCart();
+			shoppingCartList.getChildren().clear();
+			System.out.println(shoppingCart);
+		}
+		else if (result.get() == cancelDel) {
+		}
+
 	}
 	
 	@FXML
@@ -147,15 +179,14 @@ public class MenuViewController {
 		menu.getChildren().clear();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
-				// Creating new menubutton.
-				Button menuItem = new Button();
+				// Creating new menuItem.
+				GridPane menuItem = new GridPane();
 
 				// FoodItem from the category
 				FoodItem fItem = items[i];
 				
 				// Taking item id of the foodItem and setting that as "menuId".
 				menuId = fItem.getItemId();
-				menuItem.setId(Integer.toString(menuId));
 				menuItem.getStyleClass().add("menubutton");
 				
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
@@ -164,12 +195,24 @@ public class MenuViewController {
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(150);
 				iv.setFitWidth(150);
-				menuItem.setGraphic(iv);
-				//menuItem.setText(Integer.toString(menuId));
-				menuItem.setText(fItem.getName());
-				menuItem.setContentDisplay(ContentDisplay.BOTTOM);
+				iv.setId(Integer.toString(menuId));
+				Label itemName = new Label(fItem.getName());
+				
+				Label priceTag = new Label(Double.toString(fItem.getPrice()) + " e");
+				GridPane.setHalignment(itemName, HPos.CENTER);
+				GridPane.setHalignment(priceTag, HPos.CENTER);
+				menuItem.add(itemName, 0, 0);
+				menuItem.add(iv, 0, 1);
+				menuItem.add(priceTag, 0, 2);
+				
 				menu.getChildren().add(menuItem);
-				menuItem.setOnAction(event -> menuButtonHandler(fItem, menuItem));
+				EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent e) {
+						menuButtonHandler(fItem, iv);
+					}
+				};
+				menuItem.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
 			}
 		}
 	}
@@ -181,13 +224,13 @@ public class MenuViewController {
 	 * @param button The created menubutton.
 	 */
 	
-	private void menuButtonHandler(FoodItem foodItem, Button button) {
+	private void menuButtonHandler(FoodItem foodItem, ImageView imageView) {
 		//HBox sCartRow = new HBox();
 		Button sCartItem = new Button("");
 		//Button deleteButton = new Button("DELETE");
 		//sCartRow.getChildren().addAll(sCartItem, deleteButton);
 		
-		int id = Integer.parseInt(button.getId());
+		int id = Integer.parseInt(imageView.getId());
 		sCartItem.setId(Integer.toString(id));
 		sCartItem.setFont(new Font(25));
 		sCartItem.setMinSize(375, 60);
@@ -285,9 +328,8 @@ public class MenuViewController {
 		});
 		delete.setOnAction(event -> {
 			Alert options = new Alert(AlertType.CONFIRMATION);
-			options.setTitle("Haluatko varmasti poistaa tuotteen " + foodItem.getName() + " ostoskorista?");
-			options.setHeaderText(foodItem.getName() + ", määrä:  " + amountNow);
-			options.setContentText("Valitse OK tai Cancel");
+			options.setTitle("Poisto");
+			options.setHeaderText("Haluatko varmasti poistaa tuotteen " + foodItem.getName() + " ostoskorista?");
 		
 			ButtonType okayDel = new ButtonType("OK");
 			ButtonType cancelDel = new ButtonType("Cancel");
@@ -299,31 +341,24 @@ public class MenuViewController {
 				shoppingCart.removeFromShoppingCart(foodItem);
 				nameAndAmount.setText(foodItem.getName() + " poistettu!");
 				
-				increase.setDisable(true);
-				decrease.setDisable(true);
-				delete.setDisable(true);
-				cancel.setDisable(true);
-				pick.setText("Poistu painamalla OK");
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().remove(i);
+					}
+				}
+				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
 			}
 
 		});
 		okay.setOnAction(event -> {
-			if (shoppingCart.getAmount(foodItem.getItemId()) != 0) {
-				button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
+			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
 
-				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().set(i, button);
-					}
-				}
-			}
-			else {
-				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().remove(i);
-					}
+			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+					System.out.println("ITEMI ON " + foodItem.getItemId());
+					shoppingCartList.getChildren().set(i, button);
 				}
 			}
 			popUp.close();

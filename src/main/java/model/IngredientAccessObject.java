@@ -12,19 +12,11 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 public class IngredientAccessObject implements IIngredientDao {
 
 	private SessionFactory sessionFactory = null;
-	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+
 
 	public IngredientAccessObject() {
-		// sessionFactory = util.HibernateUtil.buildSessionFactory();
+		sessionFactory = util.HibernateUtil.buildSessionFactory();
 
-		try {
-			sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-		} catch (Exception e) {
-			System.out.println("Failed to create session factory");
-			StandardServiceRegistryBuilder.destroy(registry);
-			e.printStackTrace();
-			System.exit(-1);
-		}
 
 	}
 
