@@ -53,14 +53,14 @@ class IngredientDaoTest {
 		ingredient = new Ingredient("Sipuli", true);
 		ingredientDao.createIngredient(ingredient);
 		assertEquals("Sipuli", ingredientDao.readIngredientByName("Sipuli").getName(), "Couldn't add ingredient");
-		assertEquals(true, ingredientDao.readIngredientByName("Sipuli").isRemovealbe(), "Couldn't reaD ingredient");
+		assertEquals(true, ingredientDao.readIngredientByName("Sipuli").isRemoveable(), "Couldn't reaD ingredient");
 		ingredient.setName("Suolakurkku");
-		ingredient.setRemovealbe(false);
+		ingredient.setRemoveable(false);
 		assertEquals(true, ingredientDao.updateIngredient(ingredient));
 		assertEquals(null, ingredientDao.readIngredientByName("Sipuli"), "Couldn't update ingredient");
 		assertEquals(1, ingredientDao.readIngredients().length, "Accidentally added instead of update");
 		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Suolakurkku").getName(), "Couldn't update ingredient");
-		assertEquals(false, ingredientDao.readIngredientByName("Suolakurkku").isRemovealbe(), "Couldn't update ingredient");
+		assertEquals(false, ingredientDao.readIngredientByName("Suolakurkku").isRemoveable(), "Couldn't update ingredient");
 	}
 
 	@Test

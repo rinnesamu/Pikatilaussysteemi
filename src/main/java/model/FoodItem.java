@@ -17,7 +17,7 @@ public class FoodItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
-	private int ItemId;
+	private int itemId;
 	@Column
 	private String name;
 	@Column
@@ -83,7 +83,7 @@ public class FoodItem {
 		this.price = price;
 		this.name = name;
 		this.inMenu = inMenu;
-		this.ItemId = itemId;
+		this.itemId = itemId;
 		this.sold = 0;
 		this.ready = 0;
 	}
@@ -125,7 +125,7 @@ public class FoodItem {
 	 * @return itemId
 	 */
 	public int getItemId() {
-		return ItemId;
+		return itemId;
 	}
 
 	/**
@@ -294,6 +294,6 @@ public class FoodItem {
 	}
 	
 	public String toString() {
-		return this.name + ", " + this.price + ", " + this.inMenu + ", " + this.ItemId;
+		return this.name + ", " + this.price + ", " + this.inMenu + ", " + this.itemId;
 	}
 }

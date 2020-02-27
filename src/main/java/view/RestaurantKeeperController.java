@@ -854,7 +854,7 @@ public class RestaurantKeeperController {
                             setGraphic(null);
                         } else {                       
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
-                            cb.setSelected(ingredient.isRemovealbe());
+                            cb.setSelected(ingredient.isRemoveable());
                             setGraphic(cb);
                         }
                     }
@@ -912,7 +912,7 @@ public class RestaurantKeeperController {
                     {
                         cb.setOnAction((ActionEvent event) -> {
                         	// current foodItem object - getTableView().getItems().get(getIndex())
-                            getTableView().getItems().get(getIndex()).setRemovealbe(cb.isSelected());
+                            getTableView().getItems().get(getIndex()).setRemoveable(cb.isSelected());
                         });
                     }
                     @Override
@@ -922,7 +922,7 @@ public class RestaurantKeeperController {
                             setGraphic(null);
                         } else {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
-                            cb.setSelected(ingredient.isRemovealbe());
+                            cb.setSelected(ingredient.isRemoveable());
                             setGraphic(cb);
                         }
                     }
