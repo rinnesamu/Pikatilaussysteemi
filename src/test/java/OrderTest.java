@@ -73,8 +73,8 @@ class OrderTest {
 	@Test
 	@DisplayName("Changing the status of the order")
 	void testsetStatus() {
-		order.setStatus(false);
-		assertEquals(false, order.isStatus(), "Couldn't change the order status");
+		order.setStatus(true);
+		assertEquals(true, order.isStatus(), "Couldn't change the order status");
 	}
 	
 	@Test
