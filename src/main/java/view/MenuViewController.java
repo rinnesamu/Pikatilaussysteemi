@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -77,12 +78,20 @@ public class MenuViewController {
 	@FXML
 	private void readyToPayShoppingCart() {
 		Stage readyToPay = new Stage();
+		ScrollPane sPane = new ScrollPane();
 		VBox readyList = new VBox(20);
+		readyList.setPadding(new Insets(30,0,0,30));
+		double price;
+		double priceSum = 0;
+		int amount;
 		
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
-			Label payItem = new Label(items[i].getName() + ", lukumäärä on " + shoppingCart.getAmount(items[i].getItemId()));
+			amount = shoppingCart.getAmount(items[i].getItemId());
+			price = items[i].getPrice();
+			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price);
+			priceSum += amount*price;
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
@@ -91,10 +100,13 @@ public class MenuViewController {
 			readySingleItem.getChildren().addAll(payItem, iv);
 			readyList.getChildren().add(readySingleItem);
 		}
+		Label sumText = new Label("Summa: " + priceSum);
+		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
-		readyList.getChildren().add(payButton);
+		readyList.getChildren().addAll(sumText, payButton);
+		sPane.setContent(readyList);
 
-		Scene payScene = new Scene(readyList, 600, 500);
+		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
 		readyToPay.show();
 	}
@@ -167,6 +179,7 @@ public class MenuViewController {
 				menuItem.setGraphic(iv);
 				//menuItem.setText(Integer.toString(menuId));
 				menuItem.setText(fItem.getName());
+				menuItem.setText(Double.toString(fItem.getPrice()));
 				menuItem.setContentDisplay(ContentDisplay.BOTTOM);
 				menu.getChildren().add(menuItem);
 				menuItem.setOnAction(event -> menuButtonHandler(fItem, menuItem));
