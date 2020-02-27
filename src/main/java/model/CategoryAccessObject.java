@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-public class CategoryAccessObject implements ICategoryDAO {
+public class CategoryAccessObject implements ICategoryDao {
 	
 	private SessionFactory sessionFactory = null;
 	

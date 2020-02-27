@@ -28,15 +28,15 @@ class IngredientTest {
 
 	@Test
 	void testIsRemovealbe() {
-		assertEquals(true, ingredient.isRemovealbe(), "Couldn't get removeable status");
+		assertEquals(true, ingredient.isRemoveable(), "Couldn't get removeable status");
 	}
 
 	@Test
 	void testSetRemovealbe() {
-		ingredient.setRemovealbe(false);
-		assertEquals(false, ingredient.isRemovealbe(), "Couldn't set removeable");
-		ingredient.setRemovealbe(false);
-		assertEquals(false, ingredient.isRemovealbe(), "Couldn't set removeable from false to false");
+		ingredient.setRemoveable(false);
+		assertEquals(false, ingredient.isRemoveable(), "Couldn't set removeable");
+		ingredient.setRemoveable(false);
+		assertEquals(false, ingredient.isRemoveable(), "Couldn't set removeable from false to false");
 	}
 
 }
