@@ -9,4 +9,9 @@
 	-fx-padding: 10;
 }
 .cartbutton {
+	-fx-background-color: transparent;
+	-fx-border-color: orange;
+	-fx-border-width: 3;
+	-fx-padding: 1px;
+	-fx-border-insets: 1px;
 }

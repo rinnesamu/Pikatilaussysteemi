@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -93,7 +94,7 @@ public class MenuViewController {
 			HBox readySingleItem = new HBox();
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
-			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price);
+			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
 			priceSum += amount*price;
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
@@ -103,7 +104,7 @@ public class MenuViewController {
 			readySingleItem.getChildren().addAll(payItem, iv);
 			readyList.getChildren().add(readySingleItem);
 		}
-		Label sumText = new Label("Summa: " + priceSum);
+		Label sumText = new Label("Summa: " + priceSum + " euroa");
 		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
 		readyList.getChildren().addAll(sumText, payButton);
@@ -197,10 +198,12 @@ public class MenuViewController {
 				iv.setId(Integer.toString(menuId));
 				Label itemName = new Label(fItem.getName());
 				
-				Label priceTag = new Label(Double.toString(fItem.getPrice()));
-				menuItem.add(priceTag, 0, 0);
-				menuItem.add(iv, 1, 0);
-				menuItem.add(itemName, 1, 1);
+				Label priceTag = new Label(Double.toString(fItem.getPrice()) + " e");
+				GridPane.setHalignment(itemName, HPos.CENTER);
+				GridPane.setHalignment(priceTag, HPos.CENTER);
+				menuItem.add(itemName, 0, 0);
+				menuItem.add(iv, 0, 1);
+				menuItem.add(priceTag, 0, 2);
 				
 				menu.getChildren().add(menuItem);
 				EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
@@ -338,31 +341,24 @@ public class MenuViewController {
 				shoppingCart.removeFromShoppingCart(foodItem);
 				nameAndAmount.setText(foodItem.getName() + " poistettu!");
 				
-				increase.setDisable(true);
-				decrease.setDisable(true);
-				delete.setDisable(true);
-				cancel.setDisable(true);
-				pick.setText("Poistu painamalla OK");
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().remove(i);
+					}
+				}
+				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
 			}
 
 		});
 		okay.setOnAction(event -> {
-			if (shoppingCart.getAmount(foodItem.getItemId()) != 0) {
-				button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
+			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
 
-				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().set(i, button);
-					}
-				}
-			}
-			else {
-				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-						shoppingCartList.getChildren().remove(i);
-					}
+			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+					System.out.println("ITEMI ON " + foodItem.getItemId());
+					shoppingCartList.getChildren().set(i, button);
 				}
 			}
 			popUp.close();
