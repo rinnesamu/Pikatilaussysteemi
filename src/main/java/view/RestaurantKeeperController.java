@@ -1,5 +1,6 @@
 package view;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,7 @@ public class RestaurantKeeperController {
 	private FoodItemAccessObject foodItemDao;
 	private CategoryAccessObject categoryDao;
 	private IngredientDao ingredientDao;
+	private OrderAccessObject orderDao;
 	
 	// Owner node for notification pop-ups
 	@FXML
@@ -161,6 +163,27 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> addIngredientRemovableCellFactory;
 	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> addIngredientButtonCellFactory;
 	
+	// Table and columns for orders
+	@FXML
+	private TableView<Order> orderTableView;
+	@FXML
+	private TableColumn<Order, Integer> orderIdColumn;
+	@FXML
+	private TableColumn<Order, Integer> orderNumberColumn;
+	@FXML
+	private TableColumn<Order, LocalDateTime> orderTimeStampColumn;
+	@FXML
+	private TableColumn<Order, Void> orderReadyColumn;
+	@FXML
+	private TableColumn<Order, Void> orderEditColumn;
+	
+	// Observable list for orders
+	private ObservableList<Order> orderObList;
+
+	//CellFactories for widget columns in order table
+	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderReadyCellFactory;
+	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderEditCellFactory;
+	
 	/**
 	 * Empty constructor
 	 * 
@@ -179,7 +202,15 @@ public class RestaurantKeeperController {
 		categoryDao = new CategoryAccessObject();
 		foodItemDao = new FoodItemAccessObject();
 		ingredientDao = new IngredientDao();
+		orderDao = new OrderAccessObject();
 		
+		refreshAll();
+	}
+	
+	/**
+	 * Method for refreshing everything inside tables
+	 */
+	public void refreshAll() {
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
@@ -245,6 +276,14 @@ public class RestaurantKeeperController {
 		addIngredientButtonColumn.setCellFactory(addIngredientButtonCellFactory);
 		refreshDummyIngredient();
 		
+		// initiliazing order column cellfactories
+		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
+		orderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
+		orderTimeStampColumn.setCellValueFactory(new PropertyValueFactory<Order, LocalDateTime>("creationTimeStamp"));
+		createOrderCellFactories();
+		orderReadyColumn.setCellFactory(orderReadyCellFactory);
+		orderEditColumn.setCellFactory(orderEditCellFactory);
+		refreshOrders();
 	}
 	
 	/**
@@ -390,6 +429,13 @@ public class RestaurantKeeperController {
 		addIngredientObList = FXCollections.observableArrayList(tempList);
 		addIngredientTableView.setItems(addIngredientObList);
 		addIngredientTableView.setEditable(true);
+	}
+	/**
+	 * Method for fetching order from database
+	 */
+	public void refreshOrders() {
+		orderObList = FXCollections.observableArrayList(orderDao.readOrders());
+		orderTableView.setItems(orderObList);
 	}
 	
 	// Creating cellfactories for choicebox, button and checkbox columns
@@ -890,6 +936,74 @@ public class RestaurantKeeperController {
 			}
 		};
 		// add ingredient ends
+	}
+	/**
+	 * Method that creates custom cellfactories for widget columns in order table
+	 * 
+	 */
+	public void createOrderCellFactories() {
+		// creating checkbox cellFactory
+		orderReadyCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
+			@Override
+			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
+				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
+                    CheckBox cb = new CheckBox();
+                    {
+                        cb.setOnAction((ActionEvent event) -> {
+                            getTableView().getItems().get(getIndex()).setStatus(cb.isSelected());
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {                       
+                            Order order = getTableView().getItems().get(getIndex());
+                            cb.setSelected(order.isStatus());
+                            setGraphic(cb);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// checkbox ends
 		
+		// creating cellFactory for editbutton
+		orderEditCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
+			@Override
+			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
+				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
+                    Button btn = new Button("Tallenna");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	Order order = getTableView().getItems().get(getIndex());
+                            System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
+                            boolean success = orderDao.updateOrderStatus(order, order.isStatus());
+                            if(success) {
+                            	createNotification("Tilaus muokattu onnistuneesti!");
+                            }else {
+                            	createNotification("Tilausta ei onnistuttu muokkaamaan");
+                            }
+                            // UP FOR DELETION
+                            refreshOrders();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// editbutton ends
 	}
 }

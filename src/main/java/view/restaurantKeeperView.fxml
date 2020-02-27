@@ -56,7 +56,7 @@
               	</AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#initialize" text="Kategoriat">
+            <Tab onSelectionChanged="#refreshAll" text="Kategoriat">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -85,7 +85,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="Ainesosat">
+            <Tab onSelectionChanged="#refreshAll" text="Ainesosat">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -109,6 +109,28 @@
                                   <TableColumn fx:id="addIngredientNameColumn" onEditCommit="#onEditCommitAddIngredientNameColumn" prefWidth="120.0" text="Nimi" />
                                     <TableColumn fx:id="addIngredientRemovableColumn" prefWidth="120.0" text="Poistettavissa" />
                                     <TableColumn fx:id="addIngredientButtonColumn" prefWidth="120.0" text="Lisää" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Tilaukset">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="orderTableView" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="orderIdColumn" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="orderNumberColumn" prefWidth="120.0" text="Tilaus #" />
+                                    <TableColumn fx:id="orderTimeStampColumn" prefWidth="120.0" text="Tilauksen aikaleima" />
+                                    <TableColumn fx:id="orderReadyColumn" prefWidth="120.0" text="Valmis" />
+                                    <TableColumn prefWidth="120.0" text="Sisältö" />
+                                    <TableColumn fx:id="orderEditColumn" prefWidth="120.0" text="Tallenna" />
                                 </columns>
                               </TableView>
                            </children>
