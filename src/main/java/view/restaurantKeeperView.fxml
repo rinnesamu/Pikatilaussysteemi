@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
+<AnchorPane prefHeight="600.0" prefWidth="1320.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
    <children>
       <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
@@ -23,63 +15,16 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="750.0">
                      <children>
-                        <AnchorPane layoutY="394.0" minHeight="0.0" minWidth="0.0" prefHeight="77.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <StackPane layoutY="-41.0" prefHeight="500.0" prefWidth="1320.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <VBox alignment="TOP_CENTER" layoutX="6.0" layoutY="-1.0" prefHeight="87.0" prefWidth="750.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <Label text="Tuotteen lisääminen tietokantaan" />
-                                    <HBox alignment="CENTER" prefHeight="34.0" prefWidth="750.0">
-                                       <children>
-                                          <Label alignment="CENTER" text="Nimi">
-                                             <padding>
-                                                <Insets right="10.0" />
-                                             </padding>
-                                          </Label>
-                                          <TextField fx:id="addItemNameTextField" prefHeight="25.0" prefWidth="135.0" />
-                                          <Separator orientation="VERTICAL" prefHeight="200.0">
-                                             <padding>
-                                                <Insets left="10.0" right="10.0" />
-                                             </padding>
-                                          </Separator>
-                                          <Label text="Hinta">
-                                             <padding>
-                                                <Insets right="10.0" />
-                                             </padding>
-                                          </Label>
-                                          <TextField fx:id="addItemPriceTextField" prefHeight="25.0" prefWidth="62.0" />
-                                          <Separator orientation="VERTICAL" prefHeight="200.0">
-                                             <padding>
-                                                <Insets left="10.0" right="10.0" />
-                                             </padding>
-                                          </Separator>
-                                          <CheckBox fx:id="addItemCheckBox" mnemonicParsing="false" text="Tuote näkyvillä" />
-                                          <Separator orientation="VERTICAL" prefHeight="34.0" prefWidth="0.0">
-                                             <padding>
-                                                <Insets left="10.0" right="10.0" />
-                                             </padding>
-                                          </Separator>
-                                          <Label text="Tuotekategoria">
-                                             <padding>
-                                                <Insets right="10.0" />
-                                             </padding>
-                                          </Label>
-                                          <TextField fx:id="addItemCategoryTextField" alignment="CENTER" prefHeight="25.0" prefWidth="146.0" />
-                                       </children>
-                                    </HBox>
-                                    <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItem" prefHeight="25.0" prefWidth="237.0" text="Lisää tuote" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                        <StackPane layoutY="-41.0" prefHeight="437.0" prefWidth="750.0" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <TableView fx:id="foodItemTableView" editable="true" prefHeight="365.0" prefWidth="750.0">
+                              <TableView fx:id="foodItemTableView" editable="true" prefHeight="491.0" prefWidth="1320.0">
                                 <columns>
                                   <TableColumn fx:id="idColumn" editable="false" prefWidth="120.0" text="Tunnus #" />
                                   <TableColumn fx:id="nameColumn" onEditCommit="#onEditCommitNameColumn" prefWidth="120.0" text="Nimi" />
                                     <TableColumn fx:id="priceColumn" onEditCommit="#onEditCommitPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="categoryColumn" onEditCommit="#onEditCommitCategoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="categoriesColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn prefWidth="120.0" text="Ainekset" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
                                     <TableColumn fx:id="saveEditColumn" prefWidth="120.0" text="Tallenna" />
@@ -89,13 +34,109 @@
                               </TableView>
                            </children>
                         </StackPane>
+                        <StackPane layoutY="406.0" prefHeight="70.0" prefWidth="1320.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <TableView fx:id="addFoodItemTableView" editable="true" prefHeight="70.0" prefWidth="1354.0">
+                                <columns>
+                                  <TableColumn editable="false" prefWidth="120.0" />
+                                  <TableColumn fx:id="addNameColumn" onEditCommit="#onEditCommitAddNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addPriceColumn" onEditCommit="#onEditCommitAddPriceColumn" prefWidth="120.0" text="Hinta" />
+                                    <TableColumn fx:id="addInMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
+                                    <TableColumn fx:id="addCategoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn prefWidth="120.0" text="Ainekset" />
+                                    <TableColumn prefWidth="120.0" />
+                                    <TableColumn prefWidth="120.0" />
+                                    <TableColumn fx:id="addButtonColumn" prefWidth="120.0" text="Lisää tuote" />
+                                    <TableColumn prefWidth="120.0" text="Peruuta" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
                      </children>
               	</AnchorPane>
               </content>
             </Tab>
+            <Tab onSelectionChanged="#refreshAll" text="Kategoriat">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="categoryTableView" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="categoryIdColumn" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="categoryNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="categoryDeleteColumn" prefWidth="120.0" text="Poista" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                        <StackPane prefHeight="70.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <TableView fx:id="addCategoryTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="120.0" />
+                                  <TableColumn fx:id="addCategoryNameColumn" onEditCommit="#onEditCommitAddCategoryNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addCategoryButtonColumn" prefWidth="120.0" text="Lisää kategoria" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children></AnchorPane>
+              </content>
+            </Tab>
+            <Tab onSelectionChanged="#refreshAll" text="Ainesosat">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="ingredientTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="ingredientIdColumn" editable="false" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="ingredientNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="ingredientRemovableColumn" prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn fx:id="ingredientDeleteColumn" prefWidth="120.0" text="Poista" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                        <StackPane prefHeight="70.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <TableView fx:id="addIngredientTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="120.0" />
+                                  <TableColumn fx:id="addIngredientNameColumn" onEditCommit="#onEditCommitAddIngredientNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addIngredientRemovableColumn" prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn fx:id="addIngredientButtonColumn" prefWidth="120.0" text="Lisää" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
             <Tab text="Tilaukset">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView fx:id="orderTableView" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="orderIdColumn" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="orderNumberColumn" prefWidth="120.0" text="Tilaus #" />
+                                    <TableColumn fx:id="orderTimeStampColumn" prefWidth="120.0" text="Tilauksen aikaleima" />
+                                    <TableColumn fx:id="orderReadyColumn" prefWidth="120.0" text="Valmis" />
+                                    <TableColumn prefWidth="120.0" text="Sisältö" />
+                                    <TableColumn fx:id="orderEditColumn" prefWidth="120.0" text="Tallenna" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
               </content>
             </Tab>
         </tabs>
