@@ -1010,12 +1010,12 @@ public class RestaurantKeeperController {
                         btn.setOnAction((ActionEvent event) -> {
                         	Order order = getTableView().getItems().get(getIndex());
                             System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
-                            boolean success = orderDao.updateOrderStatus(order, order.isStatus());
-                            if(success) {
+                            //boolean success = orderDao.updateOrderStatus(order, order.isStatus());
+                            /*if(success) {
                             	createNotification("Tilaus muokattu onnistuneesti!");
                             }else {
                             	createNotification("Tilausta ei onnistuttu muokkaamaan");
-                            }
+                            }*/
                             // UP FOR DELETION
                             refreshOrders();
                         });

@@ -4,6 +4,10 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
 /**
  * DataAccessObject for Order class. It is used for storing order information to a database.
  * The class uses JPA EntityManager
@@ -11,17 +15,18 @@ import javax.persistence.*;
  */
 public class OrderAccessObject implements IOrderDao {
 
+	/*
 	@PersistenceContext
 	protected EntityManagerFactory emf;
-	protected EntityManager em;
+	protected EntityManager em;*/
 	
+	private SessionFactory sessionFactory = null;
 	/**
 	 * Constructor where EntityMAnager and EntityManagerFactory are defined
 	 */
 	public OrderAccessObject() {
+		sessionFactory = util.HibernateUtil.buildSessionFactory();
 		
-		emf = Persistence.createEntityManagerFactory("orderPersistenceUnit");
-		em = emf.createEntityManager();
 	}
 	/**
 	 * Method for adding an order to the database
@@ -30,30 +35,59 @@ public class OrderAccessObject implements IOrderDao {
 	 */
 	@Override
 	public boolean createOrder(Order order) {
-		try {
-			em.getTransaction().begin();
-			em.persist(order);
-			em.getTransaction().commit();
-			return true;
-		}catch(Exception e) {
+		
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(order);
+			transaction.commit();
+		} catch (Exception e) {
 			e.printStackTrace();
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			return false;
+			
 		}
+		return true;
+		
+	}
+	
+	@Override
+	public Order readOrderById(int orderId) {
+		Order order = null;
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			order = session.get(Order.class, orderId);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+		}
+		return order;
 	}
 	
 	/**
 	 * Method for fetching all the orders from the database
 	 */
 	@Override
-	public List<Order> readOrders(){
-		try {
-			List<Order> allOrders = em.createQuery("SELECT o FROM Order o", Order.class)
-			.getResultList();
-			return allOrders;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
+	public Order[] readOrders(){
+		List<Order> orders = null;
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			orders = session.createQuery("From Order").getResultList();
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
 		}
+		Order[] returnOrders = new Order[orders.size()];
+		return (Order[]) orders.toArray(returnOrders);
 	}
 	/**
 	 * Method for updating the status of a single order
@@ -62,32 +96,77 @@ public class OrderAccessObject implements IOrderDao {
 	 * @param status - the status
 	 */
 	@Override
-	public boolean updateOrderStatus(Order order, boolean status) {
-		try {
-			  em.getTransaction().begin();
-			  order.setStatus(status);
-			  em.getTransaction().commit();
-		}catch(Exception e) {
-			e.printStackTrace();
+	public boolean updateOrderStatus(Order order) {
+		
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(order);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
 			return false;
 		}
 		return true;
+
 	}
 	
 	/**
 	 * Method for fetching orders from the database based on its status
 	 */
 	@Override
-	public List<Order> readOrdersByStatus(boolean status){
-		try {
-			List<Order> allOrders = em.createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
-			.setParameter("status", status)
-			.getResultList();
-			return allOrders;
-		}catch(Exception e) {
-			e.printStackTrace();
-			return null;
+	public Order[] readOrdersByStatus(boolean status){
+		
+		List<Order> orders = null;
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			orders = (List<Order>) session.createQuery("from Order Where status = :nameParam").setParameter("nameParam", status);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
 		}
+		Order[] retrunFoodItems = new Order[orders.size()];
+		return (Order[]) orders.toArray(retrunFoodItems);
+
 	}
 
+	
+	@Override
+	public boolean deleteOrder(int orderId) {
+		if (readOrderById(orderId) == null) {
+			return false;
+		}
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			session.delete(readOrderById(orderId));
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	
+	@Override
+	public boolean deleteAllOrders() {
+		Order[] orders = readOrders();
+		if (orders == null || orders.length == 0) {
+			return true;
+		} else {
+			for (Order o : orders) {
+				this.deleteOrder(o.getOrderId());
+			}
+			return true;
+		}
+	}
 }

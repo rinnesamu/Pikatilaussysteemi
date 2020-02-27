@@ -76,7 +76,7 @@ class OrderTest {
 		order.setStatus(false);
 		assertEquals(false, order.isStatus(), "Couldn't change the order status");
 	}
-	
+	/*
 	@Test
 	@DisplayName("Adding order content as list")
 	void testSetOrderContent() {
@@ -89,6 +89,6 @@ class OrderTest {
 	void testGetOrderSize() {
 		order.setOrderContent(shoppingCart);
 		assertEquals(2, order.getOrderSize(), DELTA, "Couldn't get order size");
-	}
+	}*/
 
 }
