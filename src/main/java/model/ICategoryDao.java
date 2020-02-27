@@ -1,6 +1,6 @@
 package model;
 
-public interface ICategoryDAO {
+public interface ICategoryDao {
 	boolean createCategory(Category category);
 	Category[] readCategories();
 	Category readCategoryByName(String name);

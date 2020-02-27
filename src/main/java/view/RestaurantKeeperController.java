@@ -34,7 +34,7 @@ public class RestaurantKeeperController {
 	
 	private FoodItemAccessObject foodItemDao;
 	private CategoryAccessObject categoryDao;
-	private IngredientDao ingredientDao;
+	private IngredientAccessObject ingredientAccessObject;
 	private OrderAccessObject orderDao;
 	
 	// Owner node for notification pop-ups
@@ -205,7 +205,7 @@ public class RestaurantKeeperController {
 		// init data access objects needed
 		categoryDao = new CategoryAccessObject();
 		foodItemDao = new FoodItemAccessObject();
-		ingredientDao = new IngredientDao();
+		ingredientAccessObject = new IngredientAccessObject();
 		orderDao = new OrderAccessObject();
 		
 		refreshAll();
@@ -444,7 +444,7 @@ public class RestaurantKeeperController {
 	 * Method for fetching ingrtedients from database, and setting them in TableView
 	 */
 	public void refreshIngredients() {
-		ingredientObList = FXCollections.observableArrayList(ingredientDao.readIngredients());
+		ingredientObList = FXCollections.observableArrayList(ingredientAccessObject.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
 		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
 	}
@@ -874,7 +874,7 @@ public class RestaurantKeeperController {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan poisto selectedData: " + ingredient.getName());
-                            boolean success = ingredientDao.deleteIngredient(ingredient.getItemId());
+                            boolean success = ingredientAccessObject.deleteIngredient(ingredient.getItemId());
                             if(success) {
                             	ingredientTableView.getItems().remove(ingredient);
                             	createNotification("Ainesosa poistettu onnistuneesti!");
@@ -942,7 +942,7 @@ public class RestaurantKeeperController {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan lisäys selectedData: " + ingredient.getName());
-                            boolean success = ingredientDao.createIngredient(ingredient);
+                            boolean success = ingredientAccessObject.createIngredient(ingredient);
                             if(success) {
                             	createNotification("Ainesosa lisätty onnistuneesti!");
                             }else {

@@ -8,31 +8,31 @@ import org.junit.jupiter.api.Test;
 import model.FoodItem;
 import model.FoodItemAccessObject;
 import model.Ingredient;
-import model.IngredientDao;
+import model.IngredientAccessObject;
 
 class IngredientDaoTest {
 	
 	
 	private Ingredient ingredient;
-	private IngredientDao ingredientDao = new IngredientDao();
+	private IngredientAccessObject ingredientAccessObject = new IngredientAccessObject();
 	
 	@AfterEach
 	void afterEach() {
-		ingredientDao.deleteAllIngredients();
+		ingredientAccessObject.deleteAllIngredients();
 	}
 
 	@Test
 	@DisplayName("Creating new ingredient")
 	void testCreateIngredient() {
 		ingredient = new Ingredient("Sipuli", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't create ingredeint!");
-		assertEquals(1, ingredientDao.readIngredients().length, "Couldn't create new ingredient");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't create ingredeint!");
+		assertEquals(1, ingredientAccessObject.readIngredients().length, "Couldn't create new ingredient");
 		ingredient = new Ingredient("Sipuli", true);
-		assertEquals(false, ingredientDao.createIngredient(ingredient), "Couldn't create ingredeint!");
-		assertEquals(1, ingredientDao.readIngredients().length, "Couldn't create new ingredient");
+		assertEquals(false, ingredientAccessObject.createIngredient(ingredient), "Couldn't create ingredeint!");
+		assertEquals(1, ingredientAccessObject.readIngredients().length, "Couldn't create new ingredient");
 		ingredient = new Ingredient("Suolakurkku", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't create ingredeint!");
-		assertEquals(2, ingredientDao.readIngredients().length, "Couldn't create new ingredient");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't create ingredeint!");
+		assertEquals(2, ingredientAccessObject.readIngredients().length, "Couldn't create new ingredient");
 		
 	}
 
@@ -40,82 +40,82 @@ class IngredientDaoTest {
 	@DisplayName("Readl all ingredients")
 	void testReadIngredietns() {
 		ingredient = new Ingredient("Sipuli", true);
-		ingredientDao.createIngredient(ingredient);
-		assertEquals("Sipuli", ingredientDao.readIngredients()[0].getName(), "Couldn't get all ingredients");
+		ingredientAccessObject.createIngredient(ingredient);
+		assertEquals("Sipuli", ingredientAccessObject.readIngredients()[0].getName(), "Couldn't get all ingredients");
 		ingredient = new Ingredient("Suolakurkku", true);
-		ingredientDao.createIngredient(ingredient);
-		assertEquals(2, ingredientDao.readIngredients().length, "Couldn't get all ingredients");
+		ingredientAccessObject.createIngredient(ingredient);
+		assertEquals(2, ingredientAccessObject.readIngredients().length, "Couldn't get all ingredients");
 	}
 
 	@Test
 	@DisplayName("Update ingredient details")
 	void testUpdateIngredient() {
 		ingredient = new Ingredient("Sipuli", true);
-		ingredientDao.createIngredient(ingredient);
-		assertEquals("Sipuli", ingredientDao.readIngredientByName("Sipuli").getName(), "Couldn't add ingredient");
-		assertEquals(true, ingredientDao.readIngredientByName("Sipuli").isRemoveable(), "Couldn't reaD ingredient");
+		ingredientAccessObject.createIngredient(ingredient);
+		assertEquals("Sipuli", ingredientAccessObject.readIngredientByName("Sipuli").getName(), "Couldn't add ingredient");
+		assertEquals(true, ingredientAccessObject.readIngredientByName("Sipuli").isRemoveable(), "Couldn't reaD ingredient");
 		ingredient.setName("Suolakurkku");
 		ingredient.setRemoveable(false);
-		assertEquals(true, ingredientDao.updateIngredient(ingredient));
-		assertEquals(null, ingredientDao.readIngredientByName("Sipuli"), "Couldn't update ingredient");
-		assertEquals(1, ingredientDao.readIngredients().length, "Accidentally added instead of update");
-		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Suolakurkku").getName(), "Couldn't update ingredient");
-		assertEquals(false, ingredientDao.readIngredientByName("Suolakurkku").isRemoveable(), "Couldn't update ingredient");
+		assertEquals(true, ingredientAccessObject.updateIngredient(ingredient));
+		assertEquals(null, ingredientAccessObject.readIngredientByName("Sipuli"), "Couldn't update ingredient");
+		assertEquals(1, ingredientAccessObject.readIngredients().length, "Accidentally added instead of update");
+		assertEquals("Suolakurkku", ingredientAccessObject.readIngredientByName("Suolakurkku").getName(), "Couldn't update ingredient");
+		assertEquals(false, ingredientAccessObject.readIngredientByName("Suolakurkku").isRemoveable(), "Couldn't update ingredient");
 	}
 
 	@Test
 	@DisplayName("Delete item")
 	void testDeleteIngredient() {
 		ingredient = new Ingredient("Suolakurkku", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals(true, ingredientDao.deleteIngredient(ingredientDao.readIngredientByName("Suolakurkku").getItemId()), "Couldn't delete item");
-		assertEquals(0, ingredientDao.readIngredients().length, "Couldn't delete ingredient");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals(true, ingredientAccessObject.deleteIngredient(ingredientAccessObject.readIngredientByName("Suolakurkku").getItemId()), "Couldn't delete item");
+		assertEquals(0, ingredientAccessObject.readIngredients().length, "Couldn't delete ingredient");
 		ingredient = new Ingredient("Suolakurkku", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
 		ingredient = new Ingredient("Sipuli", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals(true, ingredientDao.deleteIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId()), "Couldn't delete item");
-		assertEquals(1, ingredientDao.readIngredients().length, "Couldn't delete ingredient");
-		assertEquals(false, ingredientDao.deleteIngredient(53234), "Couldn't delete item");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals(true, ingredientAccessObject.deleteIngredient(ingredientAccessObject.readIngredientByName("Sipuli").getItemId()), "Couldn't delete item");
+		assertEquals(1, ingredientAccessObject.readIngredients().length, "Couldn't delete ingredient");
+		assertEquals(false, ingredientAccessObject.deleteIngredient(53234), "Couldn't delete item");
 	}
 
 	@Test
 	@DisplayName("Read by name")
 	void testReadIngredientByName() {
 		ingredient = new Ingredient("Suolakurkku", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Suolakurkku").getName(), "Couldn't get item by name");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals("Suolakurkku", ingredientAccessObject.readIngredientByName("Suolakurkku").getName(), "Couldn't get item by name");
 		ingredient = new Ingredient("Sipuli", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals("Suolakurkku", ingredientDao.readIngredientByName("Suolakurkku").getName(), "Couldn't get item by name");
-		assertEquals("Sipuli", ingredientDao.readIngredientByName("Sipuli").getName(), "Couldn't get item by name");
-		assertEquals(null, ingredientDao.readIngredientByName("Eioo"), "Found something with wrong name");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals("Suolakurkku", ingredientAccessObject.readIngredientByName("Suolakurkku").getName(), "Couldn't get item by name");
+		assertEquals("Sipuli", ingredientAccessObject.readIngredientByName("Sipuli").getName(), "Couldn't get item by name");
+		assertEquals(null, ingredientAccessObject.readIngredientByName("Eioo"), "Found something with wrong name");
 	}
 
 	@Test
 	@DisplayName("Reading by id")
 	void testReadIngredient() {
 		ingredient = new Ingredient("Suolakurkku", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals("Suolakurkku", ingredientDao.readIngredient(ingredientDao.readIngredientByName("Suolakurkku").getItemId()).getName(), "Couldn't read item by id");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals("Suolakurkku", ingredientAccessObject.readIngredient(ingredientAccessObject.readIngredientByName("Suolakurkku").getItemId()).getName(), "Couldn't read item by id");
 		ingredient = new Ingredient("Sipuli", true);
-		assertEquals(true, ingredientDao.createIngredient(ingredient), "Couldn't add ingredient");
-		assertEquals("Suolakurkku", ingredientDao.readIngredient(ingredientDao.readIngredientByName("Suolakurkku").getItemId()).getName(), "Couldn't read item by id");
-		assertEquals("Sipuli", ingredientDao.readIngredient(ingredientDao.readIngredientByName("Sipuli").getItemId()).getName(), "Couldn't read item by id");
-		assertEquals(null, ingredientDao.readIngredient(234567876), "found item with wrong id");
+		assertEquals(true, ingredientAccessObject.createIngredient(ingredient), "Couldn't add ingredient");
+		assertEquals("Suolakurkku", ingredientAccessObject.readIngredient(ingredientAccessObject.readIngredientByName("Suolakurkku").getItemId()).getName(), "Couldn't read item by id");
+		assertEquals("Sipuli", ingredientAccessObject.readIngredient(ingredientAccessObject.readIngredientByName("Sipuli").getItemId()).getName(), "Couldn't read item by id");
+		assertEquals(null, ingredientAccessObject.readIngredient(234567876), "found item with wrong id");
 	}
 	
 	@Test
 	@DisplayName("Delete all ingredients")
 	void testDeleteAllIngredients(){
 		ingredient = new Ingredient("Sipuli", true);
-		ingredientDao.createIngredient(ingredient);
-		assertEquals(1, ingredientDao.readIngredients().length, "Couldn't add item");
+		ingredientAccessObject.createIngredient(ingredient);
+		assertEquals(1, ingredientAccessObject.readIngredients().length, "Couldn't add item");
 		ingredient = new Ingredient("Suolakurkku", true);
-		ingredientDao.createIngredient(ingredient);
-		assertEquals(2, ingredientDao.readIngredients().length, "Couldn't add item");
-		assertEquals(true, ingredientDao.deleteAllIngredients(), "Couldn't delete all items");
-		assertEquals(0, ingredientDao.readIngredients().length, "Couldn't delete all items");
+		ingredientAccessObject.createIngredient(ingredient);
+		assertEquals(2, ingredientAccessObject.readIngredients().length, "Couldn't add item");
+		assertEquals(true, ingredientAccessObject.deleteAllIngredients(), "Couldn't delete all items");
+		assertEquals(0, ingredientAccessObject.readIngredients().length, "Couldn't delete all items");
 	}
 
 }

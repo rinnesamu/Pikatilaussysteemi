@@ -9,12 +9,12 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-public class IngredientDao implements IIngredientDao {
+public class IngredientAccessObject implements IIngredientDao {
 
 	private SessionFactory sessionFactory = null;
 	private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
 
-	public IngredientDao() {
+	public IngredientAccessObject() {
 		// sessionFactory = util.HibernateUtil.buildSessionFactory();
 
 		try {
