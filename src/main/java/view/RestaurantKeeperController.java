@@ -33,6 +33,7 @@ public class RestaurantKeeperController {
 	
 	private FoodItemAccessObject foodItemDao;
 	private CategoryAccessObject categoryDao;
+	private IngredientDao ingredientDao;
 	
 	// Owner node for notification pop-ups
 	@FXML
@@ -66,11 +67,11 @@ public class RestaurantKeeperController {
 	private ObservableList<FoodItem> foodItemObList;
 	
 	//cellFactories for widgets in the menu table
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteFoodItemCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editFoodItemCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelFoodItemCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuFoodItemCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryFoodItemCellFactory;
 	
 	// Table and columns for adding a new item to database
 	@FXML
@@ -125,8 +126,40 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<Category, Void>, TableCell<Category, Void>> addCategoryButtonCellFactory;
 	
 	// Table and columns for ingredients
+	@FXML
+	private TableView<Ingredient> ingredientTableView;
+	@FXML
+	private TableColumn<Ingredient, Integer> ingredientIdColumn;
+	@FXML
+	private TableColumn<Ingredient, String> ingredientNameColumn;
+	@FXML
+	private TableColumn<Ingredient, Void> ingredientRemovableColumn;
+	@FXML
+	private TableColumn<Ingredient, Void> ingredientDeleteColumn;
+	
+	// Observable list for ingredients
+	private ObservableList<Ingredient> ingredientObList;
+	
+	// CellFactories for widget columns in ingredient table
+	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> ingredientRemovableCellFactory;
+	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> ingredientDeleteCellFactory;
 	
 	// Table and columns for adding new ingredient to database
+	@FXML
+	private TableView<Ingredient> addIngredientTableView;
+	@FXML
+	private TableColumn<Ingredient, String> addIngredientNameColumn;
+	@FXML
+	private TableColumn<Ingredient, Void> addIngredientRemovableColumn;
+	@FXML
+	private TableColumn<Ingredient, Void> addIngredientButtonColumn;
+	
+	// Observable list for dummy ingredient
+	private ObservableList<Ingredient> addIngredientObList;
+	
+	// CellFactories for widget columns in ingredient adding table
+	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> addIngredientRemovableCellFactory;
+	Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>> addIngredientButtonCellFactory;
 	
 	/**
 	 * Empty constructor
@@ -142,9 +175,10 @@ public class RestaurantKeeperController {
 	@FXML
 	public void initialize() {		
 		
-		// reading categories
+		// init data access objects needed
 		categoryDao = new CategoryAccessObject();
 		foodItemDao = new FoodItemAccessObject();
+		ingredientDao = new IngredientDao();
 		
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
@@ -155,16 +189,13 @@ public class RestaurantKeeperController {
 		
 		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-
 		// choicebox, Button and checkbox column cellFactories for menu TableView
-		createCellFactories();
-		inMenuColumn.setCellFactory(inMenuCellFactory);
-		deleteColumn.setCellFactory(deleteCellFactory);
-		saveEditColumn.setCellFactory(editCellFactory);
-		categoriesColumn.setCellFactory(categoryCellFactory);
+		createFoodItemCellFactories();
+		inMenuColumn.setCellFactory(inMenuFoodItemCellFactory);
+		deleteColumn.setCellFactory(deleteFoodItemCellFactory);
+		saveEditColumn.setCellFactory(editFoodItemCellFactory);
+		categoriesColumn.setCellFactory(categoryFoodItemCellFactory);
 		// cancelColumn.setCellFactory(cancelCellFactory);
-		
-		// fetching foodItems from database
 		refreshFoodItems();
 		
 		// add Item cellFactories for addFoodItemTableView
@@ -192,10 +223,28 @@ public class RestaurantKeeperController {
 		// init category adding columns
 		addCategoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
 		addCategoryNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		// cellFActory for category adding button
+		// cellFactory for category adding button
 		createAddCategoryCellFactories();
 		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
 		refreshDummyCategory();
+		
+		//initializing ingredient column cellfactories
+		ingredientIdColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("ItemId"));
+		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
+		// cellfactories for widget columns in ingredienttable
+		createIngredientCellFactories();
+		ingredientRemovableColumn.setCellFactory(ingredientRemovableCellFactory);
+		ingredientDeleteColumn.setCellFactory(ingredientDeleteCellFactory);
+		refreshIngredients();
+		
+		// initializing ingredient adding column cellfactories
+		addIngredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
+		addIngredientNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		createAddIngredientCellFactories();
+		addIngredientRemovableColumn.setCellFactory(addIngredientRemovableCellFactory);
+		addIngredientButtonColumn.setCellFactory(addIngredientButtonCellFactory);
+		refreshDummyIngredient();
+		
 	}
 	
 	/**
@@ -264,6 +313,16 @@ public class RestaurantKeeperController {
 	}
 	
 	/**
+	 * Event handler for the changes in adding new ingredient name column.
+	 * 
+	 * @param event - event object containing information on the edit
+	 */
+	@FXML
+	public void onEditCommitAddIngredientNameColumn(CellEditEvent<?,String> event) {
+		addIngredientTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
+	}
+	
+	/**
 	 * Method for fetching foodItems from the database
 	 */
 	public void refreshFoodItems() {
@@ -313,7 +372,201 @@ public class RestaurantKeeperController {
 	}
 	
 	/**
-	 * Method for creating custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
+	 * Method for fetching ingrtedients from database, and setting them in TableView
+	 */
+	public void refreshIngredients() {
+		ingredientObList = FXCollections.observableArrayList(ingredientDao.readIngredients());
+		ingredientTableView.setItems(ingredientObList);
+		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
+	}
+	
+	/**
+	 * Instantiates a dummy ingredient object for ingredient adding table
+	 */
+	public void refreshDummyIngredient() {
+		Ingredient dummyIngredient = new Ingredient("Uusi ainesosa", false);
+		List<Ingredient> tempList = new ArrayList<Ingredient>(0);
+		tempList.add(dummyIngredient);
+		addIngredientObList = FXCollections.observableArrayList(tempList);
+		addIngredientTableView.setItems(addIngredientObList);
+		addIngredientTableView.setEditable(true);
+	}
+	
+	// Creating cellfactories for choicebox, button and checkbox columns
+	/**
+	 * Method that creates custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
+	 * 
+	 */
+	public void createFoodItemCellFactories() {
+		// creating checkbox cellFactory
+		inMenuFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    CheckBox cb = new CheckBox();
+                    {
+                        cb.setOnAction((ActionEvent event) -> {
+                        	// current foodItem object - getTableView().getItems().get(getIndex())
+                            getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {                       
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            cb.setSelected(foodItem.isInMenu());
+                            setGraphic(cb);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// checkbox ends
+		
+		//category choiceBox
+		categoryFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    ChoiceBox<String> choiceBox = new ChoiceBox<String>();
+                    {
+                        Category[] categoryArray = categoryDao.readCategories();
+                        String[] categoryStringArray = new String[categoryArray.length];
+                		for (int i = 0; i < categoryArray.length; i++) {
+                			categoryStringArray[i] = categoryArray[i].getName();
+                		}
+                		ObservableList<String> categoryObList = FXCollections.observableArrayList(categoryStringArray);
+                    	choiceBox.setItems(categoryObList);
+                    	
+                        // change listener for selection change in box
+                        choiceBox.getSelectionModel()
+                        	.selectedItemProperty()
+                        	.addListener( (v, oldValue, newValue) -> {
+                        		// setting new category to current foodItem
+                        		getTableView().getItems().get(getIndex()).setCategory(newValue);
+                        	});
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                        	// setting the choicebox default value to current category
+                        	choiceBox.setValue(getTableView().getItems().get(getIndex()).getCategory());
+                            setGraphic(choiceBox);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// category choice box ends
+		
+		
+		// creating CellFactory for delete button
+		deleteFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    Button btn = new Button("Poista");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
+                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
+                            if(success) {
+                            	foodItemTableView.getItems().remove(foodItem);
+                            	createNotification("Tuote poistettu onnistuneesti!");
+                            }else {
+                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            }
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// delete button ends
+		
+		// creating cellFactory for editbutton
+		editFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    Button btn = new Button("Tallenna");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            FoodItem foodItem = getTableView().getItems().get(getIndex());
+                            System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
+                            boolean success = foodItemDao.updateFoodItem(foodItem);
+                            if(success) {
+                            	createNotification("Tuotetta muokattu onnistuneesti!");
+                            }else {
+                            	createNotification("Tuotetta ei onnistuttu muokkaamaan");
+                            }
+                            refreshFoodItems();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// editbutton ends
+		
+		// cancelbutton
+		cancelFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+                    Button btn = new Button("Peruuta");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	// functionality for cancel button
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// cancel button ends
+	}
+
+	/**
+	 * Method that creates custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
 	 * addButton CellFactory contains onAction method for adding item to database.
 	 * 
 	 */
@@ -422,182 +675,8 @@ public class RestaurantKeeperController {
 		// category choice box ends
 	}
 	
-	// Creating cellfactories for choicebox, button and checkbox columns
 	/**
-	 * Method for creating custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
-	 * 
-	 */
-	public void createCellFactories() {
-		// creating checkbox cellFactory
-		inMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    CheckBox cb = new CheckBox();
-                    {
-                        cb.setOnAction((ActionEvent event) -> {
-                        	// current foodItem object - getTableView().getItems().get(getIndex())
-                            getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {                       
-                            FoodItem foodItem = getTableView().getItems().get(getIndex());
-                            cb.setSelected(foodItem.isInMenu());
-                            setGraphic(cb);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// checkbox ends
-		
-		//category choiceBox
-		categoryCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    ChoiceBox<String> choiceBox = new ChoiceBox<String>();
-                    {
-                        Category[] categoryArray = categoryDao.readCategories();
-                        String[] categoryStringArray = new String[categoryArray.length];
-                		for (int i = 0; i < categoryArray.length; i++) {
-                			categoryStringArray[i] = categoryArray[i].getName();
-                		}
-                		ObservableList<String> categoryObList = FXCollections.observableArrayList(categoryStringArray);
-                    	choiceBox.setItems(categoryObList);
-                    	
-                        // change listener for selection change in box
-                        choiceBox.getSelectionModel()
-                        	.selectedItemProperty()
-                        	.addListener( (v, oldValue, newValue) -> {
-                        		// setting new category to current foodItem
-                        		getTableView().getItems().get(getIndex()).setCategory(newValue);
-                        	});
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                        	// setting the choicebox default value to current category
-                        	choiceBox.setValue(getTableView().getItems().get(getIndex()).getCategory());
-                            setGraphic(choiceBox);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// category choice box ends
-		
-		
-		// creating CellFactory for delete button
-		deleteCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Poista");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            FoodItem foodItem = getTableView().getItems().get(getIndex());
-                            System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
-                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
-                            if(success) {
-                            	foodItemTableView.getItems().remove(foodItem);
-                            	createNotification("Tuote poistettu onnistuneesti!");
-                            }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
-                            }
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(btn);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// delete button ends
-		
-		// creating cellFactory for editbutton
-		editCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Tallenna");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            FoodItem foodItem = getTableView().getItems().get(getIndex());
-                            System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
-                            boolean success = foodItemDao.updateFoodItem(foodItem);
-                            if(success) {
-                            	createNotification("Tuotetta muokattu onnistuneesti!");
-                            }else {
-                            	createNotification("Tuotetta ei onnistuttu muokkaamaan");
-                            }
-                            refreshFoodItems();
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-
-                            setGraphic(btn);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// editbutton ends
-		
-		// cancelbutton
-		cancelCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Peruuta");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                        	// functionality for cancel button
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-
-                            setGraphic(btn);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// cancel button ends
-	}
-
-	
-	/**
-	 * Method for creating custom CellFactories for widget columns in category table
+	 * Method that creates custom CellFactories for widget columns in category table
 	 */
 	public void createCategoryCellFactories() {
 		// delete category cellfactory
@@ -637,7 +716,7 @@ public class RestaurantKeeperController {
 	}
 	
 	/**
-	 * Method for creating custom cellFactories for widget columns in category adding table
+	 * Method that creates custom cellFactories for widget columns in category adding table
 	 */
 	public void createAddCategoryCellFactories() {
 		// add category cellfactory
@@ -674,5 +753,143 @@ public class RestaurantKeeperController {
 			}
 		};
 		// add category ends
+	}
+	
+	/**
+	 * Method that creates custom cellFactories for widget columns in ingredient table
+	 */
+	public void createIngredientCellFactories() {
+		// creating checkbox cellFactory
+		ingredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
+			@Override
+			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
+				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
+                    CheckBox cb = new CheckBox();
+                    {
+                    	cb.setDisable(true);
+                    	/*
+                        cb.setOnAction((ActionEvent event) -> {
+                        });*/
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {                       
+                        	Ingredient ingredient = getTableView().getItems().get(getIndex());
+                            cb.setSelected(ingredient.isRemovealbe());
+                            setGraphic(cb);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// checkbox ends
+		
+		// delete category cellfactory
+		ingredientDeleteCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
+			@Override
+			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
+				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
+                    Button btn = new Button("Poista");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	Ingredient ingredient = getTableView().getItems().get(getIndex());
+                            System.out.println("ainesosan poisto selectedData: " + ingredient.getName());
+                            boolean success = ingredientDao.deleteIngredient(ingredient.getItemId());
+                            if(success) {
+                            	ingredientTableView.getItems().remove(ingredient);
+                            	createNotification("Ainesosa poistettu onnistuneesti!");
+                            }else {
+                            	createNotification("Ainesosaa ei onnistuttu poistamaan");
+                            }
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// delete category ends
+	}
+	
+	/**
+	 * Method that creates custom cellFactories for widget columns in ingredient adding table
+	 */
+	public void createAddIngredientCellFactories() {
+		// creating checkbox cellFactory
+		addIngredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
+			@Override
+			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
+				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
+                    CheckBox cb = new CheckBox();
+                    {
+                        cb.setOnAction((ActionEvent event) -> {
+                        	// current foodItem object - getTableView().getItems().get(getIndex())
+                            getTableView().getItems().get(getIndex()).setRemovealbe(cb.isSelected());
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                        	Ingredient ingredient = getTableView().getItems().get(getIndex());
+                            cb.setSelected(ingredient.isRemovealbe());
+                            setGraphic(cb);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// checkbox ends
+		
+		// add ingredient cellfactory
+		addIngredientButtonCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
+			@Override
+			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
+				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
+                    Button btn = new Button("Lisää ainesosa");
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                        	Ingredient ingredient = getTableView().getItems().get(getIndex());
+                            System.out.println("ainesosan lisäys selectedData: " + ingredient.getName());
+                            boolean success = ingredientDao.createIngredient(ingredient);
+                            if(success) {
+                            	createNotification("Ainesosa lisätty onnistuneesti!");
+                            }else {
+                            	createNotification("Ainesosaa ei onnistuttu lisäämään");
+                            }
+                            refreshIngredients();
+                            refreshDummyIngredient();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// add ingredient ends
+		
 	}
 }

@@ -91,24 +91,24 @@
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <TableView prefHeight="200.0" prefWidth="200.0">
+                              <TableView fx:id="ingredientTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
                                 <columns>
-                                  <TableColumn prefWidth="120.0" text="Tunnus #" />
-                                  <TableColumn prefWidth="120.0" text="Nimi" />
-                                    <TableColumn prefWidth="120.0" text="Poistettavissa" />
-                                    <TableColumn prefWidth="120.0" text="Poista" />
+                                  <TableColumn fx:id="ingredientIdColumn" editable="false" prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn fx:id="ingredientNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="ingredientRemovableColumn" prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn fx:id="ingredientDeleteColumn" prefWidth="120.0" text="Poista" />
                                 </columns>
                               </TableView>
                            </children>
                         </StackPane>
                         <StackPane prefHeight="70.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
-                              <TableView prefHeight="200.0" prefWidth="200.0">
+                              <TableView fx:id="addIngredientTableView" editable="true" prefHeight="200.0" prefWidth="200.0">
                                 <columns>
                                   <TableColumn prefWidth="120.0" />
-                                  <TableColumn prefWidth="120.0" text="Nimi" />
-                                    <TableColumn prefWidth="120.0" text="Poistettavissa" />
-                                    <TableColumn prefWidth="120.0" text="Lisää" />
+                                  <TableColumn fx:id="addIngredientNameColumn" onEditCommit="#onEditCommitAddIngredientNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addIngredientRemovableColumn" prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn fx:id="addIngredientButtonColumn" prefWidth="120.0" text="Lisää" />
                                 </columns>
                               </TableView>
                            </children>
