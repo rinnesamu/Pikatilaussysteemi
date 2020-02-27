@@ -85,6 +85,38 @@
                      </children></AnchorPane>
               </content>
             </Tab>
+            <Tab text="Ainesosat">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <TableView prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="120.0" text="Tunnus #" />
+                                  <TableColumn prefWidth="120.0" text="Nimi" />
+                                    <TableColumn prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn prefWidth="120.0" text="Poista" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                        <StackPane prefHeight="70.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <TableView prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="120.0" />
+                                  <TableColumn prefWidth="120.0" text="Nimi" />
+                                    <TableColumn prefWidth="120.0" text="Poistettavissa" />
+                                    <TableColumn prefWidth="120.0" text="Lisää" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>

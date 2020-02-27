@@ -124,6 +124,9 @@ public class RestaurantKeeperController {
 	// cellfactories for adding category
 	Callback<TableColumn<Category, Void>, TableCell<Category, Void>> addCategoryButtonCellFactory;
 	
+	// Table and columns for ingredients
+	
+	// Table and columns for adding new ingredient to database
 	
 	/**
 	 * Empty constructor
