@@ -27,6 +27,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import model.Category;
+import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
 import model.ShoppingCart;
@@ -67,6 +69,8 @@ public class MenuViewController {
 	private MainApp mainApp;
 	
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
+	
+	private CategoryAccessObject categoryAO = new CategoryAccessObject();
 	
 	private ShoppingCart shoppingCart = new ShoppingCart();
 	
@@ -168,7 +172,12 @@ public class MenuViewController {
 	
 	@FXML
 	private void initialize() {
-		selectMeals();
+		//selectMeals();
+		createCategoryList();
+	}
+	
+	private void createCategoryList() {
+		
 	}
 	
 	/**

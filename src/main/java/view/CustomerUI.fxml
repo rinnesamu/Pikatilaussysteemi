@@ -38,42 +38,7 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="440.0" prefWidth="250.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button fx:id="meals" mnemonicParsing="false" onAction="#selectMeals" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #FF8A65;" text="ATERIAT">
-               <font>
-                  <Font name="Avenir Roman" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="2.0" top="2.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="drinks" mnemonicParsing="false" onAction="#selectDrinks" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #FF8A65;" text="JUOMAT">
-               <font>
-                  <Font name="Avenir Roman" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="hamburgers" mnemonicParsing="false" onAction="#selectBurgers" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #FF8A65;" text="HAMPURILAISET">
-               <font>
-                  <Font name="Avenir Roman" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="desserts" mnemonicParsing="false" onAction="#selectDesserts" prefHeight="110.0" prefWidth="250.0" style="-fx-background-color: #FF8A65;" text="JÄLKIRUOAT">
-               <font>
-                  <Font name="Avenir Roman" size="20.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
+      <VBox prefHeight="440.0" prefWidth="250.0" BorderPane.alignment="CENTER" />
    </left>
    <bottom>
       <BorderPane prefHeight="35.0" prefWidth="1100.0" BorderPane.alignment="CENTER" />
