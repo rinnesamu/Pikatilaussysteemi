@@ -253,17 +253,16 @@ public class MenuViewController {
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 					shoppingCartList.getChildren().set(i, sCartItem);
-					sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 				}
 			}	
 		}
 		// Otherwise add the item to the shopping cart.
 		else {
 			shoppingCart.addToShoppingCart(foodItem, 1);
-			sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 			shoppingCartList.getChildren().add(sCartItem);
 		}
 		
+		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		// Add a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
 		//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
@@ -353,7 +352,7 @@ public class MenuViewController {
 
 		});
 		okay.setOnAction(event -> {
-			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
+			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
 
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
