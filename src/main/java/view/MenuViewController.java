@@ -61,6 +61,9 @@ public class MenuViewController {
 	private VBox shoppingCartList;
 	
 	@FXML
+	private VBox categoryList;
+	
+	@FXML
 	private Button emptyButton;
 	
 	@FXML
@@ -143,41 +146,35 @@ public class MenuViewController {
 	}
 	
 	@FXML
-	private void selectMeals() {
-		FoodItem[] meals = foodItemAO.readFoodItemsCategory("Ateriat");
-		items = meals;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectDrinks() {
-		FoodItem[] drinks = foodItemAO.readFoodItemsCategory("Juomat");
-		items = drinks;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectBurgers() {
-		FoodItem[] burgers = foodItemAO.readFoodItemsCategory("Hampurilaiset");
-		items = burgers;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectDesserts() {
-		FoodItem[] desserts = foodItemAO.readFoodItemsCategory("Jälkiruuat");
-		items = desserts;
-		createMenu();
-	}
-	
-	@FXML
 	private void initialize() {
-		//selectMeals();
 		createCategoryList();
+		Category ice = new Category("Jätskit");
+		categoryAO.createCategory(ice);
+	}
+	
+	private void categoryButtonHandler(String name) {
+		items = foodItemAO.readFoodItemsCategory(name);
+		createMenu();
 	}
 	
 	private void createCategoryList() {
-		
+		Category[] allCategories = categoryAO.readCategories();
+
+		for (int i = 0; i < allCategories.length; i++) {
+			String categoryName = allCategories[i].getName();
+			Button categoryButton = new Button(categoryName);
+			categoryButton.setMinSize(250, 130);
+			categoryButton.setFont(new Font(25));
+			categoryButton.getStyleClass().add("categorybutton");
+			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					categoryButtonHandler(categoryName);					
+				}
+			};
+			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
+			categoryList.getChildren().add(categoryButton);
+		}
 	}
 	
 	/**

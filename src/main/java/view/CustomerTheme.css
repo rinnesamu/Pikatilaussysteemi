@@ -15,3 +15,9 @@
 	-fx-padding: 1px;
 	-fx-border-insets: 1px;
 }
+.categorybutton {
+	-fx-background-color: orange;
+	-fx-border-insets: 5px;
+	-fx-border-width: 3;
+	-fx-border-color: black;
+}
