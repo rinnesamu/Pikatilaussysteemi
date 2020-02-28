@@ -148,13 +148,24 @@ public class MenuViewController {
 	@FXML
 	private void initialize() {
 		createCategoryList();
-		Category ice = new Category("Jätskit");
-		categoryAO.createCategory(ice);
+		Label startText = new Label("Tervetuloa! Valitse kategoria!");
+		startText.setFont(new Font(30));
+		menu.getChildren().add(startText);
 	}
 	
 	private void categoryButtonHandler(String name) {
 		items = foodItemAO.readFoodItemsCategory(name);
-		createMenu();
+		if (items.length != 0) {
+			System.out.println("Itemit on" + Arrays.toString(items));
+			createMenu();
+		}
+		else {
+			menu.getChildren().clear();
+			Label emptyText = new Label("Pahoittelut! Kategoria on tyhjä!");
+			menu.getChildren().add(emptyText);
+			emptyText.setFont(new Font(25));
+
+		}
 	}
 	
 	private void createCategoryList() {
@@ -163,7 +174,8 @@ public class MenuViewController {
 		for (int i = 0; i < allCategories.length; i++) {
 			String categoryName = allCategories[i].getName();
 			Button categoryButton = new Button(categoryName);
-			categoryButton.setMinSize(250, 130);
+			int categoryButtonSize = 500 / allCategories.length;
+			categoryButton.setMinSize(250, categoryButtonSize);
 			categoryButton.setFont(new Font(25));
 			categoryButton.getStyleClass().add("categorybutton");
 			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
