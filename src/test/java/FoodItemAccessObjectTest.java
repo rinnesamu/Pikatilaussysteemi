@@ -57,10 +57,6 @@ class FoodItemAccessObjectTest {
 		foodItem = new FoodItem("Iso kokis", 3.5, false);
 		foodItemDao.createFoodItem(foodItem);
 		assertEquals(2, foodItemDao.readFoodItems().length, "read all food items does not work!(wrong size)");
-		assertEquals("kokis", foodItemDao.readFoodItems()[0].getName(),
-				"read all food items does not work! (wrong name)");
-		assertEquals("Iso kokis", foodItemDao.readFoodItems()[1].getName(),
-				"read all food items does not work! (wrong name)");
 
 	}
 
