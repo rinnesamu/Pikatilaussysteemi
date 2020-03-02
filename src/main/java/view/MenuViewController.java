@@ -2,9 +2,11 @@ package view;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -27,10 +29,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
+import model.Order;
+import model.OrderAccessObject;
 import model.ShoppingCart;
 
 /**
@@ -77,9 +82,13 @@ public class MenuViewController {
 	
 	private ShoppingCart shoppingCart = new ShoppingCart();
 	
+	private OrderAccessObject orderAO = new OrderAccessObject();
+	
 	private FoodItem[] items;
 
 	private int menuId;
+	
+	private static int orderNumber = 1;
 
 			
 	public MenuViewController() {
@@ -115,11 +124,37 @@ public class MenuViewController {
 		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
 		readyList.getChildren().addAll(sumText, payButton);
+		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
+				System.out.println("Maksaa " + order);
+				orderAO.createOrder(order);
+				PauseTransition delay = new PauseTransition(Duration.seconds(5));
+				delay.setOnFinished( event -> pay(readyToPay) );
+				delay.play();
+				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
+				payText.setFont(new Font(35));
+				readyList.getChildren().add(payText);
+				/*shoppingCart.emptyShoppingCart();
+				shoppingCartList.getChildren().clear();
+				orderNumber++;
+				readyToPay.close();*/
+			}
+		};
+		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);
 		sPane.setContent(readyList);
 
 		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
 		readyToPay.show();
+	}
+	
+	private void pay(Stage s) {
+		shoppingCart.emptyShoppingCart();
+		shoppingCartList.getChildren().clear();
+		orderNumber++;
+		s.close();
 	}
 
 	@FXML
