@@ -9,17 +9,29 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+/**
+ * Access object for ingredients.
+ * @author Samu Rinne
+ *
+ */
 public class IngredientAccessObject implements IIngredientDao {
 
 	private SessionFactory sessionFactory = null;
 
-
+	/**
+	 * Constructor. Creates SessionFactory or gets one if it already exists.
+	 */
 	public IngredientAccessObject() {
 		sessionFactory = util.HibernateUtil.buildSessionFactory();
 
 
 	}
 
+	/**
+	 * Adds new Ingredient to database
+	 * @param ingredient Ingredient that you want to add
+	 * @return true if successful, false otherwise.
+	 */
 	@Override
 	public boolean createIngredient(Ingredient ingredient) {
 		if (readIngredientByName(ingredient.getName()) != null) {
@@ -39,6 +51,10 @@ public class IngredientAccessObject implements IIngredientDao {
 		return true;
 	}
 
+	/**
+	 * Reads all ingredients from database.
+	 * @return list of ingredients, null if nothing found.
+	 */
 	@Override
 	public Ingredient[] readIngredients() {
 		List<Ingredient> ingredients = null;
@@ -57,6 +73,11 @@ public class IngredientAccessObject implements IIngredientDao {
 		return (Ingredient[]) ingredients.toArray(retrunIngredients);
 	}
 
+	/**
+	 * Updates ingredients information to database
+	 * @param ingredient Ingredient you want to update
+	 * @return true if successful, false otherwise.
+	 */
 	@Override
 	public boolean updateIngredient(Ingredient ingredient) {
 		Transaction transaction = null;
@@ -73,6 +94,11 @@ public class IngredientAccessObject implements IIngredientDao {
 		return true;
 	}
 
+	/**
+	 * Deletes ingredient by id.
+	 * @param id Ingredients id
+	 * @return true if ingredient found and deleted, false otherwise.
+	 */
 	@Override
 	public boolean deleteIngredient(int id) {
 		if (readIngredient(id) == null) {
@@ -92,6 +118,11 @@ public class IngredientAccessObject implements IIngredientDao {
 		return true;
 	}
 
+	/**
+	 * Reads ingredient from database by its name.
+	 * @param name Ingredients name
+	 * @return ingredient if found. null otherwise.
+	 */
 	@Override
 	public Ingredient readIngredientByName(String name) {
 		Transaction transaction = null;
@@ -112,6 +143,11 @@ public class IngredientAccessObject implements IIngredientDao {
 		return ingredient;
 	}
 
+	/**
+	 * Reads ingredient from database by its id.
+	 * @param ditemId ingredients id
+	 * @return ingredient if found. null otherwise.
+	 */
 	@Override
 	public Ingredient readIngredient(int itemId) {
 		Ingredient ingredient = null;
@@ -128,6 +164,10 @@ public class IngredientAccessObject implements IIngredientDao {
 		return ingredient;
 	}
 
+	/**
+	 * Deletes all ingredients form database.
+	 * @return true
+	 */
 	@Override
 	public boolean deleteAllIngredients() {
 		Ingredient[] ingredients = readIngredients();

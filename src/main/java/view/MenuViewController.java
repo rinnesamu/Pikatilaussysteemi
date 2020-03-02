@@ -131,15 +131,12 @@ public class MenuViewController {
 				System.out.println("Maksaa " + order);
 				orderAO.createOrder(order);
 				PauseTransition delay = new PauseTransition(Duration.seconds(5));
-				delay.setOnFinished( event -> pay(readyToPay) );
+				delay.setOnFinished( event -> pay(readyToPay));
 				delay.play();
+				// TODO:  Tää teksti jotenkin järkevämmin.
 				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
 				payText.setFont(new Font(35));
 				readyList.getChildren().add(payText);
-				/*shoppingCart.emptyShoppingCart();
-				shoppingCartList.getChildren().clear();
-				orderNumber++;
-				readyToPay.close();*/
 			}
 		};
 		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);

@@ -1,19 +1,31 @@
 package model;
 
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+/**
+ * AccessObject for Category
+ * @author Samu Rinne
+ *
+ */
+
 public class CategoryAccessObject implements ICategoryDao {
 	
 	private SessionFactory sessionFactory = null;
-	
+	/**
+	 * Constructor. Creates SessionFactory or gets one if it already exists.
+	 */
 	public CategoryAccessObject() {
 		sessionFactory = util.HibernateUtil.buildSessionFactory();
 	}
 
+	/**
+	 * Adds category to database
+	 * @param category Category object that you want to add to database
+	 * @return true if successful, false otherwise
+	 */
 	@Override
 	public boolean createCategory(Category category) {
 		if (readCategoryByName(category.getName()) != null) {
@@ -33,6 +45,10 @@ public class CategoryAccessObject implements ICategoryDao {
 		return true;
 	}
 
+	/**
+	 * Reads all categories from database.
+	 * @return Category[] list of categories
+	 */
 	@Override
 	public Category[] readCategories() {
 		List<Category> categories = null;
@@ -51,6 +67,11 @@ public class CategoryAccessObject implements ICategoryDao {
 		return (Category[]) categories.toArray(retrunCategories);
 	}
 
+	/**
+	 * Get category from database by name.
+	 * @param name categorys name.
+	 * @return category  Null if didn't find anything.
+	 */
 	@Override
 	public Category readCategoryByName(String name) {
 		List<Category> categories = null;
@@ -72,6 +93,11 @@ public class CategoryAccessObject implements ICategoryDao {
 		return category;
 	}
 
+	/**
+	 * Updates categorys information to database
+	 * @param category category that you want to update
+	 * @return true id successful, false otherwise.
+	 */
 	@Override
 	public boolean updateCategory(Category category) {
 		Transaction transaction = null;
@@ -88,6 +114,10 @@ public class CategoryAccessObject implements ICategoryDao {
 		return true;
 	}
 
+	/**
+	 * Deletes all categories
+	 * @return true
+	 */
 	@Override
 	public boolean deleteAllCategories() {
 		Category[] categories = readCategories();
@@ -101,6 +131,11 @@ public class CategoryAccessObject implements ICategoryDao {
 		}
 	}
 
+	/**
+	 * Deletes one category with name
+	 * @param name Categorys name
+	 * @return true if category was found and deleted, false otherwise.
+	 */
 	@Override
 	public boolean deleteCategoryByName(String name) {
 		System.out.println(readCategoryByName(name));
