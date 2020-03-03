@@ -1,10 +1,7 @@
 package view;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
@@ -13,13 +10,11 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -46,31 +41,23 @@ import model.ShoppingCart;
  */
 
 public class MenuViewController {
-
-	@FXML
-	private Button meals;
-	
-	@FXML
-	private Button drinks;
-
-	@FXML
-	private Button hamburgers;
-
-	@FXML
-	private Button desserts;
 	
 	@FXML
 	private FlowPane menu;
 	
+	// Shopping cart element.
 	@FXML
 	private VBox shoppingCartList;
 	
+	// Category menu element.
 	@FXML
 	private VBox categoryList;
 	
+	// Empty shopping cart element.
 	@FXML
 	private Button emptyButton;
 	
+	// Pay the shopping cart element.
 	@FXML
 	private Button buyButton;
 	
@@ -79,11 +66,11 @@ public class MenuViewController {
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
 	
 	private CategoryAccessObject categoryAO = new CategoryAccessObject();
-	
-	private ShoppingCart shoppingCart = new ShoppingCart();
-	
+		
 	private OrderAccessObject orderAO = new OrderAccessObject();
 	
+	private ShoppingCart shoppingCart = new ShoppingCart();
+
 	private FoodItem[] items;
 
 	private int menuId;
@@ -96,6 +83,10 @@ public class MenuViewController {
 		
 	}
 	
+	
+	/**
+	 * Method to open the window for paying the shopping cart.
+	 */
 	@FXML
 	private void readyToPayShoppingCart() {
 		Stage readyToPay = new Stage();
@@ -148,13 +139,20 @@ public class MenuViewController {
 		readyToPay.show();
 	}
 	
+	/**
+	 * Method for the paying process.
+	 * @param s Stage of the paying process.
+	 */
 	private void pay(Stage s) {
 		shoppingCart.emptyShoppingCart();
 		shoppingCartList.getChildren().clear();
 		orderNumber++;
 		s.close();
 	}
-
+	
+	/**
+	 * Method for emptying the shopping cart element and shopping cart object.
+	 */
 	@FXML
 	private void emptyShoppingCart() {
 		Alert options = new Alert(AlertType.CONFIRMATION);
@@ -178,6 +176,10 @@ public class MenuViewController {
 
 	}
 	
+	/**
+	 * Initial actions: most importantly, creating the category list.
+	 */
+	
 	@FXML
 	private void initialize() {
 		createCategoryList();
@@ -186,10 +188,13 @@ public class MenuViewController {
 		menu.getChildren().add(startText);
 	}
 	
+	/**
+	 * Method for reading the food items of the selected category.
+	 * @param name Name of the category.
+	 */
 	private void categoryButtonHandler(String name) {
 		items = foodItemAO.readFoodItemsCategory(name);
 		if (items.length != 0) {
-			System.out.println("Itemit on" + Arrays.toString(items));
 			createMenu();
 		}
 		else {
@@ -197,10 +202,12 @@ public class MenuViewController {
 			Label emptyText = new Label("Pahoittelut! Kategoria on tyhjä!");
 			menu.getChildren().add(emptyText);
 			emptyText.setFont(new Font(25));
-
 		}
 	}
 	
+	/**
+	 * Method for creating the category list menu.
+	 */
 	private void createCategoryList() {
 		Category[] allCategories = categoryAO.readCategories();
 
@@ -223,7 +230,7 @@ public class MenuViewController {
 	}
 	
 	/**
-	 * Method for creating the menu of the selected category.
+	 * Method for creating the menu items (GridPane elements).
 	 */
 	
 	private void createMenu() {
