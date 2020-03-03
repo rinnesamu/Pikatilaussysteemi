@@ -89,6 +89,7 @@ public class MenuViewController {
 	private int menuId;
 	
 	private static int orderNumber = 1;
+	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
 
 			
 	public MenuViewController() {
