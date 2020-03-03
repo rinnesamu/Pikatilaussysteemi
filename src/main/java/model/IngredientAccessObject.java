@@ -145,7 +145,7 @@ public class IngredientAccessObject implements IIngredientDao {
 
 	/**
 	 * Reads ingredient from database by its id.
-	 * @param ditemId ingredients id
+	 * @param itemId ingredients id
 	 * @return ingredient if found. null otherwise.
 	 */
 	@Override

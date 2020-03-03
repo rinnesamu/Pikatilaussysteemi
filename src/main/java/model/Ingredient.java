@@ -70,7 +70,7 @@ public class Ingredient {
 
 	/**
 	 * setter for removeable
-	 * @param removealbe
+	 * @param removealbe Tells if you can remove ingredient from product
 	 */
 	public void setRemoveable(boolean removealbe) {
 		this.removeable = removealbe;

@@ -138,7 +138,7 @@ public class FoodItem {
 
 	/**
 	 * Setter for inMenu
-	 * @param inMenu
+	 * @param inMenu tells if item is in active menu
 	 */
 	public void setInMenu(boolean inMenu) {
 		this.inMenu = inMenu;

@@ -106,11 +106,9 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Updates item in db with specific id.
-	 * @param index    index of item that you want to update
 	 * @param foodItem New data that you want to store
 	 * @return true if successful, false if not
 	 */
-
 	@Override
 	public boolean updateFoodItem(FoodItem foodItem) {
 		Transaction transaction = null;

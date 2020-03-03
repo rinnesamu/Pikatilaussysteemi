@@ -50,7 +50,7 @@ public class Order implements Serializable{
 	 * Constructor for the Order -class
 	 * 
 	 * @param orderNumber - ordernumber that is given for the order
-	 * @param orderContent - hashmap that contains food items and their amount
+	 * @param shoppingCart - hashmap that contains food items and their amount
 	 */
 	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
 		Map<String, Integer> orderContent = new HashMap<String, Integer>();
