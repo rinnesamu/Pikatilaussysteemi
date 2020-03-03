@@ -159,7 +159,12 @@ class FoodItemTest {
 		foodItem.setIngredients(list4);
 		assertEquals("kana pihvi", foodItem.getIngredientsAsList()[2], "Couldn't get correct incredient list");
 		assertEquals(3, foodItem.getIngredientsAsList().length, "Couldn't get correct incredient list");
-		
+	}
+	
+	@Test
+	@DisplayName("Test fo toString")
+	void testToString() {
+		assertEquals("kokis, price: 2.5", foodItem.toString(), "Couldnt read toString correctly.");
 	}
 
 
