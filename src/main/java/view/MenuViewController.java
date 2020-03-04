@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Category;
@@ -42,16 +43,17 @@ import model.ShoppingCart;
 
 public class MenuViewController {
 	
+	// Element where the menu is located.
 	@FXML
 	private FlowPane menu;
+
+	// Category menu element.
+	@FXML
+	private VBox categoryList;
 	
 	// Shopping cart element.
 	@FXML
 	private VBox shoppingCartList;
-	
-	// Category menu element.
-	@FXML
-	private VBox categoryList;
 	
 	// Empty shopping cart element.
 	@FXML
@@ -61,7 +63,7 @@ public class MenuViewController {
 	@FXML
 	private Button buyButton;
 	
-	private MainApp mainApp;
+	// AccessObjects for the database connections.
 	
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
 	
@@ -69,14 +71,14 @@ public class MenuViewController {
 		
 	private OrderAccessObject orderAO = new OrderAccessObject();
 	
+	// Shopping cart object
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
+	// All the items of a certain category.
 	private FoodItem[] items;
-
-	private int menuId;
 	
-	private static int orderNumber = 1;
 	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
+	private static int orderNumber = 1;
 
 			
 	public MenuViewController() {
@@ -85,7 +87,7 @@ public class MenuViewController {
 	
 	
 	/**
-	 * Method to open the window for paying the shopping cart.
+	 * Popup for paying the shopping cart.
 	 */
 	@FXML
 	private void readyToPayShoppingCart() {
@@ -115,7 +117,10 @@ public class MenuViewController {
 		Label sumText = new Label("Summa: " + priceSum + " euroa");
 		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
-		readyList.getChildren().addAll(sumText, payButton);
+		payButton.setFont(new Font(30));
+		Button cancelButton = new Button("Peruuta maksaminen");
+		cancelButton.setFont(new Font(30));
+		readyList.getChildren().addAll(sumText, payButton, cancelButton);
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -132,10 +137,12 @@ public class MenuViewController {
 			}
 		};
 		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);
+		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
 		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
+		readyToPay.initModality(Modality.APPLICATION_MODAL);
 		readyToPay.show();
 	}
 	
@@ -151,7 +158,7 @@ public class MenuViewController {
 	}
 	
 	/**
-	 * Method for emptying the shopping cart element and shopping cart object.
+	 * Method for emptying the shopping cart element in UI and shopping cart object.
 	 */
 	@FXML
 	private void emptyShoppingCart() {
@@ -177,15 +184,15 @@ public class MenuViewController {
 	}
 	
 	/**
-	 * Initial actions: most importantly, creating the category list.
+	 * Initial actions: starting the creation of the menus.
 	 */
 	
 	@FXML
 	private void initialize() {
-		createCategoryList();
-		Label startText = new Label("Tervetuloa! Valitse kategoria!");
-		startText.setFont(new Font(30));
-		menu.getChildren().add(startText);
+		Category[] allCategories = categoryAO.readCategories();
+		createCategoryList(allCategories);
+		String categoryName = allCategories[0].getName();
+		categoryButtonHandler(categoryName);
 	}
 	
 	/**
@@ -208,13 +215,12 @@ public class MenuViewController {
 	/**
 	 * Method for creating the category list menu.
 	 */
-	private void createCategoryList() {
-		Category[] allCategories = categoryAO.readCategories();
+	private void createCategoryList(Category[] categories) {
 
-		for (int i = 0; i < allCategories.length; i++) {
-			String categoryName = allCategories[i].getName();
+		for (int i = 0; i < categories.length; i++) {
+			String categoryName = categories[i].getName();
 			Button categoryButton = new Button(categoryName);
-			int categoryButtonSize = 500 / allCategories.length;
+			int categoryButtonSize = 500 / categories.length;
 			categoryButton.setMinSize(250, categoryButtonSize);
 			categoryButton.setFont(new Font(25));
 			categoryButton.getStyleClass().add("categorybutton");
@@ -244,7 +250,7 @@ public class MenuViewController {
 				FoodItem fItem = items[i];
 				
 				// Taking item id of the foodItem and setting that as "menuId".
-				menuId = fItem.getItemId();
+				int menuId = fItem.getItemId();
 				menuItem.getStyleClass().add("menubutton");
 				
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
@@ -323,13 +329,12 @@ public class MenuViewController {
 		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		// Add a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
-		//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
 		sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
 	}
 	
 	
 	/**
-	 * Shopping cart item menu for editing shopping list
+	 * Popup for editing shopping list item
 	 * 
 	 * @param button Button of the item in the shopping cart.
 	 * @param foodItem The foodItem connected to that particular button.
@@ -431,15 +436,11 @@ public class MenuViewController {
 		boxWhole.getChildren().addAll(nameAndAmount, pick, boxButtons, boxOkCancel);
 		Scene popUpScene = new Scene(boxWhole, 600, 350);
 		popUp.setScene(popUpScene);
+		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.show();
 		
 		
 		System.out.println(shoppingCart);
-	}
-	
-	
-	public void setMainApp(MainApp mainApp) {
-		this.mainApp = mainApp;
 	}
 
 }

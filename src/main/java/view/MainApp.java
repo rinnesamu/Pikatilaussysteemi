@@ -7,8 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import model.FoodItemAccessObject;
-
 
 /**
  * 
@@ -46,15 +44,10 @@ public class MainApp extends Application {
 			primaryStage.show();
 			
 			MenuViewController controller = loader.getController();
-			controller.setMainApp(this);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public Stage getPrimaryStage() {
-		return primaryStage;
 	}
 
 	public static void main(String[] args) {
