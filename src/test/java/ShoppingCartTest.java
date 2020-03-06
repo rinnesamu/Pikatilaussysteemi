@@ -2,6 +2,8 @@
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ class ShoppingCartTest {
 		
 	private ShoppingCart sCart = new ShoppingCart();
 	private FoodItem foodItem, foodItem2, foodItem3;
+	private final double DELTA = 0.001;
 	
 	@BeforeEach
     void testResetShoppingCart() {
@@ -56,7 +59,7 @@ class ShoppingCartTest {
 	@DisplayName("Adding same product again")
 	void testSameProductToShoppingCart() {
 		sCart.addToShoppingCart(foodItem, 5);
-		assertEquals(9, sCart.getAmount(foodItem.getItemId()), "Wrong size");
+		assertEquals(9, sCart.getAmount(foodItem.getItemId()), "Wrong amount");
 	}
 
 	@Test
@@ -82,11 +85,15 @@ class ShoppingCartTest {
 		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size");
 	}
 
-	// ####################KESKEN#############################
 	@Test
 	@DisplayName("Getting the FoodItems of the shopping cart")
 	void testGetFoodItems() {
-		
+		FoodItem[] allItems = sCart.getFoodItems();
+		FoodItem firstItem = allItems[0];
+		assertEquals("Big Mac", firstItem.getName(), "Wrong foodItem name");
+		assertEquals(6, firstItem.getPrice(), DELTA, "Wrong foodItem price");
+		assertEquals(1, firstItem.getItemId(), "Wrong foodItem itemId");
+		assertEquals(true, firstItem.isInMenu(), "Wrong foodItem inMenu");
 	}
 	
 	@Test
@@ -120,6 +127,7 @@ class ShoppingCartTest {
 	@Test
 	@DisplayName("Getting the size of the shopping cart")
 	void testSizeShoppingCart() {
+		assertEquals(1, sCart.sizeShoppingCart(), "Wrong original size");
 		foodItem2 = new FoodItem("Pieni kahvi", 2, true);
 		foodItem3 = new FoodItem("Pieni cola", 3, true);
 		sCart.addToShoppingCart(foodItem2, 5);

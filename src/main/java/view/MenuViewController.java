@@ -1,23 +1,20 @@
 package view;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.Set;
 
+import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -26,9 +23,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import model.Category;
+import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
+import model.Order;
+import model.OrderAccessObject;
 import model.ShoppingCart;
 
 /**
@@ -39,46 +42,53 @@ import model.ShoppingCart;
  */
 
 public class MenuViewController {
-
-	@FXML
-	private Button meals;
 	
-	@FXML
-	private Button drinks;
-
-	@FXML
-	private Button hamburgers;
-
-	@FXML
-	private Button desserts;
-	
+	// Element where the menu is located.
 	@FXML
 	private FlowPane menu;
+
+	// Category menu element.
+	@FXML
+	private VBox categoryList;
 	
+	// Shopping cart element.
 	@FXML
 	private VBox shoppingCartList;
 	
+	// Empty shopping cart element.
 	@FXML
 	private Button emptyButton;
 	
+	// Pay the shopping cart element.
 	@FXML
 	private Button buyButton;
 	
-	private MainApp mainApp;
+	// AccessObjects for the database connections.
 	
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
 	
-	private ShoppingCart shoppingCart = new ShoppingCart();
+	private CategoryAccessObject categoryAO = new CategoryAccessObject();
+		
+	private OrderAccessObject orderAO = new OrderAccessObject();
 	
-	private FoodItem[] items;
+	// Shopping cart object
+	private ShoppingCart shoppingCart = new ShoppingCart();
 
-	private int menuId;
+	// All the items of a certain category.
+	private FoodItem[] items;
+	
+	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
+	private static int orderNumber = 1;
 
 			
 	public MenuViewController() {
 		
 	}
 	
+	
+	/**
+	 * Popup for paying the shopping cart.
+	 */
 	@FXML
 	private void readyToPayShoppingCart() {
 		Stage readyToPay = new Stage();
@@ -107,14 +117,49 @@ public class MenuViewController {
 		Label sumText = new Label("Summa: " + priceSum + " euroa");
 		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
-		readyList.getChildren().addAll(sumText, payButton);
+		payButton.setFont(new Font(30));
+		Button cancelButton = new Button("Peruuta maksaminen");
+		cancelButton.setFont(new Font(30));
+		readyList.getChildren().addAll(sumText, payButton, cancelButton);
+		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
+				System.out.println("Maksaa " + order);
+				orderAO.createOrder(order);
+				PauseTransition delay = new PauseTransition(Duration.seconds(5));
+				delay.setOnFinished( event -> pay(readyToPay));
+				delay.play();
+				// TODO:  Tää teksti jotenkin järkevämmin.
+				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
+				payText.setFont(new Font(35));
+				readyList.getChildren().add(payText);
+			}
+		};
+		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);
+		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
 		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
+		readyToPay.initModality(Modality.APPLICATION_MODAL);
 		readyToPay.show();
 	}
-
+	
+	/**
+	 * Method for the paying process.
+	 * @param s Stage of the paying process.
+	 */
+	private void pay(Stage s) {
+		shoppingCart.emptyShoppingCart();
+		shoppingCartList.getChildren().clear();
+		orderNumber++;
+		s.close();
+	}
+	
+	/**
+	 * Method for emptying the shopping cart element in UI and shopping cart object.
+	 */
 	@FXML
 	private void emptyShoppingCart() {
 		Alert options = new Alert(AlertType.CONFIRMATION);
@@ -138,41 +183,60 @@ public class MenuViewController {
 
 	}
 	
-	@FXML
-	private void selectMeals() {
-		FoodItem[] meals = foodItemAO.readFoodItemsCategory("Ateriat");
-		items = meals;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectDrinks() {
-		FoodItem[] drinks = foodItemAO.readFoodItemsCategory("Juomat");
-		items = drinks;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectBurgers() {
-		FoodItem[] burgers = foodItemAO.readFoodItemsCategory("Hampurilaiset");
-		items = burgers;
-		createMenu();
-	}
-	
-	@FXML
-	private void selectDesserts() {
-		FoodItem[] desserts = foodItemAO.readFoodItemsCategory("Jälkiruuat");
-		items = desserts;
-		createMenu();
-	}
+	/**
+	 * Initial actions: starting the creation of the menus.
+	 */
 	
 	@FXML
 	private void initialize() {
-		selectMeals();
+		Category[] allCategories = categoryAO.readCategories();
+		createCategoryList(allCategories);
+		String categoryName = allCategories[0].getName();
+		categoryButtonHandler(categoryName);
 	}
 	
 	/**
-	 * Method for creating the menu of the selected category.
+	 * Method for reading the food items of the selected category.
+	 * @param name Name of the category.
+	 */
+	private void categoryButtonHandler(String name) {
+		items = foodItemAO.readFoodItemsCategory(name);
+		if (items.length != 0) {
+			createMenu();
+		}
+		else {
+			menu.getChildren().clear();
+			Label emptyText = new Label("Pahoittelut! Kategoria on tyhjä!");
+			menu.getChildren().add(emptyText);
+			emptyText.setFont(new Font(25));
+		}
+	}
+	
+	/**
+	 * Method for creating the category list menu.
+	 */
+	private void createCategoryList(Category[] categories) {
+
+		for (int i = 0; i < categories.length; i++) {
+			String categoryName = categories[i].getName();
+			Button categoryButton = new Button(categoryName);
+			int categoryButtonSize = 500 / categories.length;
+			categoryButton.setMinSize(250, categoryButtonSize);
+			categoryButton.setFont(new Font(25));
+			categoryButton.getStyleClass().add("categorybutton");
+			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					categoryButtonHandler(categoryName);					
+				}
+			};
+			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
+			categoryList.getChildren().add(categoryButton);
+		}
+	}
+	
+	/**
+	 * Method for creating the menu items (GridPane elements).
 	 */
 	
 	private void createMenu() {
@@ -186,7 +250,7 @@ public class MenuViewController {
 				FoodItem fItem = items[i];
 				
 				// Taking item id of the foodItem and setting that as "menuId".
-				menuId = fItem.getItemId();
+				int menuId = fItem.getItemId();
 				menuItem.getStyleClass().add("menubutton");
 				
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
@@ -253,26 +317,24 @@ public class MenuViewController {
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 					shoppingCartList.getChildren().set(i, sCartItem);
-					sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 				}
 			}	
 		}
 		// Otherwise add the item to the shopping cart.
 		else {
 			shoppingCart.addToShoppingCart(foodItem, 1);
-			sCartItem.setText(foodItem.getName() + " " + shoppingCart.getAmount(id));
 			shoppingCartList.getChildren().add(sCartItem);
 		}
 		
+		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		// Add a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
-		//sCartItem.setOnAction(event -> sCartButtonHandler(sCartItem, foodItem, id));
 		sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
 	}
 	
 	
 	/**
-	 * Shopping cart item menu for editing shopping list
+	 * Popup for editing shopping list item
 	 * 
 	 * @param button Button of the item in the shopping cart.
 	 * @param foodItem The foodItem connected to that particular button.
@@ -353,7 +415,7 @@ public class MenuViewController {
 
 		});
 		okay.setOnAction(event -> {
-			button.setText(foodItem.getName() + " " + shoppingCart.getAmount(foodItem.getItemId()));
+			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
 
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -374,15 +436,11 @@ public class MenuViewController {
 		boxWhole.getChildren().addAll(nameAndAmount, pick, boxButtons, boxOkCancel);
 		Scene popUpScene = new Scene(boxWhole, 600, 350);
 		popUp.setScene(popUpScene);
+		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.show();
 		
 		
 		System.out.println(shoppingCart);
-	}
-	
-	
-	public void setMainApp(MainApp mainApp) {
-		this.mainApp = mainApp;
 	}
 
 }

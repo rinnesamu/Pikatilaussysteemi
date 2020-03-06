@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.metropolia.OTP</groupId>
 	<artifactId>OtpSovellus</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<description>JavaFX, JUnit 5, MariaDB, JDBC, Hibernate</description>
 	<properties><!--  Merkistö UTF-8, Java 8 kirjastot ja JVM 1.8 yhteensopiva -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,6 +46,19 @@
 			</execution>
 		</executions>
 	</plugin>
+	 <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+				<execution>
+					<id>attach-javadocs</id>
+					<goals>
+						<goal>jar</goal>
+					</goals>
+				</execution>
+			</executions>
+        <version>3.1.1</version>
+      </plugin>
 		</plugins>
 	</build>
 	<dependencies>

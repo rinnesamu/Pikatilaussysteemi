@@ -11,10 +11,35 @@ import model.*;
 public class TextUI {
 	
 	static FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
+	static CategoryAccessObject categoryDao = new CategoryAccessObject();
 	static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
+		FoodItem fo;
+		String c;
+		for (int a = 0; a < 10; a++) {
+			if (a%4 == 0) {
+				c = "Hampurilaiset";
+			}else if (a%4 == 1) {
+				c = "Ateriat";
+			}else if (a%4 == 2) {
+				c = "Juomat";
+			}else {
+				c = "Jälkiruuat";
+			}
+			fo = new FoodItem("Tuote " + (a+1), 2.5, c, true);
+			foodItemDao.createFoodItem(fo);
+		}
+		Category category = new Category("Ateriat");
+		categoryDao.createCategory(category);
+		category = new Category("Hampurilaiset");
+		categoryDao.createCategory(category);
+		category = new Category("Juomat");
+		categoryDao.createCategory(category);
+		category = new Category("Jälkiruuat");
+		categoryDao.createCategory(category);
 		/*FoodItem f = new FoodItem("BicMac ateria", 7, "Ateriat", false);
+		}
 		f.setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
 		foodItemDao.createFoodItem(f);
 		f = new FoodItem("Päärynä pirtelö", 7, "Jälkiruuat", true);
@@ -46,9 +71,10 @@ public class TextUI {
 			System.out.println("Couldn't add the item!");
 		}
 		*/
-		/*System.out.println(foodItemDao.readFoodItems().length);
+		System.out.println(foodItemDao.readFoodItems().length);
 		FoodItem[] list = foodItemDao.readFoodItems();
 		list[0].setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
+		
 		for (FoodItem f : list) {
 			System.out.println(f.getItemId() + ": " + f.getName());
 		}
@@ -66,10 +92,10 @@ public class TextUI {
 				path = "./src/main/resources/imgs/cheeseburger-34314_1280.png";
 			}
 			list[i].setPath(path);
-			foodItemDao.updateFoodItem(i, list[i]);
+			foodItemDao.updateFoodItem(list[i]);
 			
 			
-		}*/
+		}
 	}
 
 }

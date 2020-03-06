@@ -11,9 +11,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 /**
- * 
+ * Access object for food item.
  * @author Samu Rinne
- *
  */
 public class FoodItemAccessObject implements IFoodItemDao {
 
@@ -38,7 +37,6 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Stores new food item to db
-	 * 
 	 * @param foodItem Food item that you want to store to your db
 	 * @return true if successful, false if something went wrong
 	 */
@@ -64,7 +62,6 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Gets all stored food items.
-	 * 
 	 * @return list of all food items stored in db
 	 */
 
@@ -88,7 +85,6 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Gets item from db with id
-	 * 
 	 * @param itemId Id of item you want to get
 	 * @return FoodItem
 	 */
@@ -110,12 +106,9 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Updates item in db with specific id.
-	 * 
-	 * @param index    index of item that you want to update
 	 * @param foodItem New data that you want to store
 	 * @return true if successful, false if not
 	 */
-
 	@Override
 	public boolean updateFoodItem(FoodItem foodItem) {
 		Transaction transaction = null;
@@ -134,7 +127,6 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Gets list of food items with specific category
-	 * 
 	 * @param category Category that you want to search for
 	 * @return list of food items with specific category
 	 */
@@ -182,20 +174,9 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		}
 		return foodItem;
 	}
-	/*
-	 * public FoodItem readFoodItemByName(String name) { FoodItem foodItem = null;
-	 * Transaction transaction = null; try(Session session =
-	 * sessionFactory.openSession()){ transaction = session.beginTransaction();
-	 * //foodItem = session.get(FoodItem.class, name); foodItem =
-	 * (FoodItem)session.createQuery("from FoodItem Where name = :nameParam").
-	 * setParameter("nameParam", name).getResultList().get(0); transaction.commit();
-	 * }catch (Exception e) { if (transaction != null) { transaction.rollback();
-	 * throw e; } } return foodItem; }
-	 */
 	
 	/**
 	 * Gets all food items that include name in them
-	 * 
 	 * @param name Name that you want to search
 	 * @return list of Food items that includes name
 	 */
@@ -219,7 +200,6 @@ public class FoodItemAccessObject implements IFoodItemDao {
 
 	/**
 	 * Deletes item with specific id.
-	 * 
 	 * @param itemId id of the item that you want to delete
 	 * @return true if successful, false otherwise
 	 */
@@ -242,6 +222,10 @@ public class FoodItemAccessObject implements IFoodItemDao {
 		return true;
 	}
 
+	/**
+	 * Deletes all items from database
+	 * @return true
+	 */
 	public boolean deleteAllFoodItems() {
 		FoodItem[] foodItems = readFoodItems();
 		if (foodItems == null || foodItems.length == 0) {

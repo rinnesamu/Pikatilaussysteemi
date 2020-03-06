@@ -93,7 +93,6 @@ public class OrderAccessObject implements IOrderDao {
 	 * Method for updating the status of a single order
 	 * 
 	 * @param order - Order object whose status is updated
-	 * @param status - the status
 	 */
 	@Override
 	public boolean updateOrderStatus(Order order) {
