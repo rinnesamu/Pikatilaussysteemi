@@ -1,6 +1,8 @@
 package view;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
@@ -10,7 +12,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -21,7 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -31,6 +34,8 @@ import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
+import model.Ingredient;
+import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
 import model.ShoppingCart;
@@ -64,6 +69,7 @@ public class MenuViewController {
 	@FXML
 	private Button buyButton;
 	
+	// Sum element of the shopping cart element.
 	@FXML
 	private Label sumShoppingCart;
 	
@@ -76,14 +82,17 @@ public class MenuViewController {
 		
 	private OrderAccessObject orderAO = new OrderAccessObject();
 	
+	private IngredientAccessObject ingredientAO = new IngredientAccessObject();
+	
 	// Shopping cart object
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
 	// All the items of a certain category.
 	private FoodItem[] items;
 	
-	double priceSum = 0;
-	
+	// A flag to show emptying or removing an item from shopping cart
+	boolean removed;
+		
 	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
 	private static int orderNumber = 1;
 
@@ -187,13 +196,13 @@ public class MenuViewController {
 		else if (result.get() == cancelDel) {
 		}
 		sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
+		removed=true;
 	}
 	
 	
 	/**
 	 * Initial actions: starting the creation of the menus.
 	 */
-	
 	@FXML
 	private void initialize() {
 		Category[] allCategories = categoryAO.readCategories();
@@ -245,7 +254,6 @@ public class MenuViewController {
 	/**
 	 * Method for creating the menu items (GridPane elements).
 	 */
-	
 	private void createMenu() {
 		menu.getChildren().clear();
 		for (int i = 0; i < items.length; i++) {
@@ -294,7 +302,6 @@ public class MenuViewController {
 	 * @param foodItem The fooditem tied to the particular button.
 	 * @param button The created menubutton.
 	 */
-	
 	private void menuButtonHandler(FoodItem foodItem, ImageView imageView) {
 		//HBox sCartRow = new HBox();
 		Button sCartItem = new Button("");
@@ -338,18 +345,17 @@ public class MenuViewController {
 		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		// Add a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
-		sCartItem.setOnAction(event -> showPopUp(sCartItem, foodItem));
+		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 	}
 	
 	
 	/**
-	 * Popup for editing shopping list item
+	 * Method for the edit menu of the shopping list item
 	 * 
 	 * @param button Button of the item in the shopping cart.
 	 * @param foodItem The foodItem connected to that particular button.
-	 */
-	
-	private void showPopUp(Button button, FoodItem foodItem) {
+	 */	
+	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
 		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
 		int originalAmount = amountNow;
@@ -360,11 +366,69 @@ public class MenuViewController {
 		Label pick = new Label(Integer.toString(amountNow));
 		pick.setFont(new Font(30));
 		pick.setPadding(new Insets(0,0,0,20));
+		HBox boxInfo = new HBox(20);
+		
 		VBox boxWhole = new VBox(20);
 		HBox boxButtons = new HBox(20);
 		boxButtons.setPadding(new Insets(10,0,0,10));
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
+		HBox boxIngredient = new HBox(20);
+		ChoiceBox<String> chooseRemove =new ChoiceBox<String>();
+		ArrayList<String> ingredientsOfItemStrings = new ArrayList<String>();;
+		
+		String[] ingredientsOfItem;
+		//System.out.println("Ykkönen on  " + Arrays.toString(foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList()));
+		//System.out.println("Kakkonen on " + Arrays.toString(foodItem.getIngredientsAsList()));
+
+		if (foodItem.getIngredientsAsList() == null ) {
+			ingredientsOfItem = null;
+		}
+		else if(removed || foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList().length == foodItem.getIngredientsAsList().length) {
+			//Ingredients of an item are retrieved from the database ie. original ingredients
+			ingredientsOfItem = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
+		}
+		else {
+			//Ingredients of an item are retrieved from the local object
+			ingredientsOfItem = foodItem.getIngredientsAsList();
+		}
+		removed=false;
+		// All ingredients of the database.
+		Ingredient[] allIngredients = ingredientAO.readIngredients();
+		
+		
+		if (ingredientsOfItem != null) {
+			for (int i = 0; i < allIngredients.length; i++) {
+				if (Arrays.asList(ingredientsOfItem).contains(allIngredients[i].getName()) && allIngredients[i].isRemoveable()) {
+					ingredientsOfItemStrings.add(allIngredients[i].getName());
+					chooseRemove.getItems().add(allIngredients[i].getName());
+				}
+			}
+		}
+		//System.out.println("allIngredients1 on " + ingredientsOfItemStrings);
+		
+		Button deleteIngredient = new Button("Poista");
+		deleteIngredient.setFont(new Font(20));
+		deleteIngredient.setMinSize(30, 30);
+		deleteIngredient.setOnAction(event -> {
+			String removeThis = chooseRemove.getValue();
+			//System.out.println("chooseRemove.getValue() on " + chooseRemove.getValue());
+
+			for (int i = 0; i < ingredientsOfItemStrings.size(); i++) {
+				if (ingredientsOfItemStrings.get(i) == removeThis) {
+					ingredientsOfItemStrings.remove(i);
+					break;
+				}
+			}
+			//System.out.println("Ingredientit on 3 " + ingredientsOfItemStrings);
+			foodItem.setIngredients(ingredientsOfItemStrings.toArray(new String[ingredientsOfItemStrings.size()]));
+			chooseRemove.getItems().clear();
+			for (int i = 0; i < ingredientsOfItemStrings.size(); i++) {
+				chooseRemove.getItems().add(ingredientsOfItemStrings.get(i));
+			}
+		});
+		boxIngredient.getChildren().addAll(chooseRemove, deleteIngredient);
+		
 		Button increase = new Button("+");
 		increase.setFont(new Font(20));
 		increase.setMinSize(80, 80);
@@ -417,6 +481,7 @@ public class MenuViewController {
 						shoppingCartList.getChildren().remove(i);
 					}
 				}
+				removed = true;
 				sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 				popUp.close();
 			}
@@ -440,10 +505,11 @@ public class MenuViewController {
 			popUp.close();
 		});
 		
+		boxInfo.getChildren().addAll(nameAndAmount, pick);
 		boxButtons.getChildren().addAll(increase, decrease, delete);
 		boxOkCancel.getChildren().addAll(okay, cancel);
 		
-		boxWhole.getChildren().addAll(nameAndAmount, pick, boxButtons, boxOkCancel);
+		boxWhole.getChildren().addAll(boxInfo, boxButtons, boxIngredient, boxOkCancel);
 		Scene popUpScene = new Scene(boxWhole, 600, 350);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);

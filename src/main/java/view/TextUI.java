@@ -1,5 +1,6 @@
 package view;
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +13,7 @@ public class TextUI {
 	
 	static FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
 	static CategoryAccessObject categoryDao = new CategoryAccessObject();
+	static IngredientAccessObject ingredientDao = new IngredientAccessObject();
 	static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
@@ -94,6 +96,40 @@ public class TextUI {
 			list[i].setPath(path);
 			foodItemDao.updateFoodItem(list[i]);
 			
+			
+		}
+		Ingredient newIngredient = new Ingredient("pihvi", true);
+		ingredientDao.createIngredient(newIngredient);
+		Ingredient newIngredient2 = new Ingredient("juusto", true);
+		ingredientDao.createIngredient(newIngredient2);
+		Ingredient newIngredient3 = new Ingredient("suolakurkku", true);
+		ingredientDao.createIngredient(newIngredient3);
+		Ingredient newIngredient4 = new Ingredient("tomaatti", true);
+		ingredientDao.createIngredient(newIngredient4);
+		Ingredient newIngredient5 = new Ingredient("sämpylä", false);
+		ingredientDao.createIngredient(newIngredient5);
+		Ingredient newIngredient6 = new Ingredient("kermavaahto", true);
+		ingredientDao.createIngredient(newIngredient6);
+		
+		String[] ingredients= new String[4];
+		for (int i = 0; i < list.length; i++) {
+			
+			if (i%4 == 0) {
+				ingredients = new String[4];
+				ingredients[0] = "pihvi";
+				ingredients[1] = "juusto";
+				ingredients[2] = "suolakurkku";
+				ingredients[3] = "tomaatti";
+			}else if (i%4 == 1) {
+				ingredients= new String[0];
+			}else if (i%4 == 2) {
+				ingredients = new String[0];
+			}else {
+				ingredients = new String[0];
+			}
+			System.out.println("Inkut " + Arrays.toString(ingredients));
+			list[i].setIngredients(ingredients);
+			foodItemDao.updateFoodItem(list[i]);
 			
 		}
 	}
