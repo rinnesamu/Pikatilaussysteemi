@@ -109,12 +109,12 @@ class ShoppingCartTest {
 		sCart.addToShoppingCart(foodItem2, 2);
 		foodItem3 = new FoodItem("Jaffa", 3.5, true);
 		sCart.addToShoppingCart(foodItem3, 2);
-		sCart.setAmount(foodItem.getItemId(), 10);
-		assertEquals(10, sCart.getAmount(foodItem.getItemId()), "Wrong amount");
-		sCart.setAmount(foodItem2.getItemId(), 20);
-		assertEquals(20, sCart.getAmount(foodItem2.getItemId()), "Wrong amount");
-		sCart.setAmount(foodItem3.getItemId(), 30);
-		assertEquals(30, sCart.getAmount(foodItem3.getItemId()), "Wrong amount");
+		sCart.setAmount(foodItem.getItemId(), 12);
+		assertEquals(12, sCart.getAmount(foodItem.getItemId()), "Wrong amount");
+		sCart.setAmount(foodItem2.getItemId(), 27);
+		assertEquals(27, sCart.getAmount(foodItem2.getItemId()), "Wrong amount");
+		sCart.setAmount(foodItem3.getItemId(), 31);
+		assertEquals(31, sCart.getAmount(foodItem3.getItemId()), "Wrong amount");
 	}
 
 	@Test
@@ -122,6 +122,20 @@ class ShoppingCartTest {
 	void testSetAmountToZero() {
 		sCart.setAmount(foodItem.getItemId(), 0);
 		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size");
+	}
+
+	@Test
+	@DisplayName("Getting the sum of the shopping cart")
+	void testgetSum() {
+		assertEquals(24, sCart.getSum(), DELTA, "Wrong sum of the cart, one item");
+		foodItem2 = new FoodItem("Pieni kahvi", 3, true, 2);
+		sCart.addToShoppingCart(foodItem2, 5);
+		System.out.println("scartti on" + sCart);
+		assertEquals(39, sCart.getSum(), DELTA, "Wrong sum of the cart, two items");
+		foodItem3 = new FoodItem("Pieni cola", 3, true, 3);
+		sCart.addToShoppingCart(foodItem3, 1);
+		System.out.println("scartti on" + sCart);
+		assertEquals(42, sCart.getSum(), DELTA, "Wrong sum of the cart, three items");
 	}
 	
 	@Test

@@ -141,6 +141,23 @@ public class ShoppingCart {
 		
 	}
 	
+	/**
+	 * Getter for the sum in euros of the shopping cart
+	 * @return Sum of the shopping cart (euros)
+	 */
+	public double getSum() {
+		double priceSum = 0;
+		double price;
+		int amount;
+		FoodItem[] itemsInShoppingCart = getFoodItems();
+		for (int i=0; i<itemsInShoppingCart.length; i++) {
+			amount = getAmount(itemsInShoppingCart[i].getItemId());
+			price = itemsInShoppingCart[i].getPrice();
+			priceSum += amount*price;
+		}
+		return priceSum;
+	}
+	
 	/** 
 	 * Gets the amount of different products in the shopping cart.
 	 * 

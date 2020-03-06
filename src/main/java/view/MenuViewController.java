@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -63,6 +64,10 @@ public class MenuViewController {
 	@FXML
 	private Button buyButton;
 	
+	@FXML
+	private Label sumShoppingCart;
+	
+	
 	// AccessObjects for the database connections.
 	
 	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
@@ -76,6 +81,8 @@ public class MenuViewController {
 
 	// All the items of a certain category.
 	private FoodItem[] items;
+	
+	double priceSum = 0;
 	
 	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
 	private static int orderNumber = 1;
@@ -96,7 +103,6 @@ public class MenuViewController {
 		VBox readyList = new VBox(20);
 		readyList.setPadding(new Insets(30,0,0,30));
 		double price;
-		double priceSum = 0;
 		int amount;
 		
 		FoodItem[] items = shoppingCart.getFoodItems();
@@ -105,7 +111,6 @@ public class MenuViewController {
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
 			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
-			priceSum += amount*price;
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
@@ -114,7 +119,7 @@ public class MenuViewController {
 			readySingleItem.getChildren().addAll(payItem, iv);
 			readyList.getChildren().add(readySingleItem);
 		}
-		Label sumText = new Label("Summa: " + priceSum + " euroa");
+		Label sumText = new Label("Summa: " + shoppingCart.getSum() + " euroa");
 		sumText.setFont(new Font(30));
 		Button payButton = new Button("Maksa ostokset");
 		payButton.setFont(new Font(30));
@@ -153,6 +158,7 @@ public class MenuViewController {
 	private void pay(Stage s) {
 		shoppingCart.emptyShoppingCart();
 		shoppingCartList.getChildren().clear();
+		sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 		orderNumber++;
 		s.close();
 	}
@@ -180,8 +186,9 @@ public class MenuViewController {
 		}
 		else if (result.get() == cancelDel) {
 		}
-
+		sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 	}
+	
 	
 	/**
 	 * Initial actions: starting the creation of the menus.
@@ -300,6 +307,7 @@ public class MenuViewController {
 		sCartItem.setMinSize(375, 60);
 		sCartItem.getStyleClass().add("cartbutton");
 		
+		
 		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 		int[] listOfItemIds= shoppingCart.getAllItemId();
 		//System.out.println("listOfItemIds " + Arrays.toString(listOfItemIds));
@@ -325,7 +333,8 @@ public class MenuViewController {
 			shoppingCart.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
 		}
-		
+
+		sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		// Add a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
@@ -408,6 +417,7 @@ public class MenuViewController {
 						shoppingCartList.getChildren().remove(i);
 					}
 				}
+				sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
@@ -416,10 +426,10 @@ public class MenuViewController {
 		});
 		okay.setOnAction(event -> {
 			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
+			sumShoppingCart.setText("Summa: " + shoppingCart.getSum());
 
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-					System.out.println("ITEMI ON " + foodItem.getItemId());
 					shoppingCartList.getChildren().set(i, button);
 				}
 			}
