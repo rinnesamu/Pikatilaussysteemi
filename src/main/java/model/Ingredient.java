@@ -61,8 +61,8 @@ public class Ingredient {
 	}
 
 	/**
-	 * Getter for removeable
-	 * @return removeable Can you order item without this ingredient
+	 * Getter for removable
+	 * @return removable Can you order item without this ingredient
 	 */
 	public boolean isRemoveable() {
 		return removable;
