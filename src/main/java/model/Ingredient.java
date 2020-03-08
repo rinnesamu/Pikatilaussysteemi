@@ -19,7 +19,7 @@ public class Ingredient {
 	@Column
 	private String name;
 	@Column
-	private boolean removeable;
+	private boolean removable;
 	
 	/**
 	 * Empty constructor for hibernate
@@ -29,11 +29,11 @@ public class Ingredient {
 	/**
 	 * Constructor
 	 * @param name Ingredients name
-	 * @param removeable Tells if you can order item without this ingredient.
+	 * @param removable Tells if you can order item without this ingredient.
 	 */
-	public Ingredient(String name, boolean removeable) {
+	public Ingredient(String name, boolean removable) {
 		this.name = name;
-		this.removeable = removeable;
+		this.removable = removable;
 	}
 
 	/**
@@ -61,19 +61,19 @@ public class Ingredient {
 	}
 
 	/**
-	 * Getter for removeable
-	 * @return removeable Can you order item without this ingredient
+	 * Getter for removable
+	 * @return removable Can you order item without this ingredient
 	 */
 	public boolean isRemoveable() {
-		return removeable;
+		return removable;
 	}
 
 	/**
 	 * setter for removeable
 	 * @param removealbe Tells if you can remove ingredient from product
 	 */
-	public void setRemoveable(boolean removealbe) {
-		this.removeable = removealbe;
+	public void setRemoveable(boolean removable) {
+		this.removable = removable;
 	}
 
 }

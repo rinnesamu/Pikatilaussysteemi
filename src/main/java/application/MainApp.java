@@ -1,4 +1,4 @@
-package view;
+package application;
 
 import java.io.IOException;
 
@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import view.MenuViewController;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class MainApp extends Application {
 	public void initUI() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("CustomerUI.fxml"));
+			loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
 			rootLayout = (BorderPane) loader.load();
 			
 			Scene scene = new Scene(rootLayout);

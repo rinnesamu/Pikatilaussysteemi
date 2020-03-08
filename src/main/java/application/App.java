@@ -19,7 +19,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Order;
-import view.MainApp;
 import view.MenuViewController;
 import view.RestaurantKeeperController;
 
@@ -55,7 +54,7 @@ public class App extends Application {
 			public void handle(MouseEvent event) {
 				try {
 					FXMLLoader loader = new FXMLLoader();
-					loader.setLocation(MainApp.class.getResource("CustomerUI.fxml"));
+					loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
 					rootLayout = (BorderPane) loader.load();
 					
 					Scene scene = new Scene(rootLayout);
