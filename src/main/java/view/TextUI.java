@@ -111,15 +111,17 @@ public class TextUI {
 		Ingredient newIngredient6 = new Ingredient("kermavaahto", true);
 		ingredientDao.createIngredient(newIngredient6);
 		
-		String[] ingredients= new String[4];
+		
+		String[] ingredients= new String[5];
 		for (int i = 0; i < list.length; i++) {
 			
 			if (i%4 == 0) {
-				ingredients = new String[4];
+				ingredients = new String[5];
 				ingredients[0] = "pihvi";
 				ingredients[1] = "juusto";
 				ingredients[2] = "suolakurkku";
 				ingredients[3] = "tomaatti";
+				ingredients[4] = "sämpylä";
 			}else if (i%4 == 1) {
 				ingredients= new String[0];
 			}else if (i%4 == 2) {

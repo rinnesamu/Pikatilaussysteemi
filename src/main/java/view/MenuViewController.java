@@ -3,16 +3,19 @@ package view;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -92,6 +95,7 @@ public class MenuViewController {
 	
 	// A flag to show emptying or removing an item from shopping cart
 	boolean removed;
+	
 		
 	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
 	private static int orderNumber = 1;
@@ -296,6 +300,7 @@ public class MenuViewController {
 		}
 	}
 	
+	
 	/**
 	 * Button handler for the menubuttons.
 	 * 
@@ -348,6 +353,83 @@ public class MenuViewController {
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 	}
 	
+	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
+		String[] ingredientsNames;
+		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
+		
+		if (foodItem.getIngredientsAsList() == null ) {
+			ingredientsOfItem = null;
+		}
+		else {
+			// Ingredients of an item are retrieved from the local object
+			ingredientsNames = foodItem.getIngredientsAsList();
+			
+			// Checks which ingredients are removable
+			for (int i = 0; i < ingredientsNames.length; i++) {
+				Ingredient ingredientsAsIngredients= ingredientAO.readIngredientByName(ingredientsNames[i]);
+				if (ingredientsAsIngredients.isRemoveable()) {
+					ingredientsOfItem.add(ingredientsNames[i]);
+				}
+			}
+		}
+		
+		return ingredientsOfItem;
+	}	
+	
+	
+	private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
+		// Ingredients of the chosen item.
+		//System.out.println("Ykkönen on  " + Arrays.toString(foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList()));
+		//System.out.println("Kakkonen on " + Arrays.toString(foodItem.getIngredientsAsList()));
+		
+		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
+		String[] ingredientsNames;
+
+		if (foodItem.getIngredientsAsList() == null ) {
+			ingredientsOfItem = null;
+		}
+		
+		// if the number of database ingredients in the food item list match the ingredients of the object
+		else 
+		{
+			// (removed || foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList().length == foodItem.getIngredientsAsList().length) {
+			//Ingredients of an item are retrieved from the database ie. original ingredients
+			ingredientsNames = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
+			System.out.println("ingredientsNames on " + Arrays.toString(ingredientsNames));
+
+			for (int i = 0; i < ingredientsNames.length; i++) {
+				Ingredient ingredientsAsIngredients= ingredientAO.readIngredientByName(ingredientsNames[i]);
+				if (ingredientsAsIngredients.isRemoveable()) {
+					ingredientsOfItem.add(ingredientsNames[i]);
+				}
+			}
+		}
+		
+		return ingredientsOfItem;
+				
+	}
+
+	private void updateItem(FoodItem foodItem, String ingredientName, boolean included) {
+		ArrayList<String> ingredientsOfItem = getObjectIngredients(foodItem);
+		System.out.println("ingredientsOfItemStart on " + ingredientsOfItem);
+		if (included) {
+			System.out.println("ingredientNameInc on " + ingredientName);
+			ingredientsOfItem.add(ingredientName);
+			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
+		}
+		else if (!included && ingredientsOfItem != null) {
+			System.out.println("ingredientNameNotInc on " + ingredientName);
+			for (int i = 0; i < ingredientsOfItem.size(); i++) {
+				if (ingredientsOfItem.get(i).equals(ingredientName)) {
+					ingredientsOfItem.remove(i);
+					foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
+				}
+			}
+		}
+		System.out.println("ingredientsOfItemEnd on " + ingredientsOfItem);
+
+	}
+	
 	
 	/**
 	 * Method for the edit menu of the shopping list item
@@ -373,61 +455,44 @@ public class MenuViewController {
 		boxButtons.setPadding(new Insets(10,0,0,10));
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
-		HBox boxIngredient = new HBox(20);
-		ChoiceBox<String> chooseRemove =new ChoiceBox<String>();
-		ArrayList<String> ingredientsOfItemStrings = new ArrayList<String>();;
+		VBox boxIngredient = new VBox(20);
 		
-		String[] ingredientsOfItem;
-		//System.out.println("Ykkönen on  " + Arrays.toString(foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList()));
-		//System.out.println("Kakkonen on " + Arrays.toString(foodItem.getIngredientsAsList()));
+		Label header = new Label("Ainesosat:");
+		boxIngredient.getChildren().add(header);
+		ArrayList<String> ingredientsOfObject;
+		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
+		System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
+		
+		if (removed) {
+			ingredientsOfObject = ingredientsOfDatabase;
+			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+			removed=false;
+		} else {
+			ingredientsOfObject = getObjectIngredients(foodItem);
+			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+		}
 
-		if (foodItem.getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
-		}
-		else if(removed || foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList().length == foodItem.getIngredientsAsList().length) {
-			//Ingredients of an item are retrieved from the database ie. original ingredients
-			ingredientsOfItem = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
-		}
-		else {
-			//Ingredients of an item are retrieved from the local object
-			ingredientsOfItem = foodItem.getIngredientsAsList();
-		}
-		removed=false;
-		// All ingredients of the database.
-		Ingredient[] allIngredients = ingredientAO.readIngredients();
-		
-		
-		if (ingredientsOfItem != null) {
-			for (int i = 0; i < allIngredients.length; i++) {
-				if (Arrays.asList(ingredientsOfItem).contains(allIngredients[i].getName()) && allIngredients[i].isRemoveable()) {
-					ingredientsOfItemStrings.add(allIngredients[i].getName());
-					chooseRemove.getItems().add(allIngredients[i].getName());
+		if (ingredientsOfDatabase != null) {
+			for (int i = 0; i < ingredientsOfDatabase.size(); i++) {
+				HBox boxIngredient2 = new HBox(20);
+				String name = ingredientsOfDatabase.get(i);
+				Label newIngredient = new Label(name);
+				CheckBox included = new CheckBox("Mukana");
+				
+				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(i)))
+				{
+					included.setSelected(true);
 				}
+				
+				ChangeListener<Object> listener = (obs, oldValue, newValue) ->
+			
+					updateItem(foodItem, name, included.isSelected());
+					
+				included.selectedProperty().addListener(listener);
+				boxIngredient2.getChildren().addAll(newIngredient, included);
+				boxIngredient.getChildren().add(boxIngredient2);
 			}
 		}
-		//System.out.println("allIngredients1 on " + ingredientsOfItemStrings);
-		
-		Button deleteIngredient = new Button("Poista");
-		deleteIngredient.setFont(new Font(20));
-		deleteIngredient.setMinSize(30, 30);
-		deleteIngredient.setOnAction(event -> {
-			String removeThis = chooseRemove.getValue();
-			//System.out.println("chooseRemove.getValue() on " + chooseRemove.getValue());
-
-			for (int i = 0; i < ingredientsOfItemStrings.size(); i++) {
-				if (ingredientsOfItemStrings.get(i) == removeThis) {
-					ingredientsOfItemStrings.remove(i);
-					break;
-				}
-			}
-			//System.out.println("Ingredientit on 3 " + ingredientsOfItemStrings);
-			foodItem.setIngredients(ingredientsOfItemStrings.toArray(new String[ingredientsOfItemStrings.size()]));
-			chooseRemove.getItems().clear();
-			for (int i = 0; i < ingredientsOfItemStrings.size(); i++) {
-				chooseRemove.getItems().add(ingredientsOfItemStrings.get(i));
-			}
-		});
-		boxIngredient.getChildren().addAll(chooseRemove, deleteIngredient);
 		
 		Button increase = new Button("+");
 		increase.setFont(new Font(20));
