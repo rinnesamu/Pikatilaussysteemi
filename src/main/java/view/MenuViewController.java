@@ -3,12 +3,10 @@ package view;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -17,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -124,12 +121,17 @@ public class MenuViewController {
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
 			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
+			readySingleItem.getChildren().add(payItem);
+			if (items[i].getIngredientsAsList() != null) {
+				Label ingredients = new Label(Arrays.toString(items[i].getIngredientsAsList()));
+				readySingleItem.getChildren().add(ingredients);
+			}
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(50);
 			iv.setFitWidth(50);
-			readySingleItem.getChildren().addAll(payItem, iv);
+			readySingleItem.getChildren().add(iv);
 			readyList.getChildren().add(readySingleItem);
 		}
 		Label sumText = new Label("Summa: " + shoppingCart.getSum() + " euroa");
@@ -353,6 +355,11 @@ public class MenuViewController {
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 	}
 	
+	/**
+	 * Ingredients of an item are retrieved from the local foodItem object
+	 * @param foodItem Fooditem of which ingredients are retrieved.
+	 * @return
+	 */
 	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
 		String[] ingredientsNames;
 		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
@@ -361,7 +368,6 @@ public class MenuViewController {
 			ingredientsOfItem = null;
 		}
 		else {
-			// Ingredients of an item are retrieved from the local object
 			ingredientsNames = foodItem.getIngredientsAsList();
 			
 			// Checks which ingredients are removable
@@ -372,13 +378,15 @@ public class MenuViewController {
 				}
 			}
 		}
-		
 		return ingredientsOfItem;
 	}	
 	
-	
+	/**
+	 * 	Ingredients of an item are retrieved from the database ie. original ingredients.
+	 * @param foodItem Fooditem of which ingredients are retrieved.
+	 * @return
+	 */
 	private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
-		// Ingredients of the chosen item.
 		//System.out.println("Ykkönen on  " + Arrays.toString(foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList()));
 		//System.out.println("Kakkonen on " + Arrays.toString(foodItem.getIngredientsAsList()));
 		
@@ -388,12 +396,7 @@ public class MenuViewController {
 		if (foodItem.getIngredientsAsList() == null ) {
 			ingredientsOfItem = null;
 		}
-		
-		// if the number of database ingredients in the food item list match the ingredients of the object
-		else 
-		{
-			// (removed || foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList().length == foodItem.getIngredientsAsList().length) {
-			//Ingredients of an item are retrieved from the database ie. original ingredients
+		else {
 			ingredientsNames = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
 			System.out.println("ingredientsNames on " + Arrays.toString(ingredientsNames));
 
@@ -404,21 +407,23 @@ public class MenuViewController {
 				}
 			}
 		}
-		
 		return ingredientsOfItem;
-				
 	}
+	
 
+	/**
+	 * Method to update the ingredients of a Fooditem.
+	 * @param foodItem FoodItem of which ingredients are updated.
+	 * @param ingredientName Name of the ingredient being updated.
+	 * @param included Boolean representing whether the ingredient is included in the Fooditem or not.
+	 */
 	private void updateItem(FoodItem foodItem, String ingredientName, boolean included) {
 		ArrayList<String> ingredientsOfItem = getObjectIngredients(foodItem);
-		System.out.println("ingredientsOfItemStart on " + ingredientsOfItem);
 		if (included) {
-			System.out.println("ingredientNameInc on " + ingredientName);
 			ingredientsOfItem.add(ingredientName);
 			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
 		}
 		else if (!included && ingredientsOfItem != null) {
-			System.out.println("ingredientNameNotInc on " + ingredientName);
 			for (int i = 0; i < ingredientsOfItem.size(); i++) {
 				if (ingredientsOfItem.get(i).equals(ingredientName)) {
 					ingredientsOfItem.remove(i);
@@ -426,8 +431,6 @@ public class MenuViewController {
 				}
 			}
 		}
-		System.out.println("ingredientsOfItemEnd on " + ingredientsOfItem);
-
 	}
 	
 	
@@ -456,28 +459,31 @@ public class MenuViewController {
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
 		VBox boxIngredient = new VBox(20);
+		boxIngredient.setPadding(new Insets(10,0,0,10));
 		
-		Label header = new Label("Ainesosat:");
-		boxIngredient.getChildren().add(header);
 		ArrayList<String> ingredientsOfObject;
 		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
-		System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
+		//System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 		
 		if (removed) {
 			ingredientsOfObject = ingredientsOfDatabase;
-			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+			//System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 			removed=false;
 		} else {
 			ingredientsOfObject = getObjectIngredients(foodItem);
-			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+			//System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 		}
 
 		if (ingredientsOfDatabase != null) {
+			Label header = new Label("Ainesosat:");
+			header.setFont(new Font(20));
+			boxIngredient.getChildren().add(header);
+
 			for (int i = 0; i < ingredientsOfDatabase.size(); i++) {
 				HBox boxIngredient2 = new HBox(20);
 				String name = ingredientsOfDatabase.get(i);
 				Label newIngredient = new Label(name);
-				CheckBox included = new CheckBox("Mukana");
+				CheckBox included = new CheckBox();
 				
 				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(i)))
 				{
@@ -575,7 +581,7 @@ public class MenuViewController {
 		boxOkCancel.getChildren().addAll(okay, cancel);
 		
 		boxWhole.getChildren().addAll(boxInfo, boxButtons, boxIngredient, boxOkCancel);
-		Scene popUpScene = new Scene(boxWhole, 600, 350);
+		Scene popUpScene = new Scene(boxWhole, 400, 500);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.show();
