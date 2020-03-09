@@ -10,6 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -58,6 +60,18 @@ public class App extends Application {
 					rootLayout = (BorderPane) loader.load();
 					
 					Scene scene = new Scene(rootLayout);
+					scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>
+					  () {
+
+					        @Override
+					        public void handle(KeyEvent t) {
+					          if(t.getCode()==KeyCode.ESCAPE)
+					          {
+					              System.out.println("click on escape");
+					           startDemo();
+					          }
+					        }
+					    });
 					primaryStage.setScene(scene);
 					primaryStage.show();
 					
@@ -80,6 +94,18 @@ public class App extends Application {
 					RestaurantKeeperController rkController = loader.getController();
 					
 					Scene scene = new Scene(restaurantKeeperView);
+					scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>
+					  () {
+
+					        @Override
+					        public void handle(KeyEvent t) {
+					          if(t.getCode()==KeyCode.ESCAPE)
+					          {
+					              System.out.println("click on escape");
+					           startDemo();
+					          }
+					        }
+					    });
 					primaryStage.setScene(scene);
 					primaryStage.show();
 					
