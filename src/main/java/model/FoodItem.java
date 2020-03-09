@@ -34,6 +34,9 @@ public class FoodItem {
 	private String path;
 	@Column
 	private String ingredients;
+	
+	@Transient
+	private String removedIngredients;
 	/**
 	 * Empty constructor for hibernate
 	 */
@@ -291,6 +294,51 @@ public class FoodItem {
 			newIngredients[b] = ingredients[b];
 		}
 		this.ingredients = String.join(",", newIngredients);
+	}
+	
+	public String[] getRemovedIngredientsAsList() {
+		if (this.removedIngredients.trim().length() == 0) {
+			return null;
+		}
+		List<String> items = Arrays.asList(this.removedIngredients.split("\\s*,\\s*"));
+		int i = 0;
+		int size = items.size();
+		while (i < size) {
+			if (items.get(i).trim().length() == 0) {
+				items.remove(i);
+				size--; // reduces size if deletes item so it wont skip one list item
+			}else {
+				i++; // otherwise increase i
+			}
+		}
+		for (String s : items) {
+			if (s.trim().length() == 0) {
+				items.remove(s);
+			}
+		}
+		String[] returnList = new String[items.size()];
+		return (String[])items.toArray(returnList);
+	}
+	
+	public void setRemovedIngredients(String[] ingredients) {
+		int i = 0;
+		int size = ingredients.length;
+		while (i < size) {
+			if (ingredients[i] != null && ingredients[i].trim().length() != 0) {
+				i++; // if ingredient isn't null or empty
+			}else {
+				for (int a = i; a < size-1; a++) {
+					ingredients[a] = ingredients[a+1];
+				}
+				size--; // reduces size if deletes item so it wont skip one list item
+			}
+		}
+		
+		String[] newIngredients = new String[size];
+		for (int b = 0; b < size; b++) {
+			newIngredients[b] = ingredients[b];
+		}
+		this.removedIngredients = String.join(",", newIngredients);
 	}
 	
 	public String toString() {

@@ -160,6 +160,22 @@ class FoodItemTest {
 		assertEquals("kana pihvi", foodItem.getIngredientsAsList()[2], "Couldn't get correct incredient list");
 		assertEquals(3, foodItem.getIngredientsAsList().length, "Couldn't get correct incredient list");
 	}
+	@Test
+	@DisplayName("Test getting and setting removed ingredients")
+	void testRemoved() {
+		String[] list = {"Tomaatti", "kurkku", "pihvi", "sämpylä", "juusto"};
+		foodItem.setRemovedIngredients(list);
+		assertEquals(5, foodItem.getRemovedIngredientsAsList().length, "Couldnt get or set removed ingredients");
+		String[] list2 = {};
+		foodItem.setRemovedIngredients(list2);
+		assertEquals(null, foodItem.getRemovedIngredientsAsList(), "Couldn't get correct removed incredient list");
+		String[] list3 = {"", null, "kurkku", "   ", "", "juusto", "", "kanapihvi", ""};
+		foodItem.setRemovedIngredients(list3);
+		assertEquals(3, foodItem.getRemovedIngredientsAsList().length, "Couldn't get correct removed incredient list");
+		String[] list4 = {"", "", "kurkku", "", "", "juusto", "", "kana pihvi", ""};
+		foodItem.setRemovedIngredients(list4);
+		assertEquals(3, foodItem.getRemovedIngredientsAsList().length, "Couldn't get correct incredient list");
+	}
 	
 	@Test
 	@DisplayName("Test fo toString")
