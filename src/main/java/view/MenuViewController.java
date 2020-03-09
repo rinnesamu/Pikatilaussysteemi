@@ -144,6 +144,7 @@ public class MenuViewController {
 				orderAO.createOrder(order);
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
+				readyToPay.setOpacity(0.9);
 				
 				PauseTransition delay = new PauseTransition(Duration.seconds(5));
 				delay.setOnFinished( event -> pay(readyToPay));
