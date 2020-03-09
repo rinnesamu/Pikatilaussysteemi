@@ -38,8 +38,6 @@ public class Order implements Serializable{
 
 	@ElementCollection
 	@JoinTable(name="order_content", joinColumns=@JoinColumn(name="orderId"))
-	//@MapKeyColumn (name="foodItemId")
-	@Column(name="amount")
 	private Map<String, Integer> orderContent;
 	
 	public Order() {
@@ -49,8 +47,8 @@ public class Order implements Serializable{
 	/**
 	 * Constructor for the Order -class
 	 * 
-	 * @param orderNumber - ordernumber that is given for the order
-	 * @param shoppingCart - hashmap that contains food items and their amount
+	 * @param orderNumber ordernumber that is given for the order
+	 * @param shoppingCart hashmap that contains food items and their amount
 	 */
 	public Order(int orderNumber, Map<FoodItem, Integer> shoppingCart) {
 		Map<String, Integer> orderContent = new HashMap<String, Integer>();
@@ -71,7 +69,7 @@ public class Order implements Serializable{
 	/**
 	 * Getter for the order id
 	 * 
-	 * @return orderId - order id
+	 * @return orderId order id
 	 */
 	public int getOrderId() {
 		return orderId;
@@ -80,7 +78,7 @@ public class Order implements Serializable{
 	/**
 	 * Getter for the order number
 	 * 
-	 * @return orderNumber - order number
+	 * @return orderNumber order number
 	 */
 	public int getOrderNumber() {
 		return orderNumber;
@@ -88,7 +86,7 @@ public class Order implements Serializable{
 	/**
 	 * Setter for the order number
 	 * 
-	 * @param orderNumber - order number
+	 * @param orderNumber order number
 	 */
 	public void setOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
@@ -97,7 +95,7 @@ public class Order implements Serializable{
 	/**
 	 * Getter for additional info
 	 * 
-	 * @return additionalInfo - additional info of the order
+	 * @return additionalInfo additional info of the order
 	 */
 	public String getAdditionalInfo() {
 		return additionalInfo;
@@ -105,7 +103,7 @@ public class Order implements Serializable{
 	/**
 	 * Setter for the additional info
 	 * 
-	 * @param additionalInfo - given additional info
+	 * @param additionalInfo given additional info
 	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
@@ -113,7 +111,7 @@ public class Order implements Serializable{
 	/**
 	 * Getter for the status of the order, the order is completed when true
 	 * 
-	 * @return status - status of the order
+	 * @return status status of the order
 	 */
 	public boolean isStatus() {
 		return status;
@@ -121,7 +119,7 @@ public class Order implements Serializable{
 	/**
 	 * Setter for the order status
 	 * 
-	 * @param status - given status
+	 * @param status given status
 	 */
 	public void setStatus(boolean status) {
 		this.status = status;
@@ -129,7 +127,7 @@ public class Order implements Serializable{
 	/**
 	 * Getter for the order creation timestamp 
 	 * 
-	 * @return creationTimeStamp - timestamp of the order creation
+	 * @return creationTimeStamp timestamp of the order creation
 	 */
 	public LocalDateTime getDate() {
 		return creationTimeStamp;
@@ -154,7 +152,7 @@ public class Order implements Serializable{
 	/**
 	 * Setter for the order content
 	 * 
-	 * @param orderContent - order content
+	 * @param orderContent order content
 	 */
 	public void setOrderContent(Map<String, Integer> orderContent) {
 		this.orderContent = orderContent;

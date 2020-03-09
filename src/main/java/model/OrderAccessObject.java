@@ -130,12 +130,14 @@ public class OrderAccessObject implements IOrderDao {
 				throw e;
 			}
 		}
-		Order[] retrunFoodItems = new Order[orders.size()];
-		return (Order[]) orders.toArray(retrunFoodItems);
+		Order[] returnOrders = new Order[orders.size()];
+		return (Order[]) orders.toArray(returnOrders);
 
 	}
 
-	
+	/**
+	 * Method for deleting an order from database
+	 */
 	@Override
 	public boolean deleteOrder(int orderId) {
 		if (readOrderById(orderId) == null) {
@@ -155,7 +157,9 @@ public class OrderAccessObject implements IOrderDao {
 		return true;
 	}
 	
-	
+	/**
+	 * Method for deleting all orders from database
+	 */
 	@Override
 	public boolean deleteAllOrders() {
 		Order[] orders = readOrders();

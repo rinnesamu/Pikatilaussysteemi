@@ -296,7 +296,7 @@ public class RestaurantKeeperController {
 	
 	/**
 	 * Private helper method for creating popup toast notifications.
-	 * @param msg - ilmoituksen teksti
+	 * @param msg text string for the message
 	 */
 	private void createNotification(String msg) {
 		Notifications.create()
@@ -311,7 +311,7 @@ public class RestaurantKeeperController {
 	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
 	 * Method for updating a menu FoodItem.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitNameColumn(CellEditEvent<?,String> event) {
@@ -321,7 +321,7 @@ public class RestaurantKeeperController {
 	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
 	 * Method for updating a menu FoodItem.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
@@ -331,7 +331,7 @@ public class RestaurantKeeperController {
 	 * Event handler for the changes in path column. When the change is committed the current object will be updated.
 	 * Method for updating a menu FoodItem.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitPathColumn(CellEditEvent<?, String> event) {
@@ -342,7 +342,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Event handler for the changes in name column. When the change is committed the current object will be updated.
 	 * This method is for adding a new FoodItem.
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitAddNameColumn(CellEditEvent<?,String> event) {
@@ -352,7 +352,7 @@ public class RestaurantKeeperController {
 	 * Event handler for the changes in price column. When the change is committed the current object will be updated.
 	 * This method is for adding a new FoodItem.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitAddPriceColumn(CellEditEvent<?,Double> event) {
@@ -362,7 +362,7 @@ public class RestaurantKeeperController {
 	 * Event handler for the changes in path column. When the change is committed the current object will be updated.
 	 * Method for adding new FoodItem.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitAddPathColumn(CellEditEvent<?, String> event) {
@@ -373,7 +373,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Event handler for the changes in adding new category name column.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitAddCategoryNameColumn(CellEditEvent<?,String> event) {
@@ -384,7 +384,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Event handler for the changes in adding new ingredient name column.
 	 * 
-	 * @param event - event object containing information on the edit
+	 * @param event event object containing information on the edit
 	 */
 	@FXML
 	public void onEditCommitAddIngredientNameColumn(CellEditEvent<?,String> event) {
@@ -461,7 +461,7 @@ public class RestaurantKeeperController {
 		addIngredientTableView.setEditable(true);
 	}
 	/**
-	 * Method for fetching order from database
+	 * Method for fetching all orders from database
 	 */
 	public void refreshOrders() {
 		orderObList = FXCollections.observableArrayList(orderDao.readOrders());
@@ -482,7 +482,7 @@ public class RestaurantKeeperController {
                     CheckBox cb = new CheckBox();
                     {
                         cb.setOnAction((ActionEvent event) -> {
-                        	// current foodItem object - getTableView().getItems().get(getIndex())
+                        	// current foodItem object is "getTableView().getItems().get(getIndex())"
                             getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
                         });
                     }
@@ -644,7 +644,6 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
 	 * addButton CellFactory contains onAction method for adding item to database.
-	 * 
 	 */
 	public void createAddFoodItemCellFactories() {
 		// creating checkbox cellFactory
@@ -1010,13 +1009,12 @@ public class RestaurantKeeperController {
                         btn.setOnAction((ActionEvent event) -> {
                         	Order order = getTableView().getItems().get(getIndex());
                             System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
-                            //boolean success = orderDao.updateOrderStatus(order, order.isStatus());
-                            /*if(success) {
+                            boolean success = orderDao.updateOrderStatus(order);
+                            if(success) {
                             	createNotification("Tilaus muokattu onnistuneesti!");
                             }else {
                             	createNotification("Tilausta ei onnistuttu muokkaamaan");
-                            }*/
-                            // UP FOR DELETION
+                            }
                             refreshOrders();
                         });
                     }
