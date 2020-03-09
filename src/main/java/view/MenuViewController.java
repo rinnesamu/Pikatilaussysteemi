@@ -149,8 +149,10 @@ public class MenuViewController {
 				PauseTransition delay = new PauseTransition(Duration.seconds(5));
 				delay.setOnFinished( event -> pay(readyToPay));
 				delay.play();
-				// TODO:  Tää teksti jotenkin järkevämmin.
+				// TODO:  Joku järjevämpi boxi ympärille
 				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
+				String style = "-fx-background-color: rgba(100, 100, 100, 0.5);";
+				popBox.setStyle(style);
 				popBox.getChildren().add(payText);
 				payText.setFont(new Font(50));
 				readyToPay.setScene(payPopUp);

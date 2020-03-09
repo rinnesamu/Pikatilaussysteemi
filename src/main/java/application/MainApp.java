@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import view.MenuViewController;
 
 /**
@@ -30,6 +31,10 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ravintolasovellus");
+		// En tiiä pitäskö lisätä? Pitäs muokata sit vähän ainaki kuvakkeitten kokoja. Mut ois ehkä paremman näkönen.
+		/*this.primaryStage.setMaximized(true);
+		this.primaryStage.initStyle(StageStyle.UNDECORATED);
+		*/
 		
 		initUI();
 	}
