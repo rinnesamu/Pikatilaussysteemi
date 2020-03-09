@@ -16,7 +16,6 @@ public class RestaurantKeeperGUI extends Application{
 	
 	@Override
 	public void start(Stage primaryStage){
-		// TODO Auto-generated method stub
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ravintoloitsijan käyttöliittymä");
 		

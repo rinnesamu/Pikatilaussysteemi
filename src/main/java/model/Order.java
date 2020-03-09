@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name="orders")
-public class Order implements Serializable{
+public class Order implements Serializable, Comparable<Order>{
 
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -159,6 +159,16 @@ public class Order implements Serializable{
 	@Override
 	public String toString() {
 		return "Order: " + this.orderId + ", items in order: " + this.getOrderSize() + ", time created " + this.getDate();
+	}
+	/**
+	 * Method for making order objects comparable and sortable. Sorts orders in descending order based on order id.
+	 * 
+	 * @param compareOrder order object for comparison
+	 */
+	@Override
+	public int compareTo(Order compareOrder) {
+		int compareId = ((Order) compareOrder).getOrderId();
+		return compareId - this.orderId;
 	}
 	
 }

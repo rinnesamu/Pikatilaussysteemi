@@ -7,15 +7,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
+<AnchorPane prefHeight="600.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
    <children>
       <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-            <Tab text="Selaa tuotteita">
+            <Tab onSelectionChanged="#refreshAll" text="Selaa tuotteita">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="750.0">
                      <children>
-                        <StackPane layoutY="-41.0" prefHeight="500.0" prefWidth="1320.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <StackPane layoutY="-41.0" prefHeight="500.0" prefWidth="1320.0" AnchorPane.bottomAnchor="71.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <TableView fx:id="foodItemTableView" editable="true" prefHeight="491.0" prefWidth="1320.0">
                                 <columns>
@@ -35,7 +35,7 @@
                               </TableView>
                            </children>
                         </StackPane>
-                        <StackPane layoutY="406.0" prefHeight="70.0" prefWidth="1320.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <StackPane layoutY="406.0" prefHeight="71.0" prefWidth="1320.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
                               <TableView fx:id="addFoodItemTableView" editable="true" prefHeight="70.0" prefWidth="1354.0">
                                 <columns>
@@ -129,7 +129,7 @@
                                 <columns>
                                   <TableColumn fx:id="orderIdColumn" prefWidth="120.0" text="Tunnus #" />
                                   <TableColumn fx:id="orderNumberColumn" prefWidth="120.0" text="Tilaus #" />
-                                    <TableColumn fx:id="orderTimeStampColumn" prefWidth="120.0" text="Tilauksen aikaleima" />
+                                    <TableColumn fx:id="orderTimeStampColumn" prefWidth="240.0" text="Tilauksen aikaleima" />
                                     <TableColumn fx:id="orderReadyColumn" prefWidth="120.0" text="Valmis" />
                                     <TableColumn prefWidth="120.0" text="Sisältö" />
                                     <TableColumn fx:id="orderEditColumn" prefWidth="120.0" text="Tallenna" />

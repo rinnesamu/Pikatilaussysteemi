@@ -1,11 +1,12 @@
 package view;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.controlsfx.control.Notifications;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -175,11 +176,14 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<Order, Integer> orderNumberColumn;
 	@FXML
-	private TableColumn<Order, LocalDateTime> orderTimeStampColumn;
+	private TableColumn<Order, String> orderTimeStampColumn;
 	@FXML
 	private TableColumn<Order, Void> orderReadyColumn;
 	@FXML
 	private TableColumn<Order, Void> orderEditColumn;
+	
+	// formatter for datetime column
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 	
 	// Observable list for orders
 	private ObservableList<Order> orderObList;
@@ -287,7 +291,8 @@ public class RestaurantKeeperController {
 		// initiliazing order column cellfactories
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
 		orderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
-		orderTimeStampColumn.setCellValueFactory(new PropertyValueFactory<Order, LocalDateTime>("creationTimeStamp"));
+		orderTimeStampColumn.setCellValueFactory(order-> new SimpleStringProperty(order.getValue().getDate().format(formatter)));
+		
 		createOrderCellFactories();
 		orderReadyColumn.setCellFactory(orderReadyCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
@@ -461,10 +466,12 @@ public class RestaurantKeeperController {
 		addIngredientTableView.setEditable(true);
 	}
 	/**
-	 * Method for fetching all orders from database
+	 * Method for fetching order from database
 	 */
 	public void refreshOrders() {
-		orderObList = FXCollections.observableArrayList(orderDao.readOrders());
+		Order[] orders = orderDao.readOrders();
+		Arrays.sort(orders);
+		orderObList = FXCollections.observableArrayList(orders);
 		orderTableView.setItems(orderObList);
 	}
 	
@@ -644,6 +651,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
 	 * addButton CellFactory contains onAction method for adding item to database.
+	 * 
 	 */
 	public void createAddFoodItemCellFactories() {
 		// creating checkbox cellFactory
