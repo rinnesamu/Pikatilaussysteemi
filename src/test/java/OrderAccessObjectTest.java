@@ -16,29 +16,27 @@ import model.FoodItemAccessObject;
 import model.Order;
 import model.OrderAccessObject;
 
-//@TestInstance(Lifecycle.PER_CLASS)
 class OrderAccessObjectTest {
 
 	private Order order;
 	private Order order2;
+	private FoodItem f1;
+	private FoodItem f2;
+	private FoodItem f3;
+	
 	
 	private OrderAccessObject orderDao = new OrderAccessObject();
 	
 	private Map<FoodItem, Integer> shoppingCartContent;
 	private Map<FoodItem, Integer> shoppingCartContent2;
-	/*
-	@BeforeAll
-	void bAll() {
-
-	}*/
 	
 	@BeforeEach
 	void init() {
 		shoppingCartContent = new HashMap<FoodItem, Integer>();
 		shoppingCartContent2 = new HashMap<FoodItem, Integer>();
-		FoodItem f1 = new FoodItem("kokis", 2.5, true);
-		FoodItem f2 = new FoodItem("fanta", 3.5, true);
-		FoodItem f3 = new FoodItem("kakku", 5.0, true);
+		f1 = new FoodItem("kokis", 2.5, true);
+		f2 = new FoodItem("fanta", 3.5, true);
+		f3 = new FoodItem("kakku", 5.0, true);
 		shoppingCartContent.put(f1, 3);
 		shoppingCartContent.put(f2, 5);
 
@@ -83,14 +81,18 @@ class OrderAccessObjectTest {
 		order.setStatus(true);
 		assertEquals(true, orderDao.updateOrderStatus(order), "Couldn't update order");
 	}
-	
-	/*
 	@Test
-	@DisplayName("Reading active orders from db")
-	void testReadOrdersByStatus() {
+	@DisplayName("Deleting one order from database")
+	void testDeleteOrderById() {
 		assertEquals(true, orderDao.createOrder(order), "Couldn't create 1st order");
-		assertEquals(1, orderDao.readOrdersByStatus(false).length, "Couldn't read orders by status");
-	}*/
+		assertEquals(true, orderDao.createOrder(order2), "Couldn't create 2nd order");
+		assertEquals(2, orderDao.readOrders().length, "Couldn't read correct order length");
+		
+		assertEquals(true, orderDao.deleteOrder(order2.getOrderId()), "Couldn't delete order");
+		assertEquals(1, orderDao.readOrders().length, "Couldn't read correct order array length");
+		assertEquals(true, orderDao.deleteOrder(order.getOrderId()), "Couldn't delete order");
+		assertEquals(0, orderDao.readOrders().length, "Couldn't read correct order array length");
+	}
 	
 	@Test
 	@DisplayName("Deleting all orders from db")

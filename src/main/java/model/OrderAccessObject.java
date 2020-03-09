@@ -10,19 +10,13 @@ import org.hibernate.Transaction;
 
 /**
  * DataAccessObject for Order class. It is used for storing order information to a database.
- * The class uses JPA EntityManager
  * 
  */
 public class OrderAccessObject implements IOrderDao {
-
-	/*
-	@PersistenceContext
-	protected EntityManagerFactory emf;
-	protected EntityManager em;*/
 	
 	private SessionFactory sessionFactory = null;
 	/**
-	 * Constructor where EntityMAnager and EntityManagerFactory are defined
+	 * Constructor where sessionFactory is defined
 	 */
 	public OrderAccessObject() {
 		sessionFactory = util.HibernateUtil.buildSessionFactory();
@@ -31,7 +25,7 @@ public class OrderAccessObject implements IOrderDao {
 	/**
 	 * Method for adding an order to the database
 	 * 
-	 * @param order - order object that contains the information on the order
+	 * @param order order object that contains the information on the order
 	 */
 	@Override
 	public boolean createOrder(Order order) {
@@ -52,7 +46,9 @@ public class OrderAccessObject implements IOrderDao {
 		return true;
 		
 	}
-	
+	/**
+	 * Method for fetching an order from database based on its id
+	 */
 	@Override
 	public Order readOrderById(int orderId) {
 		Order order = null;
@@ -92,7 +88,7 @@ public class OrderAccessObject implements IOrderDao {
 	/**
 	 * Method for updating the status of a single order
 	 * 
-	 * @param order - Order object whose status is updated
+	 * @param order Order object whose status is updated
 	 */
 	@Override
 	public boolean updateOrderStatus(Order order) {
@@ -111,32 +107,11 @@ public class OrderAccessObject implements IOrderDao {
 		return true;
 
 	}
-	
-	/**
-	 * Method for fetching orders from the database based on its status
-	 */
-	@Override
-	public Order[] readOrdersByStatus(boolean status){
-		
-		List<Order> orders = null;
-		Transaction transaction = null;
-		try (Session session = sessionFactory.openSession()) {
-			transaction = session.beginTransaction();
-			orders = (List<Order>) session.createQuery("from Order Where status = :nameParam").setParameter("nameParam", status);
-			transaction.commit();
-		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-				throw e;
-			}
-		}
-		Order[] returnOrders = new Order[orders.size()];
-		return (Order[]) orders.toArray(returnOrders);
-
-	}
 
 	/**
 	 * Method for deleting an order from database
+	 * 
+	 * @param orderId the id of the order
 	 */
 	@Override
 	public boolean deleteOrder(int orderId) {

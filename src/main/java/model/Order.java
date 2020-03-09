@@ -59,8 +59,6 @@ public class Order implements Serializable{
 		
 		this.orderContent = orderContent;
 		
-		
-		
 		this.status = false;
 		this.orderNumber = orderNumber;
 		this.additionalInfo = "";
