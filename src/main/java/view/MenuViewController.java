@@ -29,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import model.Category;
 import model.CategoryAccessObject;
@@ -90,8 +91,6 @@ public class MenuViewController {
 	// A flag to show removing of an item from shopping cart
 	boolean removed;
 	
-		
-	// TODO Tän vois ehkä siirtää orderin puolelle tän logiikan.
 	private static int orderNumber = 1;
 
 			
@@ -142,15 +141,19 @@ public class MenuViewController {
 			@Override
 			public void handle(MouseEvent e) {
 				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
-				System.out.println("Maksaa " + order);
 				orderAO.createOrder(order);
+				HBox popBox = new HBox(1);
+				Scene payPopUp = new Scene(popBox);
+				
 				PauseTransition delay = new PauseTransition(Duration.seconds(5));
 				delay.setOnFinished( event -> pay(readyToPay));
 				delay.play();
 				// TODO:  Tää teksti jotenkin järkevämmin.
 				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
-				payText.setFont(new Font(35));
-				readyList.getChildren().add(payText);
+				popBox.getChildren().add(payText);
+				payText.setFont(new Font(50));
+				readyToPay.setScene(payPopUp);
+				readyToPay.centerOnScreen();
 			}
 		};
 		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);
@@ -160,6 +163,7 @@ public class MenuViewController {
 		Scene payScene = new Scene(sPane, 600, 500);
 		readyToPay.setScene(payScene);
 		readyToPay.initModality(Modality.APPLICATION_MODAL);
+		readyToPay.initStyle(StageStyle.UNDECORATED);
 		readyToPay.show();
 	}
 	
