@@ -8,20 +8,45 @@
 	-fx-backgound-insets: 4;
 	-fx-padding: 10;
 }
+.menubutton:hover {
+	-fx-background-color: red;
+	-fx-background-radius: 30;
+	-fx-backgound-insets: 4;
+	-fx-padding: 10;
+}
+.menubutton:focused {
+	-fx-background-color: red;
+	-fx-background-radius: 30;
+	-fx-backgound-insets: 4;
+	-fx-padding: 10;
+}
 .cartbutton {
-	-fx-background-color: transparent;
-	-fx-border-color: orange;
+	-fx-background-color: gold;
+	-fx-border-color: black;
 	-fx-border-width: 3;
-	-fx-padding: 1px;
 	-fx-border-insets: 1px;
 }
+.cartbutton:hover {
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-border-width: 3;
+	-fx-border-insets: 1px;
+}
+
 .categorybutton {
 	-fx-background-color: orange;
 	-fx-border-insets: 5px;
 	-fx-border-width: 3;
 	-fx-border-color: black;
 }
+.categorybutton:hover {
+	-fx-background-color: white;
+	-fx-border-insets: 5px;
+	-fx-border-width: 3;
+	-fx-border-color: black;
+}
 
-.categorybutton:focused {
-	-fx-background-color: yellow;
+.cancelbuyButton { 
+}
+.payButton{
 }

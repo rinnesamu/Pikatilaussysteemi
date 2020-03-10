@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.lang.Object;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
@@ -108,34 +109,50 @@ public class MenuViewController {
 		ScrollPane sPane = new ScrollPane();
 		VBox readyList = new VBox(20);
 		readyList.setPadding(new Insets(30,0,0,30));
+
 		double price;
 		int amount;
-		
+
+		Label header = new Label("Valitsemasi tuotteet:");
+		header.setFont(new Font(25));
+		header.setUnderline(true);
+		readyList.getChildren().add(header);
+
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
 			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
+			payItem.setFont(new Font(17));
 			readySingleItem.getChildren().add(payItem);
-			if (items[i].getIngredientsAsList() != null) {
-				Label ingredients = new Label(getObjectIngredients(items[i]).toString());
-				readySingleItem.getChildren().add(ingredients);
+			if (getDatabaseIngredients(items[i]) != null) {
+				if (items[i].getRemovedIngredientsAsList() != null) {
+					String[] removedIngredients =items[i].getRemovedIngredientsAsList();
+					String removedIngredientList ="";
+					for (int j = 0; j < removedIngredients.length; j++) {
+						removedIngredientList += " " + removedIngredients[j].toString();
+					}
+					Label ingredients = new Label(" poistettu:" + removedIngredientList);
+					readySingleItem.getChildren().add(ingredients);
+				}
 			}
 			File file = new File(items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
-			iv.setFitHeight(50);
-			iv.setFitWidth(50);
+			iv.setFitHeight(40);
+			iv.setFitWidth(40);
 			readySingleItem.getChildren().add(iv);
 			readyList.getChildren().add(readySingleItem);
 		}
 		Label sumText = new Label("Summa: " + shoppingCart.getSum() + " euroa");
-		sumText.setFont(new Font(30));
+		sumText.setFont(new Font(25));
 		Button payButton = new Button("Maksa ostokset");
-		payButton.setFont(new Font(30));
+		payButton.setFont(new Font(20));
+		payButton.getStyleClass().add("payButton");
 		Button cancelButton = new Button("Peruuta maksaminen");
-		cancelButton.setFont(new Font(30));
+		cancelButton.setFont(new Font(17));
+		cancelButton.getStyleClass().add("cancelbuyButton");
 		readyList.getChildren().addAll(sumText, payButton, cancelButton);
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
@@ -183,7 +200,7 @@ public class MenuViewController {
 	}
 	
 	/**
-	 * Method for emptying the shopping cart element in UI and shopping cart object.
+	 * Method for emptying the shopping cart element in UI and shopping cart object and also resets the ingredients.
 	 */
 	@FXML
 	private void emptyShoppingCart() {
@@ -200,6 +217,7 @@ public class MenuViewController {
 		
 		if (result.get() == okayDel) {
 			FoodItem[] allItems = shoppingCart.getFoodItems();
+			// If the foodItem in the shopping cart has ingredients, reset the ingredients.
 			for (int i = 0; i < allItems.length; i++) {
 				if (getDatabaseIngredients(allItems[i]) != null) {
 					allItems[i].setIngredients(getDatabaseIngredients(allItems[i]).toArray(new String[getDatabaseIngredients(allItems[i]).size()]));
@@ -330,7 +348,9 @@ public class MenuViewController {
 		sCartItem.setFont(new Font(25));
 		sCartItem.setMinSize(375, 60);
 		sCartItem.getStyleClass().add("cartbutton");
-		
+		// Reset the removed ingredients.
+		String[] reset = new String[0];
+		foodItem.setRemovedIngredients(reset);
 		
 		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 		int[] listOfItemIds= shoppingCart.getAllItemId();
@@ -345,7 +365,7 @@ public class MenuViewController {
 		if (found) {
 			int oldAmount = shoppingCart.getAmount(id);
 			shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
-			//System.out.println("scl on " + shoppingCartList.getChildren());
+			System.out.println("scl on " + shoppingCartList.getChildren());
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 					shoppingCartList.getChildren().set(i, sCartItem);
@@ -431,15 +451,57 @@ public class MenuViewController {
 	 */
 	private void updateItem(FoodItem foodItem, String ingredientName, boolean included) {
 		ArrayList<String> ingredientsOfItem = getObjectIngredients(foodItem);
+
+		String[] removedIngredients;
+		System.out.println("getRemovedIngredientsAsList0 on " + foodItem.getRemovedIngredientsAsList());
+
+		if (foodItem.getRemovedIngredientsAsList() == null) {
+			removedIngredients = null;
+		} else {
+			removedIngredients = foodItem.getRemovedIngredientsAsList();
+		}
+		System.out.println("getRemovedIngredientsAsList1 on " + foodItem.getRemovedIngredientsAsList());
+		
 		if (included) {
 			ingredientsOfItem.add(ingredientName);
 			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
+			
+			for (int i = 0; i < removedIngredients.length; i++) {
+				if (removedIngredients[i].equals(ingredientName)) {
+					removedIngredients[i] = null;
+				}
+			}
+			foodItem.setRemovedIngredients(removedIngredients);
+			System.out.println("getRemovedIngredientsAsList2 on " + foodItem.getRemovedIngredientsAsList());
+			
 		}
 		else if (!included && ingredientsOfItem != null) {
+			System.out.println("getRemovedIngredientsAsList3 on " + foodItem.getRemovedIngredientsAsList());
 			for (int i = 0; i < ingredientsOfItem.size(); i++) {
+				System.out.println("tässä1");
+
 				if (ingredientsOfItem.get(i).equals(ingredientName)) {
+					System.out.println("tässä2");
+
 					ingredientsOfItem.remove(i);
 					foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
+					String[] listRemoved;
+					
+					if (removedIngredients != null) {
+						System.out.println("tässä3");
+
+						int size = removedIngredients.length;
+						listRemoved = new String[size + 1];
+						for (int j = 0; j < size; j++) {
+							listRemoved[j] = removedIngredients[j];
+						}
+						listRemoved[size] = ingredientName;					
+					} else {
+						listRemoved = new String[1];
+						listRemoved[0] = ingredientName;					
+					}
+					foodItem.setRemovedIngredients(listRemoved);
+					System.out.println("getRemovedIngredientsAsList3 on " + foodItem.getRemovedIngredientsAsList());
 				}
 			}
 		}
@@ -469,6 +531,7 @@ public class MenuViewController {
 		boxButtons.setPadding(new Insets(10,0,0,10));
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
+
 		VBox boxIngredient = new VBox(20);
 		boxIngredient.setPadding(new Insets(10,0,0,10));
 		
@@ -491,19 +554,18 @@ public class MenuViewController {
 			}
 			removed=false;
 			foodItem.setIngredients(ingredientsOfObject.toArray(new String[ingredientsOfObject.size()]));
-
 			Label header = new Label("Ainesosat:");
-			header.setFont(new Font(20));
+			header.setFont(new Font(17));
 			boxIngredient.getChildren().add(header);
 
-			for (int i = 0; i < ingredientsOfDatabase.size(); i++) {
+			for (int j = 0; j < ingredientsOfDatabase.size(); j++) {
 				HBox boxIngredient2 = new HBox(20);
-				String name = ingredientsOfDatabase.get(i);
+				String name = ingredientsOfDatabase.get(j);
 				Label newIngredient = new Label(name);
 				CheckBox included = new CheckBox();
 				
-				// If ingredient has not been deleted, mark checkbox.
-				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(i)))
+				// Check which of the object's ingredients are removable. If ingredient has not been deleted, mark checkbox.
+				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
 				{
 					included.setSelected(true);
 				}
@@ -513,6 +575,7 @@ public class MenuViewController {
 					updateItem(foodItem, name, included.isSelected());
 					
 				included.selectedProperty().addListener(listener);
+				
 				boxIngredient2.getChildren().addAll(newIngredient, included);
 				boxIngredient.getChildren().add(boxIngredient2);
 			}

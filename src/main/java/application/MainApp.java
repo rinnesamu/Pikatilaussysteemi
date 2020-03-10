@@ -32,9 +32,11 @@ public class MainApp extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ravintolasovellus");
 		// En tiiä pitäskö lisätä? Pitäs muokata sit vähän ainaki kuvakkeitten kokoja. Mut ois ehkä paremman näkönen.
-		/*this.primaryStage.setMaximized(true);
-		this.primaryStage.initStyle(StageStyle.UNDECORATED);
-		*/
+		//this.primaryStage.setMaximized(true);
+		 
+		//DEMOVERSIOSSA
+		//this.primaryStage.initStyle(StageStyle.UNDECORATED);
+		
 		
 		initUI();
 	}
