@@ -16,7 +16,7 @@
    <top>
       <HBox prefHeight="154.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="135.0" fitWidth="156.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="109.0" fitWidth="134.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../resources/imgs/food-2085075_1280.png" />
                </image>
