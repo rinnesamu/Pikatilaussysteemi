@@ -18,6 +18,12 @@ public class TextUI {
 	
 	public static void main(String[] args) {
 		/*FoodItem fo;
+		String[] ingredients = {"Sämpylä", "Pihvi", "Juusto", "Salaatti", "Tomaatti", "Sipuli", "Suolakurkku", "Kastike"};
+		fo = foodItemDao.readFoodItemByName("Talon hampurilainen");
+		fo.setIngredients(ingredients);
+		foodItemDao.updateFoodItem(fo);
+		*/
+		/*FoodItem fo;
 		String c;
 		for (int a = 0; a < 10; a++) {
 			if (a%4 == 0) {
@@ -74,7 +80,7 @@ public class TextUI {
 			System.out.println("Couldn't add the item!");
 		}
 		*/
-		System.out.println(foodItemDao.readFoodItems().length);
+		/*System.out.println(foodItemDao.readFoodItems().length);
 		FoodItem[] list = foodItemDao.readFoodItems();
 		list[0].setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
 		
@@ -98,7 +104,8 @@ public class TextUI {
 			foodItemDao.updateFoodItem(list[i]);
 			
 			
-		}/*
+		}*/
+		/*
 		Ingredient newIngredient = new Ingredient("pihvi", true);
 		ingredientDao.createIngredient(newIngredient);
 		Ingredient newIngredient2 = new Ingredient("juusto", true);

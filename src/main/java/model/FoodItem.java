@@ -248,7 +248,7 @@ public class FoodItem {
 	 */
 	public String[] getIngredientsAsList() {
 		System.out.println(this.ingredients);
-		if (this.ingredients.trim().length() == 0) {
+		if (this.ingredients == null || this.ingredients.trim().length() == 0) {
 			return null;
 		}
 		List<String> items = Arrays.asList(this.ingredients.split("\\s*,\\s*"));
