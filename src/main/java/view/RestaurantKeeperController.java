@@ -255,10 +255,11 @@ public class RestaurantKeeperController {
 		addCategoryColumn.setCellFactory(addCategoryChoiceBoxCellFactory);
 		refreshDummyFoodItem();
 		
+		try {
 		// initializing category column cellfactories
 		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
-		
+
 		createCategoryCellFactories();
 		categoryDeleteColumn.setCellFactory(categoryDeleteCellFactory);
 		refreshCategories();
@@ -270,7 +271,7 @@ public class RestaurantKeeperController {
 		createAddCategoryCellFactories();
 		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
 		refreshDummyCategory();
-		
+
 		//initializing ingredient column cellfactories
 		ingredientIdColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("ItemId"));
 		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
@@ -297,6 +298,9 @@ public class RestaurantKeeperController {
 		orderReadyColumn.setCellFactory(orderReadyCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
+		}catch(NullPointerException nE) {
+			System.out.println("category, ingerdient, order columns give nullpointerException");
+		}
 	}
 	
 	/**
