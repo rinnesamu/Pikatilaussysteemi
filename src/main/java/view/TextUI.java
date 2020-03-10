@@ -17,7 +17,7 @@ public class TextUI {
 	static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		FoodItem fo;
+		/*FoodItem fo;
 		String c;
 		for (int a = 0; a < 10; a++) {
 			if (a%4 == 0) {
@@ -40,6 +40,7 @@ public class TextUI {
 		categoryDao.createCategory(category);
 		category = new Category("Jälkiruuat");
 		categoryDao.createCategory(category);
+		*/
 		/*FoodItem f = new FoodItem("BicMac ateria", 7, "Ateriat", false);
 		}
 		f.setPath("./src/main/resources/imgs/coca-cola-443123_1280.png");
@@ -83,21 +84,21 @@ public class TextUI {
 		String path;
 		for (int i = 0; i < list.length; i++) {
 			if (i%5 == 0) {
-				path = "./src/main/resources/imgs/coca-cola-443123_1280.png";
+				path = "coca-cola-443123_1280.png";
 			} else if (i%5 == 1) {
-				path = "./src/main/resources/imgs/aluminum-87987_1280.jpg";
+				path = "aluminum-87987_1280.jpg";
 			} else if (i%5 == 2) {
-				path = "./src/main/resources/imgs/barbeque-1239407_1280.jpg";
+				path = "barbeque-1239407_1280.jpg";
 			} else if (i%5 == 3) {
-				path = "./src/main/resources/imgs/appetite-1238459_1280.jpg";
+				path = "appetite-1238459_1280.jpg";
 			} else {
-				path = "./src/main/resources/imgs/cheeseburger-34314_1280.png";
+				path = "cheeseburger-34314_1280.png";
 			}
 			list[i].setPath(path);
 			foodItemDao.updateFoodItem(list[i]);
 			
 			
-		}
+		}/*
 		Ingredient newIngredient = new Ingredient("pihvi", true);
 		ingredientDao.createIngredient(newIngredient);
 		Ingredient newIngredient2 = new Ingredient("juusto", true);
@@ -134,6 +135,7 @@ public class TextUI {
 			foodItemDao.updateFoodItem(list[i]);
 			
 		}
+		*/
 	}
 
 }

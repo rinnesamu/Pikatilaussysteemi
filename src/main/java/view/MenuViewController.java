@@ -137,7 +137,7 @@ public class MenuViewController {
 					readySingleItem.getChildren().add(ingredients);
 				}
 			}
-			File file = new File(items[i].getPath());
+			File file = new File("./src/main/resources/imgs/" + items[i].getPath());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(40);
@@ -303,7 +303,7 @@ public class MenuViewController {
 				menuItem.getStyleClass().add("menubutton");
 				
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
-				File file = new File(fItem.getPath());
+				File file = new File("./src/main/resources/imgs/" + fItem.getPath());
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(150);
