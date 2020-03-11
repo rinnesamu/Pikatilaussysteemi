@@ -142,8 +142,8 @@ public class ShoppingCart {
 	}
 	
 	/**
-	 * Getter for the sum in euros of the shopping cart
-	 * @return Sum of the shopping cart (euros)
+	 * Getter for the price sum of the shopping cart
+	 * @return Price sum of the shopping cart
 	 */
 	public double getSum() {
 		double priceSum = 0;

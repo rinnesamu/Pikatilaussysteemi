@@ -114,7 +114,7 @@ public class MenuViewController {
 	}
 	
 	private void setSum() {
-		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0");
+		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0 euroa");
 	}
 
 	
@@ -134,7 +134,7 @@ public class MenuViewController {
 			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					categoryButtonHandler(categoryName);					
+					categoryButtonHandler(categoryName);
 				}
 			};
 			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
@@ -630,14 +630,20 @@ public class MenuViewController {
 			
 			if (result.get() == okayDel) {
 				shoppingCart.removeFromShoppingCart(foodItem);
-				nameAndAmount.setText(foodItem.getName() + " poistettu!");
-				
+
 				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 						shoppingCartList.getChildren().remove(i);
 					}
 				}
 				removed = true;
+				
+				Alert deletedDialog = new Alert(AlertType.INFORMATION);
+				deletedDialog.setTitle("Poistettu tuote");
+				deletedDialog.setHeaderText("");
+				deletedDialog.setContentText(foodItem.getName() + " poistettu!");
+				deletedDialog.showAndWait();
+				
 				setSum();
 				popUp.close();
 			}
