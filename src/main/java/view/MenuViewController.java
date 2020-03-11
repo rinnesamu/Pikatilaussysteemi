@@ -637,14 +637,14 @@ public class MenuViewController {
 					}
 				}
 				removed = true;
-				
+				setSum();
+
 				Alert deletedDialog = new Alert(AlertType.INFORMATION);
 				deletedDialog.setTitle("Poistettu tuote");
 				deletedDialog.setHeaderText("");
 				deletedDialog.setContentText(foodItem.getName() + " poistettu!");
 				deletedDialog.showAndWait();
 				
-				setSum();
 				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
