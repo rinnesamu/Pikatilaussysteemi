@@ -32,7 +32,7 @@ Mikäli haluat lähteä kehittämään sovellusta toimi seuraavasti:
 * Luo hibernate.cfg.xml tiedoston main/resources kansioon. 
 * Vaihda molempien (main/resources/hibernate sekä test/resources/hibernate) tiedot oman tietokantasi tietoihin:
 ```
-<property name="hibernate.connection.url">jdbc:mysql://localhost:2206/TIETOKANNAN_NIMI</property>
+<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/TIETOKANNAN_NIMI</property>
 <property name="hibernate.connection.username">KÄYTTÄJÄTUNNUS</property>
 <property name="hibernate.connection.password">SALASANA</property>
 ```
