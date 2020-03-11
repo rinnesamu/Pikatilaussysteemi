@@ -80,9 +80,10 @@ class ShoppingCartTest {
 	@DisplayName("Emptying shopping cart")
 	void testEmptyShoppingCart() {
 		foodItem2 = new FoodItem("Pieni kahvi", 2, true);
-		sCart.addToShoppingCart(foodItem2, 2);	
+		sCart.addToShoppingCart(foodItem2, 2);
+		assertEquals(2, sCart.sizeShoppingCart(), "Wrong size at start");
 		sCart.emptyShoppingCart();
-		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size");
+		assertEquals(0, sCart.sizeShoppingCart(), "Wrong size at the end");
 	}
 
 	@Test
@@ -136,6 +137,8 @@ class ShoppingCartTest {
 		sCart.addToShoppingCart(foodItem3, 1);
 		System.out.println("scartti on" + sCart);
 		assertEquals(42, sCart.getSum(), DELTA, "Wrong sum of the cart, three items");
+    	sCart.emptyShoppingCart();
+		assertEquals(0, sCart.getSum(), DELTA, "Wrong sum of the cart, zero items");
 	}
 	
 	@Test
