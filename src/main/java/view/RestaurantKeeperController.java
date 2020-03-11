@@ -255,10 +255,11 @@ public class RestaurantKeeperController {
 		addCategoryColumn.setCellFactory(addCategoryChoiceBoxCellFactory);
 		refreshDummyFoodItem();
 		
+		try {
 		// initializing category column cellfactories
 		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
-		
+
 		createCategoryCellFactories();
 		categoryDeleteColumn.setCellFactory(categoryDeleteCellFactory);
 		refreshCategories();
@@ -270,7 +271,7 @@ public class RestaurantKeeperController {
 		createAddCategoryCellFactories();
 		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
 		refreshDummyCategory();
-		
+
 		//initializing ingredient column cellfactories
 		ingredientIdColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("ItemId"));
 		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
@@ -297,6 +298,9 @@ public class RestaurantKeeperController {
 		orderReadyColumn.setCellFactory(orderReadyCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
+		}catch(NullPointerException nE) {
+			System.out.println("category, ingerdient, order columns give nullpointerException");
+		}
 	}
 	
 	/**
@@ -430,7 +434,6 @@ public class RestaurantKeeperController {
 	public void refreshCategories() {
 		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
 		categoryTableView.setItems(categoryObList);
-		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
 	}
 	
 	/**
@@ -451,7 +454,6 @@ public class RestaurantKeeperController {
 	public void refreshIngredients() {
 		ingredientObList = FXCollections.observableArrayList(ingredientAccessObject.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
-		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
 	}
 	
 	/**
@@ -475,7 +477,7 @@ public class RestaurantKeeperController {
 		orderTableView.setItems(orderObList);
 	}
 	
-	// Creating cellfactories for choicebox, button and checkbox columns
+	// Creating cellfactories for choicebox, button and checkbox columns in menu table view
 	/**
 	 * Method that creates custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
 	 * 
@@ -662,7 +664,7 @@ public class RestaurantKeeperController {
                     CheckBox cb = new CheckBox();
                     {
                         cb.setOnAction((ActionEvent event) -> {
-                        	// current foodItem object - getTableView().getItems().get(getIndex())
+                        	// current foodItem object is "getTableView().getItems().get(getIndex())"
                             getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
                         });
                     }
