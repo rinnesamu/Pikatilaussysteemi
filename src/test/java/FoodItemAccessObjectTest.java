@@ -23,10 +23,6 @@ class FoodItemAccessObjectTest {
 	private FoodItem foodItem;
 	private FoodItemAccessObject foodItemDao = new FoodItemAccessObject();
 
-	/*
-	 * @BeforeEach void init() { foodItemDao = new FoodItemAccessObject(); // drops
-	 * table and creates new.- }
-	 */
 	@AfterEach
 	void after() {
 		foodItemDao.deleteAllFoodItems();
@@ -117,8 +113,6 @@ class FoodItemAccessObjectTest {
 				"Found something with incorrect category");
 	}
 
-	// @Disabled("Broken after util.HibernateUtil. Cant drop and create new table
-	// anymore, so ids wont reset")
 	@Test
 	@DisplayName("Deleting from database")
 	void testDeleteFoodItem() {
@@ -159,8 +153,6 @@ class FoodItemAccessObjectTest {
 		assertEquals(0, foodItemDao.readFoodItemsByName("Bic Mac").length, "Read by name is not working");
 	}
 
-	// Used to search by id, but since db wont reset before each test, ids wont
-	// reset
 	@Test
 	@DisplayName("Getting and setting ingredient list from db")
 	void testIngredients() {
