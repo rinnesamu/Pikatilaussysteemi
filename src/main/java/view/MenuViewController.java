@@ -151,9 +151,7 @@ public class MenuViewController {
 				}
 			}
 			File file = new File(this.getClass().getResource("/imgs/" + items[i].getPath()).getFile());
-			System.out.println(file);
 			Image image = new Image(file.toURI().toString());
-			System.out.println(image);
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(20);
 			iv.setFitWidth(20);
