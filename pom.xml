@@ -13,16 +13,12 @@
 	</properties>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
+			<plugin><!-- JavaFX-projekti, Huom: muutoksia JDK11:ssa! -->
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>8.8.3</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>application.App</mainClass>
-						</manifest>
-					</archive>
+					<mainClass>application.App</mainClass>
 				</configuration>
 			</plugin>
 			<plugin><!-- JUnit Jupiteria varten tarvitaan tuoreempi surefire -->
