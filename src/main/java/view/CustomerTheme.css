@@ -14,11 +14,8 @@
 	-fx-backgound-insets: 4;
 	-fx-padding: 10;
 }
-.menubutton:focused {
-	-fx-background-color: red;
-	-fx-background-radius: 30;
-	-fx-backgound-insets: 4;
-	-fx-padding: 10;
+.menubutton:pressed {
+	-fx-background-color: orange;
 }
 .cartbutton {
 	-fx-background-color: gold;
@@ -28,11 +25,10 @@
 }
 .cartbutton:hover {
 	-fx-background-color: white;
-	-fx-border-color: black;
-	-fx-border-width: 3;
-	-fx-border-insets: 1px;
 }
-
+.cartbutton:pressed {
+	-fx-background-color: orange;
+}
 .categorybutton {
 	-fx-background-color: orange;
 	-fx-border-insets: 5px;
@@ -40,8 +36,8 @@
 	-fx-border-color: black;
 }
 .categorybutton:hover {
-	-fx-background-color: white;
-	-fx-border-insets: 5px;
-	-fx-border-width: 3;
-	-fx-border-color: black;
+	-fx-background-color: gold;
+}
+.categorybutton:pressed {
+	-fx-background-color: grey;
 }
