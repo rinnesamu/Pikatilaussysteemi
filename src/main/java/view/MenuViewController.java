@@ -150,8 +150,10 @@ public class MenuViewController {
 					ingredients.setText(" poistettu:" + removedIngredientList);
 				}
 			}
-			File file = new File("./src/main/resources/imgs/" + items[i].getPath());
+			File file = new File(this.getClass().getResource("/imgs/" + items[i].getPath()).getFile());
+			System.out.println(file);
 			Image image = new Image(file.toURI().toString());
+			System.out.println(image);
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(20);
 			iv.setFitWidth(20);
@@ -312,7 +314,7 @@ public class MenuViewController {
 				menuItem.getStyleClass().add("menubutton");
 				
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
-				File file = new File("./src/main/resources/imgs/" + fItem.getPath());
+				File file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(150);
