@@ -434,7 +434,6 @@ public class RestaurantKeeperController {
 	public void refreshCategories() {
 		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
 		categoryTableView.setItems(categoryObList);
-		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
 	}
 	
 	/**
@@ -455,7 +454,6 @@ public class RestaurantKeeperController {
 	public void refreshIngredients() {
 		ingredientObList = FXCollections.observableArrayList(ingredientAccessObject.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
-		// Maybe set editable later !!!!!!!!!!!!! -- Needs CellFActory for name column
 	}
 	
 	/**
@@ -479,7 +477,7 @@ public class RestaurantKeeperController {
 		orderTableView.setItems(orderObList);
 	}
 	
-	// Creating cellfactories for choicebox, button and checkbox columns
+	// Creating cellfactories for choicebox, button and checkbox columns in menu table view
 	/**
 	 * Method that creates custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
 	 * 
@@ -666,7 +664,7 @@ public class RestaurantKeeperController {
                     CheckBox cb = new CheckBox();
                     {
                         cb.setOnAction((ActionEvent event) -> {
-                        	// current foodItem object - getTableView().getItems().get(getIndex())
+                        	// current foodItem object is "getTableView().getItems().get(getIndex())"
                             getTableView().getItems().get(getIndex()).setInMenu(cb.isSelected());
                         });
                     }
