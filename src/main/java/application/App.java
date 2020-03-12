@@ -67,7 +67,6 @@ public class App extends Application {
 					        public void handle(KeyEvent t) {
 					          if(t.getCode()==KeyCode.ESCAPE)
 					          {
-					              System.out.println("click on escape");
 					           startDemo();
 					          }
 					        }
@@ -101,7 +100,6 @@ public class App extends Application {
 					        public void handle(KeyEvent t) {
 					          if(t.getCode()==KeyCode.ESCAPE)
 					          {
-					              System.out.println("click on escape");
 					           startDemo();
 					          }
 					        }
