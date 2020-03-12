@@ -114,6 +114,10 @@ public class MenuViewController {
 		setSum();
 	}
 	
+	/**
+	 * Method for updating the sum of the shopping cart on the shopping cart list item.
+	 * 
+	 */
 	private void setSum() {
 		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0 euroa");
 	}
