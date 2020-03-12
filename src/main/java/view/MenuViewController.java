@@ -27,6 +27,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -209,6 +210,7 @@ public class MenuViewController {
 		Button payButton = new Button("Maksa ostokset");
 		payButton.setFont(new Font(20));
 		payButton.setStyle("-fx-background-color: green;");
+		payButton.setTextFill(Color.WHITE);
 		
 		if (items.length == 0) {
 			payButton.setDisable(true);
@@ -216,6 +218,7 @@ public class MenuViewController {
 		Button cancelButton = new Button("Peruuta maksaminen");
 		cancelButton.setFont(new Font(17));
 		cancelButton.setStyle("-fx-background-color: red;");
+		cancelButton.setTextFill(Color.WHITE);
 		readyList.getChildren().addAll(sumText, payButton, cancelButton);
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
