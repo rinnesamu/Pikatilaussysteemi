@@ -346,7 +346,7 @@ public class MenuViewController {
 	
 	
 	/**
-	 * Button handler for the menubuttons.
+	 * Button handler for the menubuttons. Adds items to the shopping cart.
 	 * 
 	 * @param foodItem The fooditem tied to the particular button.
 	 * @param button The created menubutton.
@@ -428,8 +428,6 @@ public class MenuViewController {
 	 * @return
 	 */
 	private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
-		//System.out.println("Ykkönen on  " + Arrays.toString(foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList()));
-		//System.out.println("Kakkonen on " + Arrays.toString(foodItem.getIngredientsAsList()));
 		
 		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
 		String[] ingredientsNames;
@@ -470,6 +468,7 @@ public class MenuViewController {
 			removedIngredients = foodItem.getRemovedIngredientsAsList();
 		}
 		
+		// If checkbox has been chosen.
 		if (included) {
 			ingredientsOfItem.add(ingredientName);
 			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
@@ -482,7 +481,8 @@ public class MenuViewController {
 			foodItem.setRemovedIngredients(removedIngredients);
 			
 		}
-		else if (!included && ingredientsOfItem != null) {
+		// If checkbox has been unchosen.
+		else if (!included) {
 			for (int i = 0; i < ingredientsOfItem.size(); i++) {
 
 				if (ingredientsOfItem.get(i).equals(ingredientName)) {
@@ -541,6 +541,7 @@ public class MenuViewController {
 		ArrayList<String> ingredientsOfObject;
 		// Database ingredients.
 		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
+
 		
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
@@ -549,11 +550,9 @@ public class MenuViewController {
 			// If object has been removed, ingredients are retrieved from database.
 			if (removed) {
 				ingredientsOfObject = ingredientsOfDatabase;
-				//System.out.println("ingredientsOfObject1 on " + ingredientsOfObject);
 			} else {
 				// Otherwise the local ingredients are retrieved.
 				ingredientsOfObject = getObjectIngredients(foodItem);
-				//System.out.println("ingredientsOfObject2 on " + ingredientsOfObject);
 			}
 			removed=false;
 			foodItem.setIngredients(ingredientsOfObject.toArray(new String[ingredientsOfObject.size()]));
@@ -567,7 +566,7 @@ public class MenuViewController {
 				Label newIngredient = new Label(name);
 				CheckBox included = new CheckBox();
 				
-				// Check which of the object's ingredients are removable. If ingredient has not been deleted, mark checkbox.
+				// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
 				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
 				{
 					included.setSelected(true);
@@ -638,13 +637,6 @@ public class MenuViewController {
 				}
 				removed = true;
 				setSum();
-
-				Alert deletedDialog = new Alert(AlertType.INFORMATION);
-				deletedDialog.setTitle("Poistettu tuote");
-				deletedDialog.setHeaderText("");
-				deletedDialog.setContentText(foodItem.getName() + " poistettu!");
-				deletedDialog.showAndWait();
-				
 				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
