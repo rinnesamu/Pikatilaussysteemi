@@ -74,7 +74,6 @@ public class RestaurantKeeperController {
 	//cellFactories for widgets in the menu table
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editFoodItemCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryFoodItemCellFactory;
 	
@@ -218,7 +217,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for refreshing everything inside tables
 	 */
-	public void refreshAll() {
+	private void refreshAll() {
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
@@ -236,7 +235,6 @@ public class RestaurantKeeperController {
 		deleteColumn.setCellFactory(deleteFoodItemCellFactory);
 		saveEditColumn.setCellFactory(editFoodItemCellFactory);
 		categoriesColumn.setCellFactory(categoryFoodItemCellFactory);
-		// cancelColumn.setCellFactory(cancelCellFactory);
 		refreshFoodItems();
 		
 		// add Item cellFactories for addFoodItemTableView
@@ -403,7 +401,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for fetching foodItems from the database
 	 */
-	public void refreshFoodItems() {
+	private void refreshFoodItems() {
 		try {
 			// setting foodItems into the menu table
 			foodItemObList = FXCollections.observableArrayList(Arrays.asList(foodItemDao.readFoodItems()));
@@ -419,7 +417,7 @@ public class RestaurantKeeperController {
 	 * Method for clearing table cells for adding new FoodItem in addFoodItemTableView.
 	 * Instantiates a new "default" dummyFoodItem to fill the fields in TableView.
 	 */
-	public void refreshDummyFoodItem() {
+	private void refreshDummyFoodItem() {
 		FoodItem dummyFoodItem = new FoodItem("Uusi tuote", 0.0, true);
 		List<FoodItem> tempList = new ArrayList<FoodItem>(0);
 		tempList.add(dummyFoodItem);
@@ -431,7 +429,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for fetching categories from database, and setting them on TableView
 	 */
-	public void refreshCategories() {
+	private void refreshCategories() {
 		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
 		categoryTableView.setItems(categoryObList);
 	}
@@ -439,7 +437,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Instantiates a dummy category object for category adding table
 	 */
-	public void refreshDummyCategory() {
+	private void refreshDummyCategory() {
 		Category dummyCategory = new Category("Uusi kategoria");
 		List<Category> tempList = new ArrayList<Category>(0);
 		tempList.add(dummyCategory);
@@ -451,7 +449,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for fetching ingrtedients from database, and setting them in TableView
 	 */
-	public void refreshIngredients() {
+	private void refreshIngredients() {
 		ingredientObList = FXCollections.observableArrayList(ingredientAccessObject.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
 	}
@@ -459,7 +457,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Instantiates a dummy ingredient object for ingredient adding table
 	 */
-	public void refreshDummyIngredient() {
+	private void refreshDummyIngredient() {
 		Ingredient dummyIngredient = new Ingredient("Uusi ainesosa", false);
 		List<Ingredient> tempList = new ArrayList<Ingredient>(0);
 		tempList.add(dummyIngredient);
@@ -468,9 +466,9 @@ public class RestaurantKeeperController {
 		addIngredientTableView.setEditable(true);
 	}
 	/**
-	 * Method for fetching order from database
+	 * Method for fetching orders from database
 	 */
-	public void refreshOrders() {
+	private void refreshOrders() {
 		Order[] orders = orderDao.readOrders();
 		Arrays.sort(orders);
 		orderObList = FXCollections.observableArrayList(orders);
@@ -482,7 +480,7 @@ public class RestaurantKeeperController {
 	 * Method that creates custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
 	 * 
 	 */
-	public void createFoodItemCellFactories() {
+	private void createFoodItemCellFactories() {
 		// creating checkbox cellFactory
 		inMenuFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
@@ -621,33 +619,6 @@ public class RestaurantKeeperController {
 			}
 		};
 		// editbutton ends
-		
-		// cancelbutton
-		cancelFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Peruuta");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                        	// functionality for cancel button
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-
-                            setGraphic(btn);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		// cancel button ends
 	}
 
 	/**
@@ -655,7 +626,7 @@ public class RestaurantKeeperController {
 	 * addButton CellFactory contains onAction method for adding item to database.
 	 * 
 	 */
-	public void createAddFoodItemCellFactories() {
+	private void createAddFoodItemCellFactories() {
 		// creating checkbox cellFactory
 		addInMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
@@ -763,7 +734,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom CellFactories for widget columns in category table
 	 */
-	public void createCategoryCellFactories() {
+	private void createCategoryCellFactories() {
 		// delete category cellfactory
 		categoryDeleteCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
 			@Override
@@ -803,7 +774,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in category adding table
 	 */
-	public void createAddCategoryCellFactories() {
+	private void createAddCategoryCellFactories() {
 		// add category cellfactory
 		addCategoryButtonCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
 			@Override
@@ -843,7 +814,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in ingredient table
 	 */
-	public void createIngredientCellFactories() {
+	private void createIngredientCellFactories() {
 		// creating checkbox cellFactory
 		ingredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
 			@Override
@@ -911,7 +882,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in ingredient adding table
 	 */
-	public void createAddIngredientCellFactories() {
+	private void createAddIngredientCellFactories() {
 		// creating checkbox cellFactory
 		addIngredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
 			@Override
@@ -980,7 +951,7 @@ public class RestaurantKeeperController {
 	 * Method that creates custom cellfactories for widget columns in order table
 	 * 
 	 */
-	public void createOrderCellFactories() {
+	private void createOrderCellFactories() {
 		// creating checkbox cellFactory
 		orderReadyCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
 			@Override
