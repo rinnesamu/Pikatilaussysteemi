@@ -9,6 +9,7 @@ Kouluprojekti elektroniselle pikatilausohjelmistolle, joka esimerkiksi pikaruoka
 * Kimmo Perälä
 * Samu Rinne
 * Arttu Seuna
+* Mikael Tikka
 
 ## Käytössä olevat tekniikat
 
