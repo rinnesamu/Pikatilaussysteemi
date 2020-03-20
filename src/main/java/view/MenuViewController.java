@@ -321,12 +321,15 @@ public class MenuViewController {
 
 				// FoodItem from the category
 				FoodItem fItem = items[i];
-				
-				// Taking item id of the foodItem and setting that as "menuId".
 				menuItem.getStyleClass().add("menubutton");
-				
+				File file;
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
-				File file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
+				try {
+					file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
+				} catch (Exception e) {
+					fItem.setPath("defaultpic.jpg");
+					file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
+				}
 				Image image = new Image(file.toURI().toString());
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(150);
