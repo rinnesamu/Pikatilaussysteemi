@@ -122,8 +122,8 @@ public class MenuViewController {
 		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0 euroa");
 	}
 
-	
 	/**
+	 *
 	 * Method for creating the category list menu.
 	 * @param categories Categories for creating the categories list menu.
 	 */
@@ -354,7 +354,7 @@ public class MenuViewController {
 	
 	
 	/**
-	 * Button handler for the menubuttons. Adds items to the shopping cart.
+	 *  Button handler for the menubuttons. Adds items to the shopping cart.
 	 * 
 	 * @param foodItem The fooditem tied to the particular button.
 	 */
@@ -430,7 +430,7 @@ public class MenuViewController {
 	}	
 	
 	/**
-	 * 	Removable ingredients of an item are retrieved from the database ie. original ingredients.
+	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
 	 * @param foodItem Fooditem of which ingredients are retrieved.
 	 * @return Ingredients of the database object.
 	 */
