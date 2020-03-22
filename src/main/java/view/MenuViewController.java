@@ -3,6 +3,7 @@ package view;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.lang.Object;
 
@@ -17,6 +18,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -186,7 +190,7 @@ public class MenuViewController {
 			HBox readySingleItem = new HBox();
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
-			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + " e");
+			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
@@ -374,11 +378,12 @@ public class MenuViewController {
 		if (found) {
 			int oldAmount = shoppingCart.getAmount(id);
 			shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
+			
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
 					shoppingCartList.getChildren().set(i, sCartItem);
 				}
-			}	
+			}
 		}
 		// Otherwise add the item to the shopping cart.
 		else {
@@ -397,8 +402,12 @@ public class MenuViewController {
 		}
 
 		setSum();
-		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		
+		if (getDatabaseIngredients(foodItem) != null && !getDatabaseIngredients(foodItem).equals(getObjectIngredients(foodItem))) {
+				sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName() + "*");
+		} else {		
+			sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
+		}
 		// Adding a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
@@ -416,11 +425,13 @@ public class MenuViewController {
 		// If foodItem has no in ingredients, return empty ArrayList for possible addable ingredients.
 		if (foodItem.getIngredientsAsList() == null ) {
 			ingredientsOfItem = new ArrayList<String>();
+			return ingredientsOfItem;
 		}
 		else {
 			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
+			Collections.sort(ingredientsOfItem);
+			return ingredientsOfItem;
 		}
-		return ingredientsOfItem;
 	}	
 	
 	/**
@@ -436,6 +447,7 @@ public class MenuViewController {
 		// If foodItem has no ingredients in the database return null.
 		if (foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
 			ingredientsOfItem = null;
+			return ingredientsOfItem;
 		}
 		else {
 			ingredientsNames = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
@@ -447,8 +459,9 @@ public class MenuViewController {
 					ingredientsOfItem.add(ingredientsNames[i]);
 				}
 			}
+			Collections.sort(ingredientsOfItem);
+			return ingredientsOfItem;
 		}
-		return ingredientsOfItem;
 	}
 	
 	/**
@@ -527,59 +540,68 @@ public class MenuViewController {
 		boxButtons.setPadding(new Insets(10,0,0,10));
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
-
 		VBox boxIngredient = new VBox(20);
 		boxIngredient.setPadding(new Insets(10,0,0,10));
 
+		/*TabPane tabPane = new TabPane();
+		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		tabPane.setTabMinHeight(100);*/
+		
 		// Database ingredients.
 		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
 
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
 			
-			// Local ingredients.
-			ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
-			
-			System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
-			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
-
-			Label header = new Label("Ainesosat:");
-			header.setFont(new Font(17));
-			boxIngredient.getChildren().add(header);
-
-			for (int j = 0; j < ingredientsOfDatabase.size(); j++) {
-				HBox boxIngredient2 = new HBox(20);
-				String name = ingredientsOfDatabase.get(j);
-				Label newIngredient = new Label(name);
-				CheckBox included = new CheckBox();
+			//for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
 				
-				// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
+				//Tab tab = new Tab("Tuote " + (i+1));
+				// Local ingredients.
+				ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
 				
-				if (ingredientsOfObject == null) {
+				System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
+				System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+	
+				Label header = new Label("Ainesosat:");
+				header.setFont(new Font(17));
+				boxIngredient.getChildren().add(header);
+	
+				for (int j = 0; j < ingredientsOfDatabase.size(); j++) {
+					HBox boxIngredient2 = new HBox(20);
+					String name = ingredientsOfDatabase.get(j);
+					Label newIngredient = new Label(name);
+					CheckBox included = new CheckBox();
 					
-				}else if(ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
-				{
-					included.setSelected(true);
-				}
-				
-				// Checkbox listener
-				ChangeListener<Object> listener = (obs, oldValue, newValue) ->
-			
-					updateItem(foodItem, name, included.isSelected());
+					// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
 					
-				included.selectedProperty().addListener(listener);
+					if (ingredientsOfObject == null) {
+						
+					}else if(ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
+					{
+						included.setSelected(true);
+					}
+					
+					// Checkbox listener
+					ChangeListener<Object> listener = (obs, oldValue, newValue) ->
 				
-				boxIngredient2.getChildren().addAll(newIngredient, included);
-				boxIngredient.getChildren().add(boxIngredient2);
+						updateItem(foodItem, name, included.isSelected());
+						
+					included.selectedProperty().addListener(listener);
+					
+					boxIngredient2.getChildren().addAll(newIngredient, included);
+					boxIngredient.getChildren().add(boxIngredient2);
+				//}
+				//tab.setContent(boxIngredient);
+				//tabPane.getTabs().add(tab);
 			}
 		}
 		
 		// Other buttons
 		Button increase = new Button("+");
-		increase.setFont(new Font(20));
+		increase.setFont(new Font(40));
 		increase.setMinSize(80, 80);
 		Button decrease = new Button("-");
-		decrease.setFont(new Font(20));
+		decrease.setFont(new Font(40));
 		decrease.setMinSize(80, 80);
 		Button delete = new Button("POISTA");
 		delete.setStyle("-fx-background-color: #ff0000;");
@@ -634,13 +656,11 @@ public class MenuViewController {
 		});
 		okay.setOnAction(event -> {
 			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			setSum();
-
-			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-				if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-					shoppingCartList.getChildren().set(i, button);
-				}
+			
+			if (!ingredientsOfDatabase.equals(getObjectIngredients(foodItem))) {
+				button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "*");
 			}
+			setSum();
 			popUp.close();
 		});
 		cancel.setOnAction(event -> {
