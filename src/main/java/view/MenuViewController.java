@@ -458,6 +458,7 @@ public class MenuViewController {
 	 * @param included Boolean representing whether the ingredient is included in the Fooditem or not.
 	 */
 	private void updateItem(FoodItem foodItem, String ingredientName, boolean included) {
+		// Get the foodItem's ingredients.
 		ArrayList<String> ingredientsOfItem = getObjectIngredients(foodItem);
 
 		String[] removedIngredients = foodItem.getRemovedIngredientsAsList();
@@ -599,7 +600,6 @@ public class MenuViewController {
 		});
 		decrease.setOnAction(event -> {
 			int amount = shoppingCart.getAmount(foodItem.getItemId());
-			
 			if (amount != 1) {
 				amount -= 1;
 			}
