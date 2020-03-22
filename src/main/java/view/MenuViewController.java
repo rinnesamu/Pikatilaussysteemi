@@ -90,9 +90,6 @@ public class MenuViewController {
 	// All the fooditems in a category.
 	private FoodItem[] items;
 	
-	// A flag to show removing of an item from shopping cart.
-	boolean removed;
-	
 	// Order number reset.
 	private static int orderNumber = 1;
 
@@ -110,6 +107,7 @@ public class MenuViewController {
 		Category[] allCategories = categoryAO.readCategories();
 		createCategoryList(allCategories);
 		String categoryName = allCategories[0].getName();
+		// TODO: what if no categories?
 		categoryButtonHandler(categoryName);
 		setSum();
 	}
@@ -292,12 +290,6 @@ public class MenuViewController {
 		
 		if (result.get() == okayDel) {
 			FoodItem[] allItems = shoppingCart.getFoodItems();
-			// If the foodItem in the shopping cart has ingredients, reset the ingredients.
-			for (int i = 0; i < allItems.length; i++) {
-				if (getDatabaseIngredients(allItems[i]) != null) {
-					allItems[i].setIngredients(getDatabaseIngredients(allItems[i]).toArray(new String[getDatabaseIngredients(allItems[i]).size()]));
-				}
-			}
 			shoppingCart.emptyShoppingCart();
 			shoppingCartList.getChildren().clear();
 			System.out.println(shoppingCart);
@@ -370,10 +362,6 @@ public class MenuViewController {
 		sCartItem.setMinSize(375, 60);
 		sCartItem.getStyleClass().add("cartbutton");
 		
-		// Reset the removed ingredients.
-		String[] reset = new String[0];
-		foodItem.setRemovedIngredients(reset);
-		
 		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 		int[] listOfItemIds= shoppingCart.getAllItemId();
 		boolean found = false;
@@ -394,6 +382,16 @@ public class MenuViewController {
 		}
 		// Otherwise add the item to the shopping cart.
 		else {
+			// If item has ingredients, reset ingredients and removed ingredients.
+			if (foodItem.getIngredientsAsList() != null) {
+				
+				// Reset the removed ingredients.
+				String[] reset = new String[0];
+				foodItem.setRemovedIngredients(reset);
+				
+				// Reset ingredients.
+				foodItem.setIngredients(getDatabaseIngredients(foodItem).toArray(new String[getDatabaseIngredients(foodItem).size()]));
+			}
 			shoppingCart.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
 		}
@@ -415,19 +413,12 @@ public class MenuViewController {
 		//String[] ingredientsNames;
 		ArrayList<String> ingredientsOfItem;
 		
+		// If foodItem has no in ingredients, return empty ArrayList for possible addable ingredients.
 		if (foodItem.getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
+			ingredientsOfItem = new ArrayList<String>();
 		}
 		else {
 			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
-			/*
-			// Checks which ingredients are removable
-			for (int i = 0; i < ingredientsNames.length; i++) {
-				Ingredient ingredientsAsIngredients= ingredientAO.readIngredientByName(ingredientsNames[i]);
-				if (ingredientsAsIngredients.isRemoveable()) {
-					ingredientsOfItem.add(ingredientsNames[i]);
-				}
-			}*/
 		}
 		return ingredientsOfItem;
 	}	
@@ -442,8 +433,8 @@ public class MenuViewController {
 		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
 		String[] ingredientsNames;
 
-		// If foodItem has got no ingredients.
-		if (foodItem.getIngredientsAsList() == null ) {
+		// If foodItem has no ingredients in the database return null.
+		if (foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
 			ingredientsOfItem = null;
 		}
 		else {
@@ -460,7 +451,6 @@ public class MenuViewController {
 		return ingredientsOfItem;
 	}
 	
-
 	/**
 	 * Method to update the ingredients of a Fooditem.
 	 * @param foodItem FoodItem of which ingredients are updated.
@@ -470,19 +460,15 @@ public class MenuViewController {
 	private void updateItem(FoodItem foodItem, String ingredientName, boolean included) {
 		ArrayList<String> ingredientsOfItem = getObjectIngredients(foodItem);
 
-		String[] removedIngredients;
-
-		if (foodItem.getRemovedIngredientsAsList() == null) {
-			removedIngredients = null;
-		} else {
-			removedIngredients = foodItem.getRemovedIngredientsAsList();
-		}
+		String[] removedIngredients = foodItem.getRemovedIngredientsAsList();
 		
 		// If checkbox has been chosen.
 		if (included) {
+			// Add the ingredient to the fooditem.
 			ingredientsOfItem.add(ingredientName);
 			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
 			
+			// Take that ingredient out of removedIngredients.
 			for (int i = 0; i < removedIngredients.length; i++) {
 				if (removedIngredients[i].equals(ingredientName)) {
 					removedIngredients[i] = null;
@@ -493,30 +479,26 @@ public class MenuViewController {
 		}
 		// If checkbox has been unchosen.
 		else if (!included) {
-			for (int i = 0; i < ingredientsOfItem.size(); i++) {
+			// Remove the ingredient from the fooditem.
+			ingredientsOfItem.remove(ingredientName);
+			foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
+			String[] listRemoved;
+			
+			// Add that ingredient to the removed ingredients.
+			if (removedIngredients != null) {
 
-				if (ingredientsOfItem.get(i).equals(ingredientName)) {
-
-					ingredientsOfItem.remove(i);
-					foodItem.setIngredients(ingredientsOfItem.toArray(new String[ingredientsOfItem.size()]));
-					String[] listRemoved;
-					
-					if (removedIngredients != null) {
-
-						int size = removedIngredients.length;
-						listRemoved = new String[size + 1];
-						for (int j = 0; j < size; j++) {
-							listRemoved[j] = removedIngredients[j];
-						}
-						listRemoved[size] = ingredientName;					
-					} else {
-						listRemoved = new String[1];
-						listRemoved[0] = ingredientName;					
-					}
-					foodItem.setRemovedIngredients(listRemoved);
-					//System.out.println("getRemovedIngredientsAsList on " + Arrays.toString(foodItem.getRemovedIngredientsAsList()));
+				int size = removedIngredients.length;
+				listRemoved = new String[size + 1];
+				for (int j = 0; j < size; j++) {
+					listRemoved[j] = removedIngredients[j];
 				}
+				listRemoved[size] = ingredientName;					
+			} else {
+				listRemoved = new String[1];
+				listRemoved[0] = ingredientName;					
 			}
+			foodItem.setRemovedIngredients(listRemoved);
+			System.out.println("getRemovedIngredientsAsList on " + Arrays.toString(foodItem.getRemovedIngredientsAsList()));
 		}
 	}
 	
@@ -547,25 +529,19 @@ public class MenuViewController {
 
 		VBox boxIngredient = new VBox(20);
 		boxIngredient.setPadding(new Insets(10,0,0,10));
-		
-		ArrayList<String> ingredientsOfObject;
+
 		// Database ingredients.
 		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
 
-		
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
-			//System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 			
-			// If object has been removed, ingredients are retrieved from database.
-			if (removed) {
-				ingredientsOfObject = ingredientsOfDatabase;
-			} else {
-				// Otherwise the local ingredients are retrieved.
-				ingredientsOfObject = getObjectIngredients(foodItem);
-			}
-			removed=false;
-			foodItem.setIngredients(ingredientsOfObject.toArray(new String[ingredientsOfObject.size()]));
+			// Local ingredients.
+			ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
+			
+			System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
+			System.out.println("ingredientsOfObject on " + ingredientsOfObject);
+
 			Label header = new Label("Ainesosat:");
 			header.setFont(new Font(17));
 			boxIngredient.getChildren().add(header);
@@ -577,10 +553,14 @@ public class MenuViewController {
 				CheckBox included = new CheckBox();
 				
 				// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
-				if (ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
+				
+				if (ingredientsOfObject == null) {
+					
+				}else if(ingredientsOfObject.contains(ingredientsOfDatabase.get(j)))
 				{
 					included.setSelected(true);
 				}
+				
 				// Checkbox listener
 				ChangeListener<Object> listener = (obs, oldValue, newValue) ->
 			
@@ -645,7 +625,6 @@ public class MenuViewController {
 						shoppingCartList.getChildren().remove(i);
 					}
 				}
-				removed = true;
 				setSum();
 				popUp.close();
 			}
