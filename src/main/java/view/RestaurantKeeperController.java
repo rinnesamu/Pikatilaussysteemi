@@ -13,6 +13,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -21,8 +22,12 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 import model.*;
@@ -651,9 +656,29 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-					CheckComboBox<Ingredient> ingredientsCCB = new CheckComboBox<Ingredient>(ingredientObList);
+					Button button = new Button("Ainekset");
+					
 					{
-						ingredientsCCB.getCheckModel().getCheckedItems().addListener(new ListChangeListener<Ingredient>(){
+						// TODO finish creating tableview and columns for ingredient, add functionality
+						
+						TableColumn<Ingredient, String> iNameColumn = new TableColumn<Ingredient, String>();
+						iNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient,String>("name"));
+						TableColumn<Ingredient, Boolean> iCheckBoxColumn = new TableColumn<Ingredient, Boolean>();
+						// TODO make checkbox column, add functionality to checkboxes
+						TableView<Ingredient> tableView = new TableView<Ingredient>();
+						tableView.getColumns().addAll(iNameColumn, iCheckBoxColumn);
+						tableView.setItems(ingredientObList);
+						StackPane stackPane = new StackPane(tableView);
+	            		Stage popUp = new Stage();
+	            		Scene popUpScene = new Scene(stackPane, 400, 400);
+	            		popUp.setScene(popUpScene);
+	            		popUp.initModality(Modality.APPLICATION_MODAL);	
+	            		
+                        button.setOnAction((ActionEvent event) -> {
+                    		popUp.show();
+                        });
+                        
+						/*ingredientsCCB.getCheckModel().getCheckedItems().addListener(new ListChangeListener<Ingredient>(){
 						     public void onChanged(ListChangeListener.Change<? extends Ingredient> c) {
 						    	 ArrayList<String> ingredientList = new ArrayList<String>();
 						    	 for(Ingredient i : ingredientsCCB.getCheckModel().getCheckedItems()) {
@@ -663,7 +688,7 @@ public class RestaurantKeeperController {
 						    	 FoodItem foodItem = getTableView().getItems().get(getIndex());
 						    	 foodItem.setIngredients(ingredientList.toArray(new String[ingredientList.size()]));
 						     }
-						});
+						});*/
                     }
                     @Override
                     public void updateItem(Void item, boolean empty) {
@@ -672,7 +697,7 @@ public class RestaurantKeeperController {
 
                         } else {
                         	
-	                        FoodItem foodItem = getTableView().getItems().get(getIndex());
+	                        /*FoodItem foodItem = getTableView().getItems().get(getIndex());
 	                        String[] ingredientStrArr = foodItem.getIngredientsAsList();
 	                        try {
 	                        	for(Ingredient i : ingredientObList) {
@@ -685,9 +710,9 @@ public class RestaurantKeeperController {
 	                        	}
                         	}catch(NullPointerException e) {
                         		System.out.println("No ingredients for item " + foodItem.getName());
-                        	}
+                        	}*/
 	                        
-                        	setGraphic(ingredientsCCB);
+                        	setGraphic(button);
                         }
                     }
                 };
