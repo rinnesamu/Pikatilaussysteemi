@@ -7,7 +7,11 @@ import java.util.List;
 
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -17,11 +21,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -657,61 +663,40 @@ public class RestaurantKeeperController {
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
 					Button button = new Button("Ainekset");
-					
 					{
-						// TODO finish creating tableview and columns for ingredient, add functionality
-						
-						TableColumn<Ingredient, String> iNameColumn = new TableColumn<Ingredient, String>();
-						iNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient,String>("name"));
-						TableColumn<Ingredient, Boolean> iCheckBoxColumn = new TableColumn<Ingredient, Boolean>();
-						// TODO make checkbox column, add functionality to checkboxes
-						TableView<Ingredient> tableView = new TableView<Ingredient>();
-						tableView.getColumns().addAll(iNameColumn, iCheckBoxColumn);
-						tableView.setItems(ingredientObList);
-						StackPane stackPane = new StackPane(tableView);
-	            		Stage popUp = new Stage();
-	            		Scene popUpScene = new Scene(stackPane, 400, 400);
-	            		popUp.setScene(popUpScene);
-	            		popUp.initModality(Modality.APPLICATION_MODAL);	
-	            		
                         button.setOnAction((ActionEvent event) -> {
+                        	FoodItem foodItem = getTableView().getItems().get(getIndex());
+    						ListView<Ingredient> listView = new ListView<Ingredient>();
+    						listView.setItems(ingredientObList);
+    						listView.setCellFactory(CheckBoxListCell.forListView(new Callback<Ingredient, ObservableValue<Boolean>>() {
+    				            @Override
+    				            public ObservableValue<Boolean> call(Ingredient item) {
+    				                BooleanProperty observable = new SimpleBooleanProperty();
+    				                // TODO getIngredients only once
+    				                observable.set(Arrays.asList(foodItem.getIngredientsAsList()).contains(item.getName()));
+    				                observable.addListener((obs, wasSelected, isNowSelected) -> 
+    				                //TODO add functionality to checking boxes
+    				                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected)
+    				                );
+    				                return observable;
+    				            }
+    				        }));
+    						
+    						StackPane stackPane = new StackPane(listView);
+    	            		Stage popUp = new Stage();
+    	            		Scene popUpScene = new Scene(stackPane, 150, 400);
+    	            		popUp.setScene(popUpScene);
+    	            		popUp.initModality(Modality.APPLICATION_MODAL);	
+    	            		
                     		popUp.show();
                         });
-                        
-						/*ingredientsCCB.getCheckModel().getCheckedItems().addListener(new ListChangeListener<Ingredient>(){
-						     public void onChanged(ListChangeListener.Change<? extends Ingredient> c) {
-						    	 ArrayList<String> ingredientList = new ArrayList<String>();
-						    	 for(Ingredient i : ingredientsCCB.getCheckModel().getCheckedItems()) {
-						    		 ingredientList.add(i.getName());
-						    	 }
-						    	 // everytime new item is checked the current fooditem's ingredientlist is updated
-						    	 FoodItem foodItem = getTableView().getItems().get(getIndex());
-						    	 foodItem.setIngredients(ingredientList.toArray(new String[ingredientList.size()]));
-						     }
-						});*/
                     }
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty) {
 
-                        } else {
-                        	
-	                        /*FoodItem foodItem = getTableView().getItems().get(getIndex());
-	                        String[] ingredientStrArr = foodItem.getIngredientsAsList();
-	                        try {
-	                        	for(Ingredient i : ingredientObList) {
-	                        		String iName = i.getName();
-		                        	for(String s : ingredientStrArr) {
-		                        		if(s.equals(iName)){
-		                        			ingredientsCCB.getCheckModel().check(i);
-		                        		}
-		                        	}
-	                        	}
-                        	}catch(NullPointerException e) {
-                        		System.out.println("No ingredients for item " + foodItem.getName());
-                        	}*/
-	                        
+                        } else {        	
                         	setGraphic(button);
                         }
                     }
