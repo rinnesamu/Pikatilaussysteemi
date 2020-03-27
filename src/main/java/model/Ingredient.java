@@ -75,5 +75,13 @@ public class Ingredient {
 	public void setRemoveable(boolean removable) {
 		this.removable = removable;
 	}
-
+	
+	/**
+	 * Overriding toString method
+	 * @return name The name of the ingredient
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
 }

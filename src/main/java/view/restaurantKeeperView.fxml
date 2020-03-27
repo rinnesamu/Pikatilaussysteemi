@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
+<AnchorPane prefHeight="600.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.RestaurantKeeperController">
    <children>
       <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-            <Tab onSelectionChanged="#refreshAll" text="Selaa tuotteita">
+            <Tab onSelectionChanged="#initAllTableViews" text="Selaa tuotteita">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="750.0">
                      <children>
@@ -24,7 +24,7 @@
                                     <TableColumn fx:id="priceColumn" onEditCommit="#onEditCommitPriceColumn" prefWidth="120.0" text="Hinta" />
                                     <TableColumn fx:id="inMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
                                     <TableColumn fx:id="categoriesColumn" prefWidth="120.0" text="Kategoria" />
-                                    <TableColumn prefWidth="120.0" text="Ainekset" />
+                                    <TableColumn fx:id="ingredientColumn" prefWidth="120.0" text="Ainekset" />
                                     <TableColumn fx:id="pathColumn" onEditCommit="#onEditCommitPathColumn" prefWidth="120.0" text="Kuvakepolku" />
                                     <TableColumn fx:id="soldColumn" editable="false" prefWidth="120.0" text="Myyty" />
                                     <TableColumn fx:id="readyColumn" editable="false" prefWidth="120.0" text="Valmiina" />
@@ -40,15 +40,15 @@
                               <TableView fx:id="addFoodItemTableView" editable="true" prefHeight="70.0" prefWidth="1354.0">
                                 <columns>
                                   <TableColumn editable="false" prefWidth="120.0" />
-                                  <TableColumn fx:id="addNameColumn" onEditCommit="#onEditCommitAddNameColumn" prefWidth="120.0" text="Nimi" />
-                                    <TableColumn fx:id="addPriceColumn" onEditCommit="#onEditCommitAddPriceColumn" prefWidth="120.0" text="Hinta" />
-                                    <TableColumn fx:id="addInMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
-                                    <TableColumn fx:id="addCategoryColumn" prefWidth="120.0" text="Kategoria" />
-                                    <TableColumn prefWidth="120.0" text="Ainekset" />
-                                    <TableColumn fx:id="addPathColumn" onEditCommit="#onEditCommitAddPathColumn" prefWidth="120.0" text="Kuvakepolku" />
+                                  <TableColumn fx:id="addFoodItemNameColumn" onEditCommit="#onEditCommitAddNameColumn" prefWidth="120.0" text="Nimi" />
+                                    <TableColumn fx:id="addFoodItemPriceColumn" onEditCommit="#onEditCommitAddPriceColumn" prefWidth="120.0" text="Hinta" />
+                                    <TableColumn fx:id="addFoodItemInMenuColumn" prefWidth="120.0" text="Ruokalistassa" />
+                                    <TableColumn fx:id="addFoodItemCategoryColumn" prefWidth="120.0" text="Kategoria" />
+                                    <TableColumn fx:id="addFoodItemIngredientsColumn" prefWidth="120.0" text="Ainekset" />
+                                    <TableColumn fx:id="addFoodItemPathColumn" onEditCommit="#onEditCommitAddPathColumn" prefWidth="120.0" text="Kuvakepolku" />
                                     <TableColumn prefWidth="120.0" />
                                     <TableColumn prefWidth="120.0" />
-                                    <TableColumn fx:id="addButtonColumn" prefWidth="120.0" text="Lisää tuote" />
+                                    <TableColumn fx:id="addFoodItemButtonColumn" prefWidth="120.0" text="Lisää tuote" />
                                     <TableColumn prefWidth="120.0" text="Peruuta" />
                                 </columns>
                               </TableView>
@@ -58,7 +58,7 @@
               	</AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#refreshAll" text="Kategoriat">
+            <Tab onSelectionChanged="#initAllTableViews" text="Kategoriat">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -87,7 +87,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#refreshAll" text="Ainesosat">
+            <Tab onSelectionChanged="#initAllTableViews" text="Ainesosat">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
