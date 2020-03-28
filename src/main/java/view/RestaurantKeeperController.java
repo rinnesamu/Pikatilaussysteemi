@@ -3,6 +3,7 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.controlsfx.control.CheckComboBox;
@@ -656,7 +657,6 @@ public class RestaurantKeeperController {
 		};
 		// editbutton ends
 		
-		// TODO delete ccb solution, and replace it with something better
 		// ingredients choicecheckbox cellfactory
 		ingredientsFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
@@ -666,18 +666,31 @@ public class RestaurantKeeperController {
 					{
                         button.setOnAction((ActionEvent event) -> {
                         	FoodItem foodItem = getTableView().getItems().get(getIndex());
+                        	List<String> ingredientInFoodItemList;
+                        	if(foodItem.getIngredientsAsList() != null) {
+                        		ingredientInFoodItemList = new LinkedList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
+                        	}else {
+                        		ingredientInFoodItemList = new LinkedList<String>();
+                        	}
     						ListView<Ingredient> listView = new ListView<Ingredient>();
     						listView.setItems(ingredientObList);
     						listView.setCellFactory(CheckBoxListCell.forListView(new Callback<Ingredient, ObservableValue<Boolean>>() {
     				            @Override
     				            public ObservableValue<Boolean> call(Ingredient item) {
     				                BooleanProperty observable = new SimpleBooleanProperty();
-    				                // TODO getIngredients only once
-    				                observable.set(Arrays.asList(foodItem.getIngredientsAsList()).contains(item.getName()));
-    				                observable.addListener((obs, wasSelected, isNowSelected) -> 
-    				                //TODO add functionality to checking boxes
-    				                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected)
-    				                );
+    				                observable.set(ingredientInFoodItemList.contains(item.getName()));
+    				                observable.addListener((obs, wasSelected, isNowSelected) -> {
+    				                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected);
+    				                    
+    				                    if(!isNowSelected) {
+    				                    	ingredientInFoodItemList.remove(item.getName());
+    				                    }else {
+    				                    	ingredientInFoodItemList.add(item.getName());
+    				                    }
+    				                    String[] ingredientInFoodItemArr = new String[ingredientInFoodItemList.size()];
+    				                    ingredientInFoodItemArr = ingredientInFoodItemList.toArray(ingredientInFoodItemArr);
+    				                    foodItem.setIngredients(ingredientInFoodItemArr);
+    				                });
     				                return observable;
     				            }
     				        }));
