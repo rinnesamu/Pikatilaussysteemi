@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 
+import controller.TimingController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,12 +17,17 @@ public class Start extends Application {
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
 	FXMLLoader loader = new FXMLLoader();
+	private TimingController control;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Ravintolasovellus");
 		
+		control = new TimingController();
+		control.setControllable(this);
+		control.setDaemon(true);
+		control.start();
 		
 		initUI();
 	}
@@ -46,6 +52,7 @@ public class Start extends Application {
 	}
 	
 	public void startOrder() {
+		control.update();
 		BorderPane menuLayout;
 		try {
 			loader = new FXMLLoader();
