@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import application.Start;
+
 import java.lang.Object;
 
 import javafx.animation.PauseTransition;
@@ -58,6 +61,8 @@ import model.ShoppingCart;
 
 public class MenuViewController {
 	
+	private Start controller;
+	
 	// Element where the menu is located.
 	@FXML
 	private FlowPane menu;
@@ -103,6 +108,10 @@ public class MenuViewController {
 	public MenuViewController() {
 		
 	}
+	
+	public void setController(Start start) {
+		 this.controller = start;
+	 }
 	
 	
 	/**
@@ -286,6 +295,7 @@ public class MenuViewController {
 		setSum();
 		orderNumber++;
 		s.close();
+		controller.initUI();
 	}
 	
 	/**
