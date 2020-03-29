@@ -88,10 +88,10 @@ public class MenuViewController {
 	
 	// AccessObjects for the database connections.
 	
-	private FoodItemAccessObject foodItemAO = new FoodItemAccessObject();
-	private CategoryAccessObject categoryAO = new CategoryAccessObject();
-	private OrderAccessObject orderAO = new OrderAccessObject();
-	private IngredientAccessObject ingredientAO = new IngredientAccessObject();
+	private FoodItemAccessObject foodItemAO;
+	private CategoryAccessObject categoryAO;
+	private OrderAccessObject orderAO;
+	private IngredientAccessObject ingredientAO;
 	
 	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart = new ShoppingCart();
@@ -117,6 +117,10 @@ public class MenuViewController {
 	 */
 	@FXML
 	private void initialize() {
+		foodItemAO = new FoodItemAccessObject();
+		categoryAO = new CategoryAccessObject();
+		orderAO = new OrderAccessObject();
+		ingredientAO = new IngredientAccessObject();
 		Category[] allCategories = categoryAO.readCategories();
 		createCategoryList(allCategories);
 		String categoryName = allCategories[0].getName();
@@ -412,12 +416,13 @@ public class MenuViewController {
 		}
 
 		setSum();
-		
+		/*
 		if (getDatabaseIngredients(foodItem) != null && !getDatabaseIngredients(foodItem).equals(getObjectIngredients(foodItem))) {
 				sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName() + "*");
-		} else {		
-			sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
-		}
+		} else {	*/	
+		
+		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
+		
 		// Adding a handler for the shopping cart item buttons.
 		System.out.println(shoppingCart);
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
@@ -550,12 +555,11 @@ public class MenuViewController {
 		boxButtons.setPadding(new Insets(10,0,0,10));
 		HBox boxOkCancel = new HBox(20);
 		boxOkCancel.setPadding(new Insets(10,0,0,10));
-		VBox boxIngredient = new VBox(20);
-		boxIngredient.setPadding(new Insets(10,0,0,10));
 
-		/*TabPane tabPane = new TabPane();
+
+		TabPane tabPane = new TabPane();
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		tabPane.setTabMinHeight(100);*/
+		tabPane.setTabMinHeight(100);
 		
 		// Database ingredients.
 		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
@@ -563,18 +567,21 @@ public class MenuViewController {
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
 			
-			//for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
+			for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
 				
-				//Tab tab = new Tab("Tuote " + (i+1));
+				Tab tab = new Tab("Tuote " + (i+1));
+				VBox boxIngredient = new VBox(20);
+				boxIngredient.setPadding(new Insets(10,0,0,10));
 				// Local ingredients.
 				ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
 				
 				System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 				System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 	
-				Label header = new Label("Ainesosat:");
+				Label header = new Label("Ainesosat: Tuote " + (i+1));
 				header.setFont(new Font(17));
 				boxIngredient.getChildren().add(header);
+				//FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
 	
 				for (int j = 0; j < ingredientsOfDatabase.size(); j++) {
 					HBox boxIngredient2 = new HBox(20);
@@ -600,9 +607,9 @@ public class MenuViewController {
 					
 					boxIngredient2.getChildren().addAll(newIngredient, included);
 					boxIngredient.getChildren().add(boxIngredient2);
-				//}
-				//tab.setContent(boxIngredient);
-				//tabPane.getTabs().add(tab);
+				}
+				tab.setContent(boxIngredient);
+				tabPane.getTabs().add(tab);
 			}
 		}
 		
@@ -666,10 +673,10 @@ public class MenuViewController {
 		});
 		okay.setOnAction(event -> {
 			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			
+			/*
 			if (!ingredientsOfDatabase.equals(getObjectIngredients(foodItem))) {
 				button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "*");
-			}
+			}*/
 			setSum();
 			popUp.close();
 		});
@@ -682,7 +689,7 @@ public class MenuViewController {
 		boxButtons.getChildren().addAll(increase, decrease, delete);
 		boxOkCancel.getChildren().addAll(okay, cancel);
 		
-		boxWhole.getChildren().addAll(boxInfo, boxButtons, boxIngredient, boxOkCancel);
+		boxWhole.getChildren().addAll(boxInfo, boxButtons, tabPane, boxOkCancel);
 		Scene popUpScene = new Scene(boxWhole, 400, 600);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
