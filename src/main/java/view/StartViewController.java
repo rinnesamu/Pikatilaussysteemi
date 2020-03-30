@@ -16,9 +16,15 @@ public class StartViewController {
 		controller.startOrder();
 	}
 	
-	/* @FXML void setLanguage(String language) {
-		 controller.setLanguage(language);
-	 }*/
+	@FXML 
+	public void setLanguageFi() {
+		 controller.setLanguage("languageFi", "countryFi");
+	 }
+	
+	@FXML 
+	public void setLanguageEn() {
+		 controller.setLanguage("languageEn", "countryEn");
+	 }
 	 
 	 public void setController(Start start) {
 		 this.controller = start;

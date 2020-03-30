@@ -27,10 +27,11 @@ public class Start extends Application {
 	Locale curLocale = new Locale("fi", "FI"); // Default Finland
 	ResourceBundle bundle;
 	String appConfigPath = "app.properties";
+	Properties properties;
 	
 	@Override
 	public void init() {
-		Properties properties = new Properties();
+		properties = new Properties();
 		try {
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(appConfigPath);
 			properties.load(inputStream);
@@ -42,16 +43,19 @@ public class Start extends Application {
 			e.printStackTrace();
 			System.out.println("Not found, using default");
 		}
+		changeBundle();
+		
+	}
+	
+	private void changeBundle() {
 		try {
 			bundle = ResourceBundle.getBundle("TextResources", curLocale);
-			System.out.println("Ennen");
 		}catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Default TextProperties not found.");
 			System.exit(0);
 		}
 	}
-	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -102,6 +106,15 @@ public class Start extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setLanguage(String l, String c) {
+		String language = properties.getProperty(l);
+		String country = properties.getProperty(c);
+		curLocale = new Locale(language, country);
+		Locale.setDefault(curLocale);
+		changeBundle();
+		initUI();
 	}
 
 	public static void main(String[] args) {
