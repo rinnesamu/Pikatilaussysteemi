@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import application.Start;
@@ -197,6 +199,9 @@ public class MenuViewController {
 		header.setFont(new Font(25));
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
+		
+		String infoIngredient = "";
+
 
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
@@ -212,9 +217,10 @@ public class MenuViewController {
 					String[] removedIngredients =items[i].getRemovedIngredientsAsList();
 					String removedIngredientList ="";
 					for (int j = 0; j < removedIngredients.length; j++) {
-						removedIngredientList += " " + removedIngredients[j].toString();
+						removedIngredientList += removedIngredients[j].toString() + " ";
 					}
-					ingredients.setText(" poistettu:" + removedIngredientList);
+					ingredients.setText(" poistettu: " + removedIngredientList);
+					infoIngredient += items[i].getItemId() + "=" + removedIngredientList;
 				}
 			}
 			File file = new File(this.getClass().getResource("/imgs/" + items[i].getPath()).getFile());
@@ -239,11 +245,13 @@ public class MenuViewController {
 		cancelButton.setFont(new Font(17));
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
+		String infoIngredient2 = infoIngredient;
 		readyList.getChildren().addAll(sumText, payButton, cancelButton);
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
+				order.setAdditionalInfo(infoIngredient2);
 				orderAO.createOrder(order);
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
