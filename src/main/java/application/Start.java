@@ -16,7 +16,7 @@ public class Start extends Application {
 	
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
-	FXMLLoader loader = new FXMLLoader();
+	FXMLLoader loader;
 	private TimingController control;
 	
 	@Override
@@ -34,7 +34,7 @@ public class Start extends Application {
 	
 	public void initUI() {
 		try {
-			System.out.println("Tääl ollaa");
+			loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("/view/StartView.fxml"));
 			rootLayout = (AnchorPane) loader.load();
 			
@@ -63,6 +63,7 @@ public class Start extends Application {
 			primaryStage.show();
 			
 			MenuViewController menuViewController = loader.getController();
+			menuViewController.setController(this);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
