@@ -26,7 +26,7 @@ public class Start extends Application {
 	private TimingController control;
 	Locale curLocale = new Locale("fi", "FI"); // Default Finland
 	ResourceBundle bundle;
-	String appConfigPath = "Test.properties";
+	String appConfigPath = "app.properties";
 	
 	@Override
 	public void init() {
