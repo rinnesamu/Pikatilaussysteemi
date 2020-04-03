@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -104,6 +105,7 @@ public class MenuViewController {
 	// Order number reset.
 	private static int orderNumber = 1;
 
+	Locale curLocale;
 			
 	public MenuViewController() {
 		
@@ -136,7 +138,7 @@ public class MenuViewController {
 	 * 
 	 */
 	private void setSum() {
-		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0 euroa");
+		//sumShoppingCart.setText(bundle.getString("sumShopcartText") + shoppingCart.getSum() + "0 euroa");
 	}
 
 	/**

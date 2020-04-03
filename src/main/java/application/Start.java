@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import util.Bundle;
 import view.MenuViewController;
 import view.StartViewController;
 
@@ -24,8 +25,8 @@ public class Start extends Application {
 	private AnchorPane rootLayout;
 	FXMLLoader loader;
 	private TimingController control;
-	Locale curLocale = new Locale("fi", "FI"); // Default Finland
-	ResourceBundle bundle;
+	public Locale curLocale = new Locale("fi", "FI"); // Default Finland
+	ResourceBundle bundle = Bundle.getInstance(curLocale);
 	String appConfigPath = "app.properties";
 	Properties properties;
 	
@@ -43,18 +44,8 @@ public class Start extends Application {
 			e.printStackTrace();
 			System.out.println("Not found, using default");
 		}
-		changeBundle();
-		
-	}
-	
-	private void changeBundle() {
-		try {
-			bundle = ResourceBundle.getBundle("TextResources", curLocale);
-		}catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Default TextProperties not found.");
-			System.exit(0);
-		}
+		Bundle.changeBundle(curLocale);
+		bundle = Bundle.getInstance(curLocale);
 	}
 	@Override
 	public void start(Stage primaryStage) {
@@ -95,6 +86,7 @@ public class Start extends Application {
 		try {
 			loader = new FXMLLoader();
 			loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
+			loader.setResources(bundle);
 			menuLayout = (BorderPane) loader.load();
 			Scene scene = new Scene(menuLayout);
 			primaryStage.setScene(scene);
@@ -113,7 +105,9 @@ public class Start extends Application {
 		String country = properties.getProperty(c);
 		curLocale = new Locale(language, country);
 		Locale.setDefault(curLocale);
-		changeBundle();
+		Bundle.changeBundle(curLocale);
+		bundle = Bundle.getInstance(curLocale);
+		this.primaryStage.setTitle(bundle.getString("headerText"));
 		initUI();
 	}
 
