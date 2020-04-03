@@ -12,10 +12,11 @@ import java.util.ResourceBundle;
 public class Bundle {
 
 	private static ResourceBundle INSTANCE = null;
+	private static Locale curLocale;
 	
 	private Bundle() {
 	}
-	public static synchronized ResourceBundle getInstance(Locale curLocale) {
+	public static synchronized ResourceBundle getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = ResourceBundle.getBundle("TextResources", curLocale);
 		}

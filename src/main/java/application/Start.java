@@ -26,7 +26,7 @@ public class Start extends Application {
 	FXMLLoader loader;
 	private TimingController control;
 	public Locale curLocale = new Locale("fi", "FI"); // Default Finland
-	ResourceBundle bundle = Bundle.getInstance(curLocale);
+	ResourceBundle bundle;
 	String appConfigPath = "app.properties";
 	Properties properties;
 	
@@ -45,7 +45,7 @@ public class Start extends Application {
 			System.out.println("Not found, using default");
 		}
 		Bundle.changeBundle(curLocale);
-		bundle = Bundle.getInstance(curLocale);
+		bundle = Bundle.getInstance();
 	}
 	@Override
 	public void start(Stage primaryStage) {
@@ -106,7 +106,7 @@ public class Start extends Application {
 		curLocale = new Locale(language, country);
 		Locale.setDefault(curLocale);
 		Bundle.changeBundle(curLocale);
-		bundle = Bundle.getInstance(curLocale);
+		bundle = Bundle.getInstance();
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 		initUI();
 	}

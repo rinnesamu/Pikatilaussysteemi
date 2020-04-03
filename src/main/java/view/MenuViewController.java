@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import application.Start;
 
@@ -52,6 +53,7 @@ import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
 import model.ShoppingCart;
+import util.Bundle;
 
 /**
  * Controller for the customer user interface.
@@ -106,6 +108,8 @@ public class MenuViewController {
 	private static int orderNumber = 1;
 
 	Locale curLocale;
+	ResourceBundle bundle = Bundle.getInstance();
+
 			
 	public MenuViewController() {
 		
@@ -197,7 +201,7 @@ public class MenuViewController {
 		double price;
 		int amount;
 
-		Label header = new Label("Valitsemasi tuotteet:");
+		Label header = new Label(bundle.getString("chosenProducts"));
 		header.setFont(new Font(25));
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
