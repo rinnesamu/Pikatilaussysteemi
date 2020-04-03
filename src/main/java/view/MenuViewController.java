@@ -142,7 +142,7 @@ public class MenuViewController {
 	 * 
 	 */
 	private void setSum() {
-		//sumShoppingCart.setText(bundle.getString("sumShopcartText") + shoppingCart.getSum() + "0 euroa");
+		sumShoppingCart.setText(bundle.getString("sumText") + ": " + shoppingCart.getSum() + "0 " + bundle.getString("eurosText"));
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class MenuViewController {
 		}
 		else {
 			menu.getChildren().clear();
-			Label emptyText = new Label("Pahoittelut! Kategoria on tyhjä!");
+			Label emptyText = new Label(bundle.getString("emptyCategory"));
 			menu.getChildren().add(emptyText);
 			emptyText.setFont(new Font(25));
 		}
@@ -214,7 +214,7 @@ public class MenuViewController {
 			HBox readySingleItem = new HBox();
 			amount = shoppingCart.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
-			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + "0 e");
+			Label payItem = new Label(items[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
@@ -225,7 +225,7 @@ public class MenuViewController {
 					for (int j = 0; j < removedIngredients.length; j++) {
 						removedIngredientList += removedIngredients[j].toString() + " ";
 					}
-					ingredients.setText(" poistettu: " + removedIngredientList);
+					ingredients.setText(" " + bundle.getString("removedText") + " " + removedIngredientList);
 					infoIngredient += items[i].getItemId() + "=" + removedIngredientList;
 				}
 			}
@@ -237,9 +237,9 @@ public class MenuViewController {
 			readySingleItem.getChildren().add(iv);
 			readyList.getChildren().addAll(readySingleItem, ingredients);
 		}
-		Label sumText = new Label("Summa: " + shoppingCart.getSum() + "0 euroa");
+		Label sumText = new Label(bundle.getString("sumText") + ": " + shoppingCart.getSum() + "0 " + bundle.getString("eurosText"));
 		sumText.setFont(new Font(23));
-		Button payButton = new Button("Maksa ostokset");
+		Button payButton = new Button(bundle.getString("payShopcartText"));
 		payButton.setFont(new Font(20));
 		payButton.setStyle("-fx-background-color: green;");
 		payButton.setTextFill(Color.WHITE);
@@ -247,7 +247,7 @@ public class MenuViewController {
 		if (items.length == 0) {
 			payButton.setDisable(true);
 		}
-		Button cancelButton = new Button("Peruuta maksaminen");
+		Button cancelButton = new Button(bundle.getString("cancelPayText"));
 		cancelButton.setFont(new Font(17));
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
@@ -430,10 +430,6 @@ public class MenuViewController {
 		}
 
 		setSum();
-		/*
-		if (getDatabaseIngredients(foodItem) != null && !getDatabaseIngredients(foodItem).equals(getObjectIngredients(foodItem))) {
-				sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName() + "*");
-		} else {	*/	
 		
 		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
 		

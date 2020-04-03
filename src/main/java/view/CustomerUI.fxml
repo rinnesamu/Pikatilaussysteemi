@@ -49,7 +49,7 @@
                <content>
                   <VBox fx:id="shoppingCartList" prefHeight="276.0" prefWidth="393.0" />
                </content></ScrollPane>
-            <Label fx:id="sumShoppingCart" prefHeight="65.0" prefWidth="395.0" text="%sumShopcartText">
+            <Label fx:id="sumShoppingCart" prefHeight="65.0" prefWidth="395.0" text="%sumText">
                <font>
                   <Font size="28.0" />
                </font>
