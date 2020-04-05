@@ -576,7 +576,7 @@ public class MenuViewController {
 			
 			for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
 				
-				Tab tab = new Tab(bundle.getString("productsText") + " " + (i+1));
+				Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
 				VBox boxIngredient = new VBox(20);
 				boxIngredient.setPadding(new Insets(10,0,0,10));
 				// Local ingredients.
@@ -585,7 +585,7 @@ public class MenuViewController {
 				System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 				System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 	
-				Label header = new Label(bundle.getString("ingredientsText") + " " + bundle.getString("productsText") + " " + (i+1));
+				Label header = new Label(bundle.getString("ingredientsText") + " " + bundle.getString("productText") + " " + (i+1));
 				header.setFont(new Font(17));
 				boxIngredient.getChildren().add(header);
 				//FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
