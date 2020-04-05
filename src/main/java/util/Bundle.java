@@ -18,7 +18,7 @@ public class Bundle {
 	}
 	public static synchronized ResourceBundle getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = ResourceBundle.getBundle("TextResources", curLocale);
+			changeBundle(curLocale);
 		}
 		return INSTANCE;
 	}

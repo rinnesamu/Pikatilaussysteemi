@@ -107,9 +107,8 @@ public class MenuViewController {
 	// Order number reset.
 	private static int orderNumber = 1;
 
-	Locale curLocale;
-	ResourceBundle bundle = Bundle.getInstance();
-
+	// ResourceBundle for language selection
+	ResourceBundle bundle;
 			
 	public MenuViewController() {
 		
@@ -125,6 +124,7 @@ public class MenuViewController {
 	 */
 	@FXML
 	private void initialize() {
+		bundle = Bundle.getInstance();
 		foodItemAO = new FoodItemAccessObject();
 		categoryAO = new CategoryAccessObject();
 		orderAO = new OrderAccessObject();
@@ -200,14 +200,11 @@ public class MenuViewController {
 
 		double price;
 		int amount;
-
 		Label header = new Label(bundle.getString("chosenProducts"));
 		header.setFont(new Font(25));
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
-		
 		String infoIngredient = "";
-
 
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
@@ -247,7 +244,7 @@ public class MenuViewController {
 		if (items.length == 0) {
 			payButton.setDisable(true);
 		}
-		Button cancelButton = new Button(bundle.getString("cancelPayText"));
+		Button cancelButton = new Button(bundle.getString("cancelText"));
 		cancelButton.setFont(new Font(17));
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
@@ -267,7 +264,7 @@ public class MenuViewController {
 				delay.setOnFinished( event -> pay(readyToPay));
 				delay.play();
 				
-				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
+				Label payText = new Label(bundle.getString("paymentTerminalText"));
 				String style = "-fx-background-color: rgba(100, 100, 100, 0.5);";
 				popBox.setStyle(style);
 				popBox.getChildren().add(payText);
@@ -310,12 +307,12 @@ public class MenuViewController {
 	@FXML
 	private void emptyShoppingCart() {
 		Alert options = new Alert(AlertType.CONFIRMATION);
-		options.setTitle("Lopetus");
-		options.setHeaderText("Haluatko varmasti lopettaa tilauksesi?");
-		options.setContentText("Valitse OK tai Peruuta");
+		options.setTitle(bundle.getString("cancellationText"));
+		options.setHeaderText(bundle.getString("cancellationQuestion"));
+		options.setContentText(bundle.getString("cancellationChoice"));
 	
-		ButtonType okayDel = new ButtonType("OK");
-		ButtonType cancelDel = new ButtonType("Peruuta");
+		ButtonType okayDel = new ButtonType(bundle.getString("okayText"));
+		ButtonType cancelDel = new ButtonType(bundle.getString("cancelText"));
 		
 		options.getButtonTypes().setAll(okayDel, cancelDel);
 		Optional<ButtonType> result = options.showAndWait();
@@ -552,7 +549,7 @@ public class MenuViewController {
 		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
 		int originalAmount = amountNow;
 		
-		Label nameAndAmount = new Label("Valitse " + foodItem.getName() + " määrä: ");
+		Label nameAndAmount = new Label(String.format(bundle.getString("chooseText") + " %s " + bundle.getString("amountText") + ": ", foodItem.getName() ));
 		nameAndAmount.setFont(new Font(18));
 		nameAndAmount.setPadding(new Insets(0,0,0,20));
 		Label pick = new Label(Integer.toString(amountNow));
@@ -579,7 +576,7 @@ public class MenuViewController {
 			
 			for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
 				
-				Tab tab = new Tab("Tuote " + (i+1));
+				Tab tab = new Tab(bundle.getString("productsText") + " " + (i+1));
 				VBox boxIngredient = new VBox(20);
 				boxIngredient.setPadding(new Insets(10,0,0,10));
 				// Local ingredients.
@@ -588,7 +585,7 @@ public class MenuViewController {
 				System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 				System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 	
-				Label header = new Label("Ainesosat: Tuote " + (i+1));
+				Label header = new Label(bundle.getString("ingredientsText") + " " + bundle.getString("productsText") + " " + (i+1));
 				header.setFont(new Font(17));
 				boxIngredient.getChildren().add(header);
 				//FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
@@ -630,14 +627,14 @@ public class MenuViewController {
 		Button decrease = new Button("-");
 		decrease.setFont(new Font(40));
 		decrease.setMinSize(80, 80);
-		Button delete = new Button("POISTA");
+		Button delete = new Button(bundle.getString("removebigText"));
 		delete.setStyle("-fx-background-color: #ff0000;");
 		delete.setFont(new Font(20));
 		delete.setMinSize(80, 80);
-		Button okay = new Button("OK");
+		Button okay = new Button(bundle.getString("okayText"));
 		okay.setFont(new Font(20));
 		okay.setMinSize(80, 80);
-		Button cancel = new Button("Peruuta");
+		Button cancel = new Button(bundle.getString("cancelText"));
 		cancel.setFont(new Font(20));
 		cancel.setMinSize(80, 80);
 		
@@ -657,8 +654,8 @@ public class MenuViewController {
 		});
 		delete.setOnAction(event -> {
 			Alert options = new Alert(AlertType.CONFIRMATION);
-			options.setTitle("Poisto");
-			options.setHeaderText("Haluatko varmasti poistaa tuotteen " + foodItem.getName() + " ostoskorista?");
+			options.setTitle(bundle.getString("removalText"));
+			options.setHeaderText(bundle.getString("deleteConfirmText") + " " + foodItem.getName() + " " + bundle.getString("fromCartText"));
 		
 			ButtonType okayDel = new ButtonType("OK");
 			ButtonType cancelDel = new ButtonType("Cancel");
@@ -683,10 +680,6 @@ public class MenuViewController {
 		});
 		okay.setOnAction(event -> {
 			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			/*
-			if (!ingredientsOfDatabase.equals(getObjectIngredients(foodItem))) {
-				button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "*");
-			}*/
 			setSum();
 			popUp.close();
 		});
