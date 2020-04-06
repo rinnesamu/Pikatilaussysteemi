@@ -19,7 +19,7 @@ import util.Bundle;
 import view.MenuViewController;
 import view.StartViewController;
 
-public class Start extends Application {
+public class Start extends Application implements IStart {
 	
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
