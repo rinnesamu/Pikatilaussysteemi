@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import application.IStart;
 import application.Start;
 
 import java.lang.Object;
@@ -64,7 +65,7 @@ import util.Bundle;
 
 public class MenuViewController {
 	
-	private Start controller;
+	private IStart controller;
 	
 	// Element where the menu is located.
 	@FXML
@@ -114,7 +115,7 @@ public class MenuViewController {
 		
 	}
 	
-	public void setController(Start start) {
+	public void setController(IStart start) {
 		 this.controller = start;
 	 }
 	
