@@ -113,7 +113,7 @@ public class Start extends Application implements IStart {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			MenuViewController menuViewController = loader.getController();
-			menuViewController.setController(this);
+			menuViewController.setStart(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

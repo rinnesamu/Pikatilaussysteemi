@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
 
 import application.IStart;
 import application.Start;
+import controller.CustomerController;
+import controller.ICustomerController;
 
 import java.lang.Object;
 
@@ -63,9 +65,10 @@ import util.Bundle;
  *
  */
 
-public class MenuViewController {
+public class MenuViewController implements IMenuView {
 	
-	private IStart controller;
+	private IStart start;
+	private ICustomerController controller;
 	
 	// Element where the menu is located.
 	@FXML
@@ -115,9 +118,21 @@ public class MenuViewController {
 		
 	}
 	
-	public void setController(IStart start) {
-		 this.controller = start;
+	public void setStart(IStart start) {
+		 this.start = start;
 	 }
+	
+	public void setItems(FoodItem[] items) {
+		this.items = items;
+	}
+	
+	public void emptyCategory() {
+		menu.getChildren().clear();
+		Label emptyText = new Label(bundle.getString("emptyCategory"));
+		menu.getChildren().add(emptyText);
+		emptyText.setFont(new Font(25));
+	}
+
 	
 	
 	/**
@@ -125,24 +140,27 @@ public class MenuViewController {
 	 */
 	@FXML
 	private void initialize() {
+		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
+		// Kaikki nää daot on oikeestaan turhia. Ei vaan voi viel ottaa pois ennen ku on kaikki access jutut tehty kontrollerin puolella.
 		foodItemAO = new FoodItemAccessObject();
 		categoryAO = new CategoryAccessObject();
 		orderAO = new OrderAccessObject();
 		ingredientAO = new IngredientAccessObject();
-		Category[] allCategories = categoryAO.readCategories();
+		controller.initMenu();
+		/*Category[] allCategories = categoryAO.readCategories();
 		createCategoryList(allCategories);
 		String categoryName = allCategories[0].getName();
 		// TODO: what if no categories?
 		categoryButtonHandler(categoryName);
-		setSum();
+		setSum();*/
 	}
 	
 	/**
 	 * Method for updating the sum of the shopping cart on the shopping cart list item.
 	 * 
 	 */
-	private void setSum() {
+	public void setSum() {
 		sumShoppingCart.setText(bundle.getString("sumText") + ": " + shoppingCart.getSum() + "0 " + bundle.getString("eurosText"));
 	}
 
@@ -151,7 +169,7 @@ public class MenuViewController {
 	 * Method for creating the category list menu.
 	 * @param categories Categories for creating the categories list menu.
 	 */
-	private void createCategoryList(Category[] categories) {
+	public void createCategoryList(Category[] categories) {
 
 		for (int i = 0; i < categories.length; i++) {
 			String categoryName = categories[i].getName();
@@ -164,7 +182,8 @@ public class MenuViewController {
 			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					categoryButtonHandler(categoryName);
+					controller.readCategories(categoryName);
+					//categoryButtonHandler(categoryName);
 				}
 			};
 			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
@@ -176,7 +195,7 @@ public class MenuViewController {
 	 * Method for reading the food items of the selected category.
 	 * @param name Name of the category.
 	 */
-	private void categoryButtonHandler(String name) {
+	/*public void categoryButtonHandler(String name) {
 		items = foodItemAO.readFoodItemsCategory(name);
 		if (items.length != 0) {
 			createMenu();
@@ -187,7 +206,7 @@ public class MenuViewController {
 			menu.getChildren().add(emptyText);
 			emptyText.setFont(new Font(25));
 		}
-	}
+	}*/
 	
 	/**
 	 * Popup stage for paying the shopping cart.
@@ -198,7 +217,6 @@ public class MenuViewController {
 		ScrollPane sPane = new ScrollPane();
 		VBox readyList = new VBox(10);
 		readyList.setPadding(new Insets(10,0,0,10));
-
 		double price;
 		int amount;
 		Label header = new Label(bundle.getString("chosenProducts"));
@@ -206,7 +224,6 @@ public class MenuViewController {
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
 		String infoIngredient = "";
-
 		FoodItem[] items = shoppingCart.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
@@ -299,7 +316,7 @@ public class MenuViewController {
 		setSum();
 		orderNumber++;
 		s.close();
-		controller.initUI();
+		start.initUI();
 	}
 	
 	/**
@@ -334,7 +351,7 @@ public class MenuViewController {
 	/**
 	 * Method for creating the menu items (GridPane elements).
 	 */
-	private void createMenu() {
+	public void createMenu() {
 		menu.getChildren().clear();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
