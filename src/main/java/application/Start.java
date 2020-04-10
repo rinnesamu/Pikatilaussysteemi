@@ -34,7 +34,7 @@ public class Start extends Application implements IStart {
 	private AnchorPane rootLayout;
 	private AnchorPane restaurantKeeperView;
 	FXMLLoader loader;
-	private TimingController control;
+	private TimingController timeOut;
 	public Locale curLocale = new Locale("fi", "FI"); // Default Finland
 	ResourceBundle bundle;
 	String appConfigPath = "app.properties";
@@ -90,8 +90,8 @@ public class Start extends Application implements IStart {
 	}
 
 	public void startOrder() {
-		if(control != null)
-			control.update();
+		if(timeOut != null)
+			timeOut.update();
 		BorderPane menuLayout;
 		try {
 			loader = new FXMLLoader();
@@ -108,8 +108,8 @@ public class Start extends Application implements IStart {
 				}
 			});
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-				if(control != null)
-					control.update();
+				if(timeOut != null)
+					timeOut.update();
 			});
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -160,10 +160,10 @@ public class Start extends Application implements IStart {
 		EventHandler<MouseEvent> goCustomer = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				control = new TimingController();
-				control.setControllable(instance);
-				control.setDaemon(true);
-				control.start();
+				timeOut = new TimingController();
+				timeOut.setControllable(instance);
+				timeOut.setDaemon(true);
+				timeOut.start();
 				initUI();
 			}
 		};
