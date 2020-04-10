@@ -45,8 +45,7 @@ public class CustomerController implements ICustomerController {
 		}
 		String categoryName = allCategories[0].getName();
 		readCategories(categoryName);
-		//menuController.categoryButtonHandler(categoryName);
-		//menuController.setSum();
+		menuController.setSum();
 		// TODO: what if no categories?
 		
 	}

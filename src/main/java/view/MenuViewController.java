@@ -154,7 +154,6 @@ public class MenuViewController implements IMenuView {
 				@Override
 				public void handle(MouseEvent e) {
 					controller.readCategories(categoryName);
-					//categoryButtonHandler(categoryName);
 				}
 			};
 			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
