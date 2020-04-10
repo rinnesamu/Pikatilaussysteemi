@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -18,7 +19,10 @@ import controller.ICustomerController;
 import java.lang.Object;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -103,7 +107,7 @@ public class MenuViewController implements IMenuView {
 	private IngredientAccessObject ingredientAO;
 	
 	// Shopping cart object: contains the selected fooditems.
-	private ShoppingCart shoppingCart = new ShoppingCart();
+	private ShoppingCart shoppingCart;
 
 	// All the fooditems in a category.
 	private FoodItem[] items;
@@ -132,14 +136,13 @@ public class MenuViewController implements IMenuView {
 		menu.getChildren().add(emptyText);
 		emptyText.setFont(new Font(25));
 	}
-
-	
 	
 	/**
 	 * Initial actions: starting the creation of the menus.
 	 */
 	@FXML
 	private void initialize() {
+		shoppingCart = new ShoppingCart();
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
 		// Kaikki nää daot on oikeestaan turhia. Ei vaan voi viel ottaa pois ennen ku on kaikki access jutut tehty kontrollerin puolella.
@@ -271,9 +274,10 @@ public class MenuViewController implements IMenuView {
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
-				order.setAdditionalInfo(infoIngredient2);
-				orderAO.createOrder(order);
+				controller.createOrder(orderNumber, shoppingCart.getShoppingCart(), infoIngredient2);
+				//Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
+				//order.setAdditionalInfo(infoIngredient2);
+				//orderAO.createOrder(order);
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
 				readyToPay.setOpacity(0.9);

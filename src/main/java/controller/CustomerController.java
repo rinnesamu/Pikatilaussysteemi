@@ -1,10 +1,13 @@
 package controller;
 
+import java.util.Map;
+
 import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
 import model.IngredientAccessObject;
+import model.Order;
 import model.OrderAccessObject;
 import view.IMenuView;
 import view.MenuViewController;
@@ -35,7 +38,7 @@ public class CustomerController implements ICustomerController {
 		String categoryName = allCategories[0].getName();
 		readCategories(categoryName);
 		//menuController.categoryButtonHandler(categoryName);
-		menuController.setSum();
+		//menuController.setSum();
 		
 	}
 
@@ -49,6 +52,13 @@ public class CustomerController implements ICustomerController {
 			menuController.emptyCategory();
 		}
 		
+	}
+
+	@Override
+	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
+		Order order = new Order(orderNumber, shoppingCart);
+		order.setAdditionalInfo(additionalInfo);
+		orderDao.createOrder(order);
 	}
 
 
