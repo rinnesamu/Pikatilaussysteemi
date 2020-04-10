@@ -90,7 +90,7 @@ public class MenuViewController implements IMenuView {
 	//private IngredientAccessObject ingredientAO;
 	
 	// Shopping cart object: contains the selected fooditems.
-	private ShoppingCart shoppingCart;
+	//private ShoppingCart shoppingCart;
 
 	// All the fooditems in a category.
 	private FoodItem[] items;
@@ -125,7 +125,7 @@ public class MenuViewController implements IMenuView {
 	 */
 	@FXML
 	private void initialize() {
-		shoppingCart = new ShoppingCart();
+		//shoppingCart = new ShoppingCart();
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
 
@@ -147,7 +147,7 @@ public class MenuViewController implements IMenuView {
 	 * 
 	 */
 	public void setSum() {
-		sumShoppingCart.setText(bundle.getString("sumText") + ": " + shoppingCart.getSum() + "0 " + bundle.getString("eurosText"));
+		sumShoppingCart.setText(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 	}
 
 	/**
@@ -210,10 +210,10 @@ public class MenuViewController implements IMenuView {
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
 		String infoIngredient = "";
-		FoodItem[] items = shoppingCart.getFoodItems();
+		FoodItem[] items = controller.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
-			amount = shoppingCart.getAmount(items[i].getItemId());
+			amount = controller.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
 			Label payItem = new Label(items[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
@@ -238,7 +238,7 @@ public class MenuViewController implements IMenuView {
 			readySingleItem.getChildren().add(iv);
 			readyList.getChildren().addAll(readySingleItem, ingredients);
 		}
-		Label sumText = new Label(bundle.getString("sumText") + ": " + shoppingCart.getSum() + "0 " + bundle.getString("eurosText"));
+		Label sumText = new Label(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 		sumText.setFont(new Font(23));
 		Button payButton = new Button(bundle.getString("payShopcartText"));
 		payButton.setFont(new Font(20));
@@ -257,7 +257,7 @@ public class MenuViewController implements IMenuView {
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				controller.createOrder(orderNumber, shoppingCart.getShoppingCart(), infoIngredient2);
+				controller.createOrder(orderNumber, controller.getShoppingCart(), infoIngredient2);
 				//Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
 				//order.setAdditionalInfo(infoIngredient2);
 				//orderAO.createOrder(order);
@@ -298,7 +298,7 @@ public class MenuViewController implements IMenuView {
 	 * @param s Stage of the paying process.
 	 */
 	private void pay(Stage s) {
-		shoppingCart.emptyShoppingCart();
+		controller.emptyShoppingCart();
 		shoppingCartList.getChildren().clear();
 		setSum();
 		orderNumber++;
@@ -323,9 +323,9 @@ public class MenuViewController implements IMenuView {
 		Optional<ButtonType> result = options.showAndWait();
 		
 		if (result.get() == okayDel) {
-			shoppingCart.emptyShoppingCart();
+			controller.emptyShoppingCart();
 			shoppingCartList.getChildren().clear();
-			System.out.println(shoppingCart);
+			System.out.println(controller.shoppingCartToString());
 		}
 		else if (result.get() == cancelDel) {
 		}
@@ -396,7 +396,7 @@ public class MenuViewController implements IMenuView {
 		sCartItem.getStyleClass().add("cartbutton");
 		
 		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
-		int[] listOfItemIds= shoppingCart.getAllItemId();
+		int[] listOfItemIds= controller.getAllItemId();
 		boolean found = false;
 		for (int i = 0; i < listOfItemIds.length; i++) {
 			if (id == listOfItemIds[i]) {
@@ -405,8 +405,8 @@ public class MenuViewController implements IMenuView {
 		}
 		// If item is already there, increase the amount in the shopping cart.
 		if (found) {
-			int oldAmount = shoppingCart.getAmount(id);
-			shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
+			int oldAmount = controller.getAmount(id);
+			controller.setAmount(foodItem.getItemId(), (oldAmount+1));
 			
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -426,16 +426,16 @@ public class MenuViewController implements IMenuView {
 				// Reset ingredients.
 				foodItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
 			}
-			shoppingCart.addToShoppingCart(foodItem, 1);
+			controller.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
 		}
 
 		setSum();
 		
-		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
+		sCartItem.setText(controller.getAmount(id) + " x " + foodItem.getName());
 		
 		// Adding a handler for the shopping cart item buttons.
-		System.out.println(shoppingCart);
+		System.out.println(controller.shoppingCartToString());
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 	}
 	
@@ -550,7 +550,7 @@ public class MenuViewController implements IMenuView {
 	 */	
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
-		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
+		int amountNow = controller.getAmount(foodItem.getItemId());
 		int originalAmount = amountNow;
 		
 		Label nameAndAmount = new Label(String.format(bundle.getString("chooseText") + " %s " + bundle.getString("amountText") + ": ", foodItem.getName() ));
@@ -578,7 +578,7 @@ public class MenuViewController implements IMenuView {
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
 			
-			for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
+			for (int i = 0; i < controller.getAmount(foodItem.getItemId()); i++) {
 				
 				Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
 				VBox boxIngredient = new VBox(20);
@@ -643,18 +643,18 @@ public class MenuViewController implements IMenuView {
 		cancel.setMinSize(80, 80);
 		
 		increase.setOnAction(event -> {
-			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			int amount = controller.getAmount(foodItem.getItemId());
 			amount += 1;
 			pick.setText(Integer.toString(amount));
-			shoppingCart.setAmount(foodItem.getItemId(), amount);
+			controller.setAmount(foodItem.getItemId(), amount);
 		});
 		decrease.setOnAction(event -> {
-			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			int amount = controller.getAmount(foodItem.getItemId());
 			if (amount != 1) {
 				amount -= 1;
 			}
 			pick.setText(Integer.toString(amount));
-			shoppingCart.setAmount(foodItem.getItemId(), amount);
+			controller.setAmount(foodItem.getItemId(), amount);
 		});
 		delete.setOnAction(event -> {
 			Alert options = new Alert(AlertType.CONFIRMATION);
@@ -668,7 +668,7 @@ public class MenuViewController implements IMenuView {
 			Optional<ButtonType> result = options.showAndWait();
 			
 			if (result.get() == okayDel) {
-				shoppingCart.removeFromShoppingCart(foodItem);
+				controller.removeFromShoppingCart(foodItem);
 
 				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -683,12 +683,12 @@ public class MenuViewController implements IMenuView {
 
 		});
 		okay.setOnAction(event -> {
-			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
+			button.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
 			setSum();
 			popUp.close();
 		});
 		cancel.setOnAction(event -> {
-			shoppingCart.setAmount(foodItem.getItemId(), originalAmount);
+			controller.setAmount(foodItem.getItemId(), originalAmount);
 			popUp.close();
 		});
 		
@@ -703,7 +703,7 @@ public class MenuViewController implements IMenuView {
 		popUp.show();
 		
 		
-		System.out.println(shoppingCart);
+		System.out.println(controller.shoppingCartToString());
 	}
 
 }

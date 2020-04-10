@@ -12,8 +12,8 @@ import model.Ingredient;
 import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
+import model.ShoppingCart;
 import view.IMenuView;
-import view.MenuViewController;
 
 public class CustomerController implements ICustomerController {
 	
@@ -22,6 +22,8 @@ public class CustomerController implements ICustomerController {
 	private IngredientAccessObject ingredientDao;
 	private OrderAccessObject orderDao;
 	private IMenuView menuController;
+	private ShoppingCart shoppingCart;
+
 	
 	public CustomerController(IMenuView m) {
 		this.menuController = m;
@@ -29,6 +31,7 @@ public class CustomerController implements ICustomerController {
 		this.categoryDao = new CategoryAccessObject();
 		this.orderDao = new OrderAccessObject();
 		this.ingredientDao = new IngredientAccessObject();
+		this.shoppingCart = new ShoppingCart();
 	}
 
 	@Override
@@ -90,5 +93,54 @@ public class CustomerController implements ICustomerController {
 		}
 	}
 	
+	@Override
+	public void emptyShoppingCart() {
+		shoppingCart.emptyShoppingCart();
+	}
+	
+	@Override
+	public int[] getAllItemId() {
+		return shoppingCart.getAllItemId();
+	}
+
+	@Override
+	public void setAmount(int itemId, int amount) {
+		shoppingCart.setAmount(itemId, amount);
+	}
+
+	@Override
+	public int getAmount(int itemId) {
+		return shoppingCart.getAmount(itemId);
+	}
+
+	@Override
+	public void addToShoppingCart(FoodItem foodItem, int amount) {
+		shoppingCart.addToShoppingCart(foodItem, amount);
+	}
+
+	@Override
+	public void removeFromShoppingCart(FoodItem foodItem) {
+		shoppingCart.removeFromShoppingCart(foodItem);
+	}
+
+	@Override
+	public String shoppingCartToString() {
+		return shoppingCart.toString();
+	}
+
+	@Override
+	public Map<FoodItem, Integer> getShoppingCart() {
+		return shoppingCart.getShoppingCart();
+	}
+
+	@Override
+	public double getShoppingCartSum() {
+		return shoppingCart.getSum();
+	}
+
+	@Override
+	public FoodItem[] getFoodItems() {
+		return shoppingCart.getFoodItems();
+	}
 
 }
