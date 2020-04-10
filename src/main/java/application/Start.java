@@ -90,11 +90,8 @@ public class Start extends Application implements IStart {
 	}
 
 	public void startOrder() {
-		control = new TimingController();
-		control.setControllable(this);
-		control.setDaemon(true);
-		control.start();
-		control.update();
+		if(control != null)
+			control.update();
 		BorderPane menuLayout;
 		try {
 			loader = new FXMLLoader();
@@ -109,6 +106,10 @@ public class Start extends Application implements IStart {
 						startDemo();
 					}
 				}
+			});
+			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+				if(control != null)
+					control.update();
 			});
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -155,9 +156,14 @@ public class Start extends Application implements IStart {
 		Scene scene = new Scene(tile, 500, 300);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		Start instance = this;
 		EventHandler<MouseEvent> goCustomer = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+				control = new TimingController();
+				control.setControllable(instance);
+				control.setDaemon(true);
+				control.start();
 				initUI();
 			}
 		};

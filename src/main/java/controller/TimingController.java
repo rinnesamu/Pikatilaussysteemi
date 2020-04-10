@@ -1,6 +1,7 @@
 package controller;
 
 import application.Start;
+import javafx.application.Platform;
 
 public class TimingController extends Thread{
 	private boolean rest = true;
@@ -8,29 +9,15 @@ public class TimingController extends Thread{
 	private Start control;
 	
 	public void run() {
-		check();
-	}
-	
-	public void update() {
-		rest = false;
-		lastWake = System.currentTimeMillis();
-		return;
-	}
-	
-	public boolean isResting() {
-		return rest;
-	}
-	
-	public void setControllable(Start start) {
-		control = start;
-	}
-	
-	public void check() {
 		while(true) {
-			System.out.println("Ctrl juoksee");
 			if( !rest ) {
 				if( System.currentTimeMillis() - lastWake > 15000) {
-					System.out.println("Palauta alkuruutuun");
+					Platform.runLater(new Runnable() {
+					    @Override
+					    public void run() {
+					        control.initUI();
+					    }
+					});
 					rest = true;
 				}
 			}
@@ -40,5 +27,14 @@ public class TimingController extends Thread{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void setControllable(Start start) {
+		control = start;
+	}
+	
+	public void update() {
+		rest = false;
+		lastWake = System.currentTimeMillis();
 	}
 }
