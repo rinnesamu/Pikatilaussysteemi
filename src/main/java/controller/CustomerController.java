@@ -1,11 +1,14 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
+import model.Ingredient;
 import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
@@ -61,8 +64,31 @@ public class CustomerController implements ICustomerController {
 		orderDao.createOrder(order);
 	}
 
+	@Override
+	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
+		
+		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
+		String[] ingredientsNames;
 
-	
+		// If foodItem has no ingredients in the database return null.
+		if (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
+			ingredientsOfItem = null;
+			return ingredientsOfItem;
+		}
+		else {
+			ingredientsNames = foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
+
+			// Checks which ingredients are removable
+			for (int i = 0; i < ingredientsNames.length; i++) {
+				Ingredient ingredientsAsIngredients= ingredientDao.readIngredientByName(ingredientsNames[i]);
+				if (ingredientsAsIngredients.isRemoveable()) {
+					ingredientsOfItem.add(ingredientsNames[i]);
+				}
+			}
+			Collections.sort(ingredientsOfItem);
+			return ingredientsOfItem;
+		}
+	}
 	
 
 }

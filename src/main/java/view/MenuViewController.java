@@ -4,25 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Observable;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
 import application.IStart;
-import application.Start;
 import controller.CustomerController;
 import controller.ICustomerController;
-
 import java.lang.Object;
-
 import javafx.animation.PauseTransition;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -52,13 +41,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import model.Category;
-import model.CategoryAccessObject;
 import model.FoodItem;
-import model.FoodItemAccessObject;
-import model.Ingredient;
-import model.IngredientAccessObject;
-import model.Order;
-import model.OrderAccessObject;
 import model.ShoppingCart;
 import util.Bundle;
 
@@ -101,10 +84,10 @@ public class MenuViewController implements IMenuView {
 	
 	// AccessObjects for the database connections.
 	
-	private FoodItemAccessObject foodItemAO;
-	private CategoryAccessObject categoryAO;
-	private OrderAccessObject orderAO;
-	private IngredientAccessObject ingredientAO;
+	//private FoodItemAccessObject foodItemAO;
+	//private CategoryAccessObject categoryAO;
+	//private OrderAccessObject orderAO;
+	//private IngredientAccessObject ingredientAO;
 	
 	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart;
@@ -145,11 +128,11 @@ public class MenuViewController implements IMenuView {
 		shoppingCart = new ShoppingCart();
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
-		// Kaikki nää daot on oikeestaan turhia. Ei vaan voi viel ottaa pois ennen ku on kaikki access jutut tehty kontrollerin puolella.
-		foodItemAO = new FoodItemAccessObject();
-		categoryAO = new CategoryAccessObject();
-		orderAO = new OrderAccessObject();
-		ingredientAO = new IngredientAccessObject();
+
+		//foodItemAO = new FoodItemAccessObject();
+		//categoryAO = new CategoryAccessObject();
+		//orderAO = new OrderAccessObject();
+		//ingredientAO = new IngredientAccessObject();
 		controller.initMenu();
 		/*Category[] allCategories = categoryAO.readCategories();
 		createCategoryList(allCategories);
@@ -236,7 +219,7 @@ public class MenuViewController implements IMenuView {
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
-			if (getDatabaseIngredients(items[i]) != null) {
+			if (controller.getDatabaseIngredients(items[i]) != null) {
 				if (items[i].getRemovedIngredientsAsList() != null) {
 					String[] removedIngredients =items[i].getRemovedIngredientsAsList();
 					String removedIngredientList ="";
@@ -340,7 +323,6 @@ public class MenuViewController implements IMenuView {
 		Optional<ButtonType> result = options.showAndWait();
 		
 		if (result.get() == okayDel) {
-			FoodItem[] allItems = shoppingCart.getFoodItems();
 			shoppingCart.emptyShoppingCart();
 			shoppingCartList.getChildren().clear();
 			System.out.println(shoppingCart);
@@ -442,7 +424,7 @@ public class MenuViewController implements IMenuView {
 				foodItem.setRemovedIngredients(reset);
 				
 				// Reset ingredients.
-				foodItem.setIngredients(getDatabaseIngredients(foodItem).toArray(new String[getDatabaseIngredients(foodItem).size()]));
+				foodItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
 			}
 			shoppingCart.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
@@ -463,14 +445,14 @@ public class MenuViewController implements IMenuView {
 	 * @return Ingredients of the local foodItem object.
 	 */
 	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
-		//String[] ingredientsNames;
 		ArrayList<String> ingredientsOfItem;
 		
-		// If foodItem has no in ingredients, return empty ArrayList for possible addable ingredients.
+		// If foodItem has no ingredients, return empty ArrayList for possible addable ingredients (which were removed earlier in the shopping cart).
 		if (foodItem.getIngredientsAsList() == null ) {
 			ingredientsOfItem = new ArrayList<String>();
 			return ingredientsOfItem;
 		}
+		// Otherwise return the ingredients of the foodItem.
 		else {
 			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
 			Collections.sort(ingredientsOfItem);
@@ -483,7 +465,7 @@ public class MenuViewController implements IMenuView {
 	 * @param foodItem Fooditem of which ingredients are retrieved.
 	 * @return Ingredients of the database object.
 	 */
-	private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
+	/*private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
 		
 		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
 		String[] ingredientsNames;
@@ -506,7 +488,7 @@ public class MenuViewController implements IMenuView {
 			Collections.sort(ingredientsOfItem);
 			return ingredientsOfItem;
 		}
-	}
+	}*/
 	
 	/**
 	 * Method to update the ingredients of a Fooditem.
@@ -591,7 +573,7 @@ public class MenuViewController implements IMenuView {
 		tabPane.setTabMinHeight(100);
 		
 		// Database ingredients.
-		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
+		ArrayList<String> ingredientsOfDatabase = controller.getDatabaseIngredients(foodItem);
 
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
@@ -618,7 +600,7 @@ public class MenuViewController implements IMenuView {
 					Label newIngredient = new Label(name);
 					CheckBox included = new CheckBox();
 					
-					// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
+					// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark check for checkbox (included).
 					
 					if (ingredientsOfObject == null) {
 						
