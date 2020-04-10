@@ -42,7 +42,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import model.Category;
 import model.FoodItem;
-import model.ShoppingCart;
 import util.Bundle;
 
 /**
@@ -81,17 +80,6 @@ public class MenuViewController implements IMenuView {
 	@FXML
 	private Label sumShoppingCart;
 	
-	
-	// AccessObjects for the database connections.
-	
-	//private FoodItemAccessObject foodItemAO;
-	//private CategoryAccessObject categoryAO;
-	//private OrderAccessObject orderAO;
-	//private IngredientAccessObject ingredientAO;
-	
-	// Shopping cart object: contains the selected fooditems.
-	//private ShoppingCart shoppingCart;
-
 	// All the fooditems in a category.
 	private FoodItem[] items;
 	
@@ -109,10 +97,17 @@ public class MenuViewController implements IMenuView {
 		 this.start = start;
 	 }
 	
+	
+	/**
+	 * Setter for 
+	 */
 	public void setItems(FoodItem[] items) {
 		this.items = items;
 	}
 	
+	/**
+	 * If there are no categories in database, the method informs the user.
+	 */
 	public void emptyCategory() {
 		menu.getChildren().clear();
 		Label emptyText = new Label(bundle.getString("emptyCategory"));
@@ -125,21 +120,11 @@ public class MenuViewController implements IMenuView {
 	 */
 	@FXML
 	private void initialize() {
-		//shoppingCart = new ShoppingCart();
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
 
-		//foodItemAO = new FoodItemAccessObject();
-		//categoryAO = new CategoryAccessObject();
-		//orderAO = new OrderAccessObject();
-		//ingredientAO = new IngredientAccessObject();
 		controller.initMenu();
-		/*Category[] allCategories = categoryAO.readCategories();
-		createCategoryList(allCategories);
-		String categoryName = allCategories[0].getName();
-		// TODO: what if no categories?
-		categoryButtonHandler(categoryName);
-		setSum();*/
+		
 	}
 	
 	/**
@@ -176,23 +161,6 @@ public class MenuViewController implements IMenuView {
 			categoryList.getChildren().add(categoryButton);
 		}
 	}
-	
-	/**
-	 * Method for reading the food items of the selected category.
-	 * @param name Name of the category.
-	 */
-	/*public void categoryButtonHandler(String name) {
-		items = foodItemAO.readFoodItemsCategory(name);
-		if (items.length != 0) {
-			createMenu();
-		}
-		else {
-			menu.getChildren().clear();
-			Label emptyText = new Label(bundle.getString("emptyCategory"));
-			menu.getChildren().add(emptyText);
-			emptyText.setFont(new Font(25));
-		}
-	}*/
 	
 	/**
 	 * Popup stage for paying the shopping cart.
@@ -460,35 +428,6 @@ public class MenuViewController implements IMenuView {
 		}
 	}	
 	
-	/**
-	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
-	 * @param foodItem Fooditem of which ingredients are retrieved.
-	 * @return Ingredients of the database object.
-	 */
-	/*private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
-		
-		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
-		String[] ingredientsNames;
-
-		// If foodItem has no ingredients in the database return null.
-		if (foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
-			return ingredientsOfItem;
-		}
-		else {
-			ingredientsNames = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
-
-			// Checks which ingredients are removable
-			for (int i = 0; i < ingredientsNames.length; i++) {
-				Ingredient ingredientsAsIngredients= ingredientAO.readIngredientByName(ingredientsNames[i]);
-				if (ingredientsAsIngredients.isRemoveable()) {
-					ingredientsOfItem.add(ingredientsNames[i]);
-				}
-			}
-			Collections.sort(ingredientsOfItem);
-			return ingredientsOfItem;
-		}
-	}*/
 	
 	/**
 	 * Method to update the ingredients of a Fooditem.

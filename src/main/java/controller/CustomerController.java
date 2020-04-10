@@ -17,12 +17,14 @@ import view.IMenuView;
 
 public class CustomerController implements ICustomerController {
 	
+	// AccessObjects for the database connections.
 	private FoodItemAccessObject foodDao;
 	private CategoryAccessObject categoryDao;
 	private IngredientAccessObject ingredientDao;
 	private OrderAccessObject orderDao;
-	private IMenuView menuController;
+	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart;
+	private IMenuView menuController;
 
 	
 	public CustomerController(IMenuView m) {
@@ -45,6 +47,7 @@ public class CustomerController implements ICustomerController {
 		readCategories(categoryName);
 		//menuController.categoryButtonHandler(categoryName);
 		//menuController.setSum();
+		// TODO: what if no categories?
 		
 	}
 
@@ -67,6 +70,11 @@ public class CustomerController implements ICustomerController {
 		orderDao.createOrder(order);
 	}
 
+	/**
+	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
+	 * @param foodItem Fooditem of which ingredients are retrieved.
+	 * @return Ingredients of the database object.
+	 */
 	@Override
 	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
 		

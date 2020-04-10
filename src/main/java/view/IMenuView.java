@@ -9,5 +9,4 @@ public interface IMenuView {
 	public void setItems(FoodItem[] items);
 	public void createMenu();
 	public void emptyCategory();
-
 }
