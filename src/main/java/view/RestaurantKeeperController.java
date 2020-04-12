@@ -264,7 +264,7 @@ public class RestaurantKeeperController {
 		deleteColumn.setCellFactory(deleteFoodItemCellFactory);
 		saveEditColumn.setCellFactory(editFoodItemCellFactory);
 		categoriesColumn.setCellFactory(categoryFoodItemCellFactory);
-		ingredientColumn.setCellFactory(ingredientsFoodItemCellFactory);
+		//ingredientColumn.setCellFactory(ingredientsFoodItemCellFactory);
 		refreshFoodItems();
 		
 		// add Item cellFactories for addFoodItemTableView
@@ -281,7 +281,7 @@ public class RestaurantKeeperController {
 		addFoodItemInMenuColumn.setCellFactory(addFoodItemInMenuCellFactory);
 		addFoodItemButtonColumn.setCellFactory(addFoodItemButtonCellFactory);
 		addFoodItemCategoryColumn.setCellFactory(addFoodItemCategoryCBCellFactory);
-		addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
+		//addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
 		refreshDummyFoodItem();
 		
 		// initializing category column cellfactories
@@ -665,6 +665,7 @@ public class RestaurantKeeperController {
 		// editbutton ends
 		
 		// ingredients choicecheckbox cellfactory
+		/*
 		ingredientsFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
@@ -724,6 +725,7 @@ public class RestaurantKeeperController {
 				return cell;
 			}
 		};
+		*/
 		// ingredients choicecheckbox ends
 		
 	}
@@ -837,6 +839,7 @@ public class RestaurantKeeperController {
 		
 		// TODO delete ccb solution, and replace it with something better
 		// ingredients choicecheckbox cellfactory
+		/*
 		addFoodItemIngredientsCCBFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
@@ -869,6 +872,7 @@ public class RestaurantKeeperController {
 				return cell;
 			}
 		};
+		*/
 		// ingredients choicecheckbox ends
 	}
 	
