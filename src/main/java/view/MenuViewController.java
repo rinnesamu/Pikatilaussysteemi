@@ -4,14 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-
-import application.Start;
-
+import java.util.ResourceBundle;
+import application.IStart;
+import controller.CustomerController;
+import controller.ICustomerController;
 import java.lang.Object;
-
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
@@ -43,14 +41,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import model.Category;
-import model.CategoryAccessObject;
 import model.FoodItem;
-import model.FoodItemAccessObject;
-import model.Ingredient;
-import model.IngredientAccessObject;
-import model.Order;
-import model.OrderAccessObject;
-import model.ShoppingCart;
+import util.Bundle;
 
 /**
  * Controller for the customer user interface.
@@ -59,9 +51,10 @@ import model.ShoppingCart;
  *
  */
 
-public class MenuViewController {
+public class MenuViewController implements IMenuView {
 	
-	private Start controller;
+	private IStart start;
+	private ICustomerController controller;
 	
 	// Element where the menu is located.
 	@FXML
@@ -87,56 +80,59 @@ public class MenuViewController {
 	@FXML
 	private Label sumShoppingCart;
 	
-	
-	// AccessObjects for the database connections.
-	
-	private FoodItemAccessObject foodItemAO;
-	private CategoryAccessObject categoryAO;
-	private OrderAccessObject orderAO;
-	private IngredientAccessObject ingredientAO;
-	
-	// Shopping cart object: contains the selected fooditems.
-	private ShoppingCart shoppingCart = new ShoppingCart();
-
 	// All the fooditems in a category.
 	private FoodItem[] items;
 	
 	// Order number reset.
 	private static int orderNumber = 1;
 
+	// ResourceBundle for language selection
+	ResourceBundle bundle;
 			
 	public MenuViewController() {
 		
 	}
 	
-	public void setController(Start start) {
-		 this.controller = start;
+	public void setStart(IStart start) {
+		 this.start = start;
 	 }
 	
+	
+	/**
+	 * Setter for 
+	 */
+	public void setItems(FoodItem[] items) {
+		this.items = items;
+	}
+	
+	/**
+	 * If there are no categories in database, the method informs the user.
+	 */
+	public void emptyCategory() {
+		menu.getChildren().clear();
+		Label emptyText = new Label(bundle.getString("emptyCategory"));
+		menu.getChildren().add(emptyText);
+		emptyText.setFont(new Font(25));
+	}
 	
 	/**
 	 * Initial actions: starting the creation of the menus.
 	 */
 	@FXML
 	private void initialize() {
-		foodItemAO = new FoodItemAccessObject();
-		categoryAO = new CategoryAccessObject();
-		orderAO = new OrderAccessObject();
-		ingredientAO = new IngredientAccessObject();
-		Category[] allCategories = categoryAO.readCategories();
-		createCategoryList(allCategories);
-		String categoryName = allCategories[0].getName();
-		// TODO: what if no categories?
-		categoryButtonHandler(categoryName);
-		setSum();
+		this.controller = new CustomerController(this);
+		bundle = Bundle.getInstance();
+
+		controller.initMenu();
+		
 	}
 	
 	/**
 	 * Method for updating the sum of the shopping cart on the shopping cart list item.
 	 * 
 	 */
-	private void setSum() {
-		sumShoppingCart.setText("Summa: " + shoppingCart.getSum() + "0 euroa");
+	public void setSum() {
+		sumShoppingCart.setText(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 	}
 
 	/**
@@ -144,7 +140,7 @@ public class MenuViewController {
 	 * Method for creating the category list menu.
 	 * @param categories Categories for creating the categories list menu.
 	 */
-	private void createCategoryList(Category[] categories) {
+	public void createCategoryList(Category[] categories) {
 
 		for (int i = 0; i < categories.length; i++) {
 			String categoryName = categories[i].getName();
@@ -157,28 +153,11 @@ public class MenuViewController {
 			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					categoryButtonHandler(categoryName);
+					controller.readCategories(categoryName);
 				}
 			};
 			categoryButton.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
 			categoryList.getChildren().add(categoryButton);
-		}
-	}
-	
-	/**
-	 * Method for reading the food items of the selected category.
-	 * @param name Name of the category.
-	 */
-	private void categoryButtonHandler(String name) {
-		items = foodItemAO.readFoodItemsCategory(name);
-		if (items.length != 0) {
-			createMenu();
-		}
-		else {
-			menu.getChildren().clear();
-			Label emptyText = new Label("Pahoittelut! Kategoria on tyhjä!");
-			menu.getChildren().add(emptyText);
-			emptyText.setFont(new Font(25));
 		}
 	}
 	
@@ -191,35 +170,30 @@ public class MenuViewController {
 		ScrollPane sPane = new ScrollPane();
 		VBox readyList = new VBox(10);
 		readyList.setPadding(new Insets(10,0,0,10));
-
 		double price;
 		int amount;
-
-		Label header = new Label("Valitsemasi tuotteet:");
+		Label header = new Label(bundle.getString("chosenProducts"));
 		header.setFont(new Font(25));
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
-		
 		String infoIngredient = "";
-
-
-		FoodItem[] items = shoppingCart.getFoodItems();
+		FoodItem[] items = controller.getFoodItems();
 		for (int i=0; i<items.length; i++) {
 			HBox readySingleItem = new HBox();
-			amount = shoppingCart.getAmount(items[i].getItemId());
+			amount = controller.getAmount(items[i].getItemId());
 			price = items[i].getPrice();
-			Label payItem = new Label(items[i].getName() + ", " + amount + " kpl, hinta yhteensä: " + amount*price + "0 e");
+			Label payItem = new Label(items[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
-			if (getDatabaseIngredients(items[i]) != null) {
+			if (controller.getDatabaseIngredients(items[i]) != null) {
 				if (items[i].getRemovedIngredientsAsList() != null) {
 					String[] removedIngredients =items[i].getRemovedIngredientsAsList();
 					String removedIngredientList ="";
 					for (int j = 0; j < removedIngredients.length; j++) {
 						removedIngredientList += removedIngredients[j].toString() + " ";
 					}
-					ingredients.setText(" poistettu: " + removedIngredientList);
+					ingredients.setText(" " + bundle.getString("removedText") + " " + removedIngredientList);
 					infoIngredient += items[i].getItemId() + "=" + removedIngredientList;
 				}
 			}
@@ -231,9 +205,9 @@ public class MenuViewController {
 			readySingleItem.getChildren().add(iv);
 			readyList.getChildren().addAll(readySingleItem, ingredients);
 		}
-		Label sumText = new Label("Summa: " + shoppingCart.getSum() + "0 euroa");
+		Label sumText = new Label(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 		sumText.setFont(new Font(23));
-		Button payButton = new Button("Maksa ostokset");
+		Button payButton = new Button(bundle.getString("payShopcartText"));
 		payButton.setFont(new Font(20));
 		payButton.setStyle("-fx-background-color: green;");
 		payButton.setTextFill(Color.WHITE);
@@ -241,7 +215,7 @@ public class MenuViewController {
 		if (items.length == 0) {
 			payButton.setDisable(true);
 		}
-		Button cancelButton = new Button("Peruuta maksaminen");
+		Button cancelButton = new Button(bundle.getString("cancelText"));
 		cancelButton.setFont(new Font(17));
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
@@ -250,9 +224,10 @@ public class MenuViewController {
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
-				order.setAdditionalInfo(infoIngredient2);
-				orderAO.createOrder(order);
+				controller.createOrder(orderNumber, controller.getShoppingCart(), infoIngredient2);
+				//Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
+				//order.setAdditionalInfo(infoIngredient2);
+				//orderAO.createOrder(order);
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
 				readyToPay.setOpacity(0.9);
@@ -261,7 +236,7 @@ public class MenuViewController {
 				delay.setOnFinished( event -> pay(readyToPay));
 				delay.play();
 				
-				Label payText = new Label("Seuraa maksupäätteen ohjeita!");
+				Label payText = new Label(bundle.getString("paymentTerminalText"));
 				String style = "-fx-background-color: rgba(100, 100, 100, 0.5);";
 				popBox.setStyle(style);
 				popBox.getChildren().add(payText);
@@ -290,12 +265,12 @@ public class MenuViewController {
 	 * @param s Stage of the paying process.
 	 */
 	private void pay(Stage s) {
-		shoppingCart.emptyShoppingCart();
+		controller.emptyShoppingCart();
 		shoppingCartList.getChildren().clear();
 		setSum();
 		orderNumber++;
 		s.close();
-		controller.initUI();
+		start.initUI();
 	}
 	
 	/**
@@ -304,21 +279,20 @@ public class MenuViewController {
 	@FXML
 	private void emptyShoppingCart() {
 		Alert options = new Alert(AlertType.CONFIRMATION);
-		options.setTitle("Lopetus");
-		options.setHeaderText("Haluatko varmasti lopettaa tilauksesi?");
-		options.setContentText("Valitse OK tai Peruuta");
+		options.setTitle(bundle.getString("cancellationText"));
+		options.setHeaderText(bundle.getString("cancellationQuestion"));
+		options.setContentText(bundle.getString("cancellationChoice"));
 	
-		ButtonType okayDel = new ButtonType("OK");
-		ButtonType cancelDel = new ButtonType("Peruuta");
+		ButtonType okayDel = new ButtonType(bundle.getString("okayText"));
+		ButtonType cancelDel = new ButtonType(bundle.getString("cancelText"));
 		
 		options.getButtonTypes().setAll(okayDel, cancelDel);
 		Optional<ButtonType> result = options.showAndWait();
 		
 		if (result.get() == okayDel) {
-			FoodItem[] allItems = shoppingCart.getFoodItems();
-			shoppingCart.emptyShoppingCart();
+			controller.emptyShoppingCart();
 			shoppingCartList.getChildren().clear();
-			System.out.println(shoppingCart);
+			System.out.println(controller.shoppingCartToString());
 		}
 		else if (result.get() == cancelDel) {
 		}
@@ -330,7 +304,7 @@ public class MenuViewController {
 	/**
 	 * Method for creating the menu items (GridPane elements).
 	 */
-	private void createMenu() {
+	public void createMenu() {
 		menu.getChildren().clear();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].isInMenu()) {
@@ -389,7 +363,7 @@ public class MenuViewController {
 		sCartItem.getStyleClass().add("cartbutton");
 		
 		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
-		int[] listOfItemIds= shoppingCart.getAllItemId();
+		int[] listOfItemIds= controller.getAllItemId();
 		boolean found = false;
 		for (int i = 0; i < listOfItemIds.length; i++) {
 			if (id == listOfItemIds[i]) {
@@ -398,8 +372,8 @@ public class MenuViewController {
 		}
 		// If item is already there, increase the amount in the shopping cart.
 		if (found) {
-			int oldAmount = shoppingCart.getAmount(id);
-			shoppingCart.setAmount(foodItem.getItemId(), (oldAmount+1));
+			int oldAmount = controller.getAmount(id);
+			controller.setAmount(foodItem.getItemId(), (oldAmount+1));
 			
 			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -417,22 +391,18 @@ public class MenuViewController {
 				foodItem.setRemovedIngredients(reset);
 				
 				// Reset ingredients.
-				foodItem.setIngredients(getDatabaseIngredients(foodItem).toArray(new String[getDatabaseIngredients(foodItem).size()]));
+				foodItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
 			}
-			shoppingCart.addToShoppingCart(foodItem, 1);
+			controller.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
 		}
 
 		setSum();
-		/*
-		if (getDatabaseIngredients(foodItem) != null && !getDatabaseIngredients(foodItem).equals(getObjectIngredients(foodItem))) {
-				sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName() + "*");
-		} else {	*/	
 		
-		sCartItem.setText(shoppingCart.getAmount(id) + " x " + foodItem.getName());
+		sCartItem.setText(controller.getAmount(id) + " x " + foodItem.getName());
 		
 		// Adding a handler for the shopping cart item buttons.
-		System.out.println(shoppingCart);
+		System.out.println(controller.shoppingCartToString());
 		sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 	}
 	
@@ -442,14 +412,14 @@ public class MenuViewController {
 	 * @return Ingredients of the local foodItem object.
 	 */
 	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
-		//String[] ingredientsNames;
 		ArrayList<String> ingredientsOfItem;
 		
-		// If foodItem has no in ingredients, return empty ArrayList for possible addable ingredients.
+		// If foodItem has no ingredients, return empty ArrayList for possible addable ingredients (which were removed earlier in the shopping cart).
 		if (foodItem.getIngredientsAsList() == null ) {
 			ingredientsOfItem = new ArrayList<String>();
 			return ingredientsOfItem;
 		}
+		// Otherwise return the ingredients of the foodItem.
 		else {
 			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
 			Collections.sort(ingredientsOfItem);
@@ -457,35 +427,6 @@ public class MenuViewController {
 		}
 	}	
 	
-	/**
-	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
-	 * @param foodItem Fooditem of which ingredients are retrieved.
-	 * @return Ingredients of the database object.
-	 */
-	private ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
-		
-		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
-		String[] ingredientsNames;
-
-		// If foodItem has no ingredients in the database return null.
-		if (foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
-			return ingredientsOfItem;
-		}
-		else {
-			ingredientsNames = foodItemAO.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
-
-			// Checks which ingredients are removable
-			for (int i = 0; i < ingredientsNames.length; i++) {
-				Ingredient ingredientsAsIngredients= ingredientAO.readIngredientByName(ingredientsNames[i]);
-				if (ingredientsAsIngredients.isRemoveable()) {
-					ingredientsOfItem.add(ingredientsNames[i]);
-				}
-			}
-			Collections.sort(ingredientsOfItem);
-			return ingredientsOfItem;
-		}
-	}
 	
 	/**
 	 * Method to update the ingredients of a Fooditem.
@@ -547,10 +488,10 @@ public class MenuViewController {
 	 */	
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
-		int amountNow = shoppingCart.getAmount(foodItem.getItemId());
+		int amountNow = controller.getAmount(foodItem.getItemId());
 		int originalAmount = amountNow;
 		
-		Label nameAndAmount = new Label("Valitse " + foodItem.getName() + " määrä: ");
+		Label nameAndAmount = new Label(String.format(bundle.getString("chooseText") + " %s " + bundle.getString("amountText") + ": ", foodItem.getName() ));
 		nameAndAmount.setFont(new Font(18));
 		nameAndAmount.setPadding(new Insets(0,0,0,20));
 		Label pick = new Label(Integer.toString(amountNow));
@@ -570,14 +511,14 @@ public class MenuViewController {
 		tabPane.setTabMinHeight(100);
 		
 		// Database ingredients.
-		ArrayList<String> ingredientsOfDatabase = getDatabaseIngredients(foodItem);
+		ArrayList<String> ingredientsOfDatabase = controller.getDatabaseIngredients(foodItem);
 
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
 			
-			for (int i = 0; i < shoppingCart.getAmount(foodItem.getItemId()); i++) {
+			for (int i = 0; i < controller.getAmount(foodItem.getItemId()); i++) {
 				
-				Tab tab = new Tab("Tuote " + (i+1));
+				Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
 				VBox boxIngredient = new VBox(20);
 				boxIngredient.setPadding(new Insets(10,0,0,10));
 				// Local ingredients.
@@ -586,7 +527,7 @@ public class MenuViewController {
 				System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 				System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 	
-				Label header = new Label("Ainesosat: Tuote " + (i+1));
+				Label header = new Label(bundle.getString("ingredientsText") + " " + bundle.getString("productText") + " " + (i+1));
 				header.setFont(new Font(17));
 				boxIngredient.getChildren().add(header);
 				//FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
@@ -597,7 +538,7 @@ public class MenuViewController {
 					Label newIngredient = new Label(name);
 					CheckBox included = new CheckBox();
 					
-					// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark checkbox.
+					// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark check for checkbox (included).
 					
 					if (ingredientsOfObject == null) {
 						
@@ -628,35 +569,35 @@ public class MenuViewController {
 		Button decrease = new Button("-");
 		decrease.setFont(new Font(40));
 		decrease.setMinSize(80, 80);
-		Button delete = new Button("POISTA");
+		Button delete = new Button(bundle.getString("removebigText"));
 		delete.setStyle("-fx-background-color: #ff0000;");
 		delete.setFont(new Font(20));
 		delete.setMinSize(80, 80);
-		Button okay = new Button("OK");
+		Button okay = new Button(bundle.getString("okayText"));
 		okay.setFont(new Font(20));
 		okay.setMinSize(80, 80);
-		Button cancel = new Button("Peruuta");
+		Button cancel = new Button(bundle.getString("cancelText"));
 		cancel.setFont(new Font(20));
 		cancel.setMinSize(80, 80);
 		
 		increase.setOnAction(event -> {
-			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			int amount = controller.getAmount(foodItem.getItemId());
 			amount += 1;
 			pick.setText(Integer.toString(amount));
-			shoppingCart.setAmount(foodItem.getItemId(), amount);
+			controller.setAmount(foodItem.getItemId(), amount);
 		});
 		decrease.setOnAction(event -> {
-			int amount = shoppingCart.getAmount(foodItem.getItemId());
+			int amount = controller.getAmount(foodItem.getItemId());
 			if (amount != 1) {
 				amount -= 1;
 			}
 			pick.setText(Integer.toString(amount));
-			shoppingCart.setAmount(foodItem.getItemId(), amount);
+			controller.setAmount(foodItem.getItemId(), amount);
 		});
 		delete.setOnAction(event -> {
 			Alert options = new Alert(AlertType.CONFIRMATION);
-			options.setTitle("Poisto");
-			options.setHeaderText("Haluatko varmasti poistaa tuotteen " + foodItem.getName() + " ostoskorista?");
+			options.setTitle(bundle.getString("removalText"));
+			options.setHeaderText(bundle.getString("deleteConfirmText") + " " + foodItem.getName() + " " + bundle.getString("fromCartText"));
 		
 			ButtonType okayDel = new ButtonType("OK");
 			ButtonType cancelDel = new ButtonType("Cancel");
@@ -665,7 +606,7 @@ public class MenuViewController {
 			Optional<ButtonType> result = options.showAndWait();
 			
 			if (result.get() == okayDel) {
-				shoppingCart.removeFromShoppingCart(foodItem);
+				controller.removeFromShoppingCart(foodItem);
 
 				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -680,16 +621,12 @@ public class MenuViewController {
 
 		});
 		okay.setOnAction(event -> {
-			button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			/*
-			if (!ingredientsOfDatabase.equals(getObjectIngredients(foodItem))) {
-				button.setText(shoppingCart.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "*");
-			}*/
+			button.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
 			setSum();
 			popUp.close();
 		});
 		cancel.setOnAction(event -> {
-			shoppingCart.setAmount(foodItem.getItemId(), originalAmount);
+			controller.setAmount(foodItem.getItemId(), originalAmount);
 			popUp.close();
 		});
 		
@@ -704,7 +641,7 @@ public class MenuViewController {
 		popUp.show();
 		
 		
-		System.out.println(shoppingCart);
+		System.out.println(controller.shoppingCartToString());
 	}
 
 }

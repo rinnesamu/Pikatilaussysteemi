@@ -6,8 +6,8 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.StartViewController">
    <children>
-      <Button layoutX="477.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#startOrdering" prefHeight="82.0" prefWidth="146.0" text="Aloita tästä!" />
-      <Button layoutX="968.0" layoutY="39.0" mnemonicParsing="false" text="Eng" />
-      <Button layoutX="926.0" layoutY="39.0" mnemonicParsing="false" text="Fin" />
+      <Button layoutX="477.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#startOrdering" prefHeight="82.0" prefWidth="146.0" text="%startOrderText" />
+      <Button layoutX="968.0" layoutY="39.0" mnemonicParsing="false" onMouseClicked="#setLanguageEn" text="Eng" />
+      <Button layoutX="926.0" layoutY="39.0" mnemonicParsing="false" onMouseClicked="#setLanguageFi" text="Fin" />
    </children>
 </AnchorPane>
