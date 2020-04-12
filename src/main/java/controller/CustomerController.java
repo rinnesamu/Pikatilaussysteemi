@@ -8,6 +8,10 @@ import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
 import model.FoodItemAccessObject;
+import model.ICategoryDao;
+import model.IFoodItemDao;
+import model.IIngredientDao;
+import model.IOrderDao;
 import model.Ingredient;
 import model.IngredientAccessObject;
 import model.Order;
@@ -18,10 +22,10 @@ import view.IMenuView;
 public class CustomerController implements ICustomerController {
 	
 	// AccessObjects for the database connections.
-	private FoodItemAccessObject foodDao;
-	private CategoryAccessObject categoryDao;
-	private IngredientAccessObject ingredientDao;
-	private OrderAccessObject orderDao;
+	private IFoodItemDao foodDao;
+	private ICategoryDao categoryDao;
+	private IIngredientDao ingredientDao;
+	private IOrderDao orderDao;
 	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart;
 	private IMenuView menuController;

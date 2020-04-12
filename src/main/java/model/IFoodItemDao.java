@@ -14,8 +14,8 @@ public interface IFoodItemDao {
 	boolean deleteAllFoodItems();
 	boolean deleteFoodItem(int itemId);
 	FoodItem[] readFoodItemsByName(String name);
-	public FoodItem readFoodItemByName(String name);
-	public FoodItem[] readFoodItemsCategory(String category);
+	FoodItem readFoodItemByName(String name);
+	FoodItem[] readFoodItemsCategory(String category);
 	
 
 }
