@@ -3,27 +3,43 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 import model.*;
+import util.Bundle;
 
 /**
  * Controller -class for user interface used by restaurant keeper.
@@ -35,7 +51,7 @@ public class RestaurantKeeperController {
 	
 	private FoodItemAccessObject foodItemDao;
 	private CategoryAccessObject categoryDao;
-	private IngredientAccessObject ingredientAccessObject;
+	private IngredientAccessObject ingredientDao;
 	private OrderAccessObject orderDao;
 	
 	// Owner node for notification pop-ups
@@ -56,6 +72,8 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<FoodItem, Void> categoriesColumn;
 	@FXML
+	private TableColumn<FoodItem, Void> ingredientColumn;
+	@FXML
 	private TableColumn<FoodItem, String> pathColumn;
 	@FXML
 	private TableColumn<FoodItem, Integer> soldColumn;
@@ -74,33 +92,36 @@ public class RestaurantKeeperController {
 	//cellFactories for widgets in the menu table
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> deleteFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> editFoodItemCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> cancelFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> inMenuFoodItemCellFactory;
 	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> categoryFoodItemCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem,Void>> ingredientsFoodItemCellFactory;
 	
 	// Table and columns for adding a new item to database
 	@FXML
 	private TableView<FoodItem> addFoodItemTableView;
 	@FXML
-	private TableColumn<FoodItem, String> addNameColumn;
+	private TableColumn<FoodItem, String> addFoodItemNameColumn;
 	@FXML
-	private TableColumn<FoodItem, Double> addPriceColumn;
+	private TableColumn<FoodItem, Double> addFoodItemPriceColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> addInMenuColumn;
+	private TableColumn<FoodItem, Void> addFoodItemInMenuColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> addCategoryColumn;
+	private TableColumn<FoodItem, Void> addFoodItemCategoryColumn;
 	@FXML
-	private TableColumn<FoodItem, String> addPathColumn;
+	private TableColumn<FoodItem, String> addFoodItemPathColumn;
 	@FXML
-	private TableColumn<FoodItem, Void> addButtonColumn;
+	private TableColumn<FoodItem, Void> addFoodItemButtonColumn;
+	@FXML
+	private TableColumn<FoodItem, Void> addFoodItemIngredientsColumn;
 	
 	// observable list containing one dummy item that is set to addFoodItemTableView
 	private ObservableList<FoodItem> addItemObList;
 	
 	// cellFactories for adding an Item
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addInMenuCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addButtonCellFactory;
-	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addCategoryChoiceBoxCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addFoodItemInMenuCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addFoodItemButtonCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addFoodItemCategoryCBCellFactory;
+	Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>> addFoodItemIngredientsCCBFactory;
 
 	// Table and columns for food categories
 	@FXML
@@ -192,6 +213,9 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderReadyCellFactory;
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderEditCellFactory;
 	
+	// resource bundle
+	ResourceBundle bundle;
+	
 	/**
 	 * Empty constructor
 	 * 
@@ -209,16 +233,20 @@ public class RestaurantKeeperController {
 		// init data access objects needed
 		categoryDao = new CategoryAccessObject();
 		foodItemDao = new FoodItemAccessObject();
-		ingredientAccessObject = new IngredientAccessObject();
+		ingredientDao = new IngredientAccessObject();
 		orderDao = new OrderAccessObject();
 		
-		refreshAll();
+		bundle = Bundle.getInstance();
+		
+		initAllTableViews();
 	}
 	
 	/**
-	 * Method for refreshing everything inside tables
+	 * Method for initializing all tableviews and their cellFactories
 	 */
-	public void refreshAll() {
+	@FXML
+	private void initAllTableViews() {
+		try {
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
@@ -236,26 +264,26 @@ public class RestaurantKeeperController {
 		deleteColumn.setCellFactory(deleteFoodItemCellFactory);
 		saveEditColumn.setCellFactory(editFoodItemCellFactory);
 		categoriesColumn.setCellFactory(categoryFoodItemCellFactory);
-		// cancelColumn.setCellFactory(cancelCellFactory);
+		//ingredientColumn.setCellFactory(ingredientsFoodItemCellFactory);
 		refreshFoodItems();
 		
 		// add Item cellFactories for addFoodItemTableView
-		addNameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
-		addPriceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
-		addPathColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("path"));
+		addFoodItemNameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
+		addFoodItemPriceColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Double>("price"));
+		addFoodItemPathColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("path"));
 		
-		addNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		addPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-		addPathColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		addFoodItemNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		addFoodItemPriceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		addFoodItemPathColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		
 		// cellfactories for widget columns in food item adding table
 		createAddFoodItemCellFactories();
-		addInMenuColumn.setCellFactory(addInMenuCellFactory);
-		addButtonColumn.setCellFactory(addButtonCellFactory);
-		addCategoryColumn.setCellFactory(addCategoryChoiceBoxCellFactory);
+		addFoodItemInMenuColumn.setCellFactory(addFoodItemInMenuCellFactory);
+		addFoodItemButtonColumn.setCellFactory(addFoodItemButtonCellFactory);
+		addFoodItemCategoryColumn.setCellFactory(addFoodItemCategoryCBCellFactory);
+		//addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
 		refreshDummyFoodItem();
 		
-		try {
 		// initializing category column cellfactories
 		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
@@ -303,6 +331,8 @@ public class RestaurantKeeperController {
 		}
 	}
 	
+	
+	
 	/**
 	 * Private helper method for creating popup toast notifications.
 	 * @param msg text string for the message
@@ -323,7 +353,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitNameColumn(CellEditEvent<?,String> event) {
+	private void onEditCommitNameColumn(CellEditEvent<?,String> event) {
 		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
 	/**
@@ -333,7 +363,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
+	private void onEditCommitPriceColumn(CellEditEvent<?,Double> event) {
 		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
 	}
 	/**
@@ -343,7 +373,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitPathColumn(CellEditEvent<?, String> event) {
+	private void onEditCommitPathColumn(CellEditEvent<?, String> event) {
 		foodItemTableView.getItems().get(event.getTablePosition().getRow()).setPath(event.getNewValue());
 	}
 	
@@ -354,7 +384,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitAddNameColumn(CellEditEvent<?,String> event) {
+	private void onEditCommitAddNameColumn(CellEditEvent<?,String> event) {
 		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
 	/**
@@ -364,7 +394,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitAddPriceColumn(CellEditEvent<?,Double> event) {
+	private void onEditCommitAddPriceColumn(CellEditEvent<?,Double> event) {
 		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setPrice(event.getNewValue());
 	}
 	/**
@@ -374,7 +404,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitAddPathColumn(CellEditEvent<?, String> event) {
+	private void onEditCommitAddPathColumn(CellEditEvent<?, String> event) {
 		addFoodItemTableView.getItems().get(event.getTablePosition().getRow()).setPath(event.getNewValue());
 	}
 	
@@ -385,7 +415,7 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitAddCategoryNameColumn(CellEditEvent<?,String> event) {
+	private void onEditCommitAddCategoryNameColumn(CellEditEvent<?,String> event) {
 		addCategoryTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
 	
@@ -396,14 +426,27 @@ public class RestaurantKeeperController {
 	 * @param event event object containing information on the edit
 	 */
 	@FXML
-	public void onEditCommitAddIngredientNameColumn(CellEditEvent<?,String> event) {
+	private void onEditCommitAddIngredientNameColumn(CellEditEvent<?,String> event) {
 		addIngredientTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
 	
 	/**
+	 * Method for refreshing all tableview items
+	 */
+	/*
+	@FXML
+	private void refreshAll() {
+		refreshFoodItems();
+		refreshCategories();
+		refreshIngredients();
+		refreshOrders();
+	}
+	*/
+	
+	/**
 	 * Method for fetching foodItems from the database
 	 */
-	public void refreshFoodItems() {
+	private void refreshFoodItems() {
 		try {
 			// setting foodItems into the menu table
 			foodItemObList = FXCollections.observableArrayList(Arrays.asList(foodItemDao.readFoodItems()));
@@ -419,8 +462,8 @@ public class RestaurantKeeperController {
 	 * Method for clearing table cells for adding new FoodItem in addFoodItemTableView.
 	 * Instantiates a new "default" dummyFoodItem to fill the fields in TableView.
 	 */
-	public void refreshDummyFoodItem() {
-		FoodItem dummyFoodItem = new FoodItem("Uusi tuote", 0.0, true);
+	private void refreshDummyFoodItem() {
+		FoodItem dummyFoodItem = new FoodItem(bundle.getString("newItemText"), 0.0, true);
 		List<FoodItem> tempList = new ArrayList<FoodItem>(0);
 		tempList.add(dummyFoodItem);
 		addItemObList = FXCollections.observableArrayList(tempList);
@@ -431,7 +474,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for fetching categories from database, and setting them on TableView
 	 */
-	public void refreshCategories() {
+	private void refreshCategories() {
 		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
 		categoryTableView.setItems(categoryObList);
 	}
@@ -439,8 +482,8 @@ public class RestaurantKeeperController {
 	/**
 	 * Instantiates a dummy category object for category adding table
 	 */
-	public void refreshDummyCategory() {
-		Category dummyCategory = new Category("Uusi kategoria");
+	private void refreshDummyCategory() {
+		Category dummyCategory = new Category(bundle.getString("newCategoryText"));
 		List<Category> tempList = new ArrayList<Category>(0);
 		tempList.add(dummyCategory);
 		addCategoryObList = FXCollections.observableArrayList(tempList);
@@ -451,16 +494,16 @@ public class RestaurantKeeperController {
 	/**
 	 * Method for fetching ingrtedients from database, and setting them in TableView
 	 */
-	public void refreshIngredients() {
-		ingredientObList = FXCollections.observableArrayList(ingredientAccessObject.readIngredients());
+	private void refreshIngredients() {
+		ingredientObList = FXCollections.observableArrayList(ingredientDao.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
 	}
 	
 	/**
 	 * Instantiates a dummy ingredient object for ingredient adding table
 	 */
-	public void refreshDummyIngredient() {
-		Ingredient dummyIngredient = new Ingredient("Uusi ainesosa", false);
+	private void refreshDummyIngredient() {
+		Ingredient dummyIngredient = new Ingredient(bundle.getString("newIngredientText"), false);
 		List<Ingredient> tempList = new ArrayList<Ingredient>(0);
 		tempList.add(dummyIngredient);
 		addIngredientObList = FXCollections.observableArrayList(tempList);
@@ -468,21 +511,21 @@ public class RestaurantKeeperController {
 		addIngredientTableView.setEditable(true);
 	}
 	/**
-	 * Method for fetching order from database
+	 * Method for fetching orders from database
 	 */
-	public void refreshOrders() {
+	private void refreshOrders() {
 		Order[] orders = orderDao.readOrders();
 		Arrays.sort(orders);
 		orderObList = FXCollections.observableArrayList(orders);
 		orderTableView.setItems(orderObList);
 	}
 	
-	// Creating cellfactories for choicebox, button and checkbox columns in menu table view
+	// Creating cellfactories for choicebox, button and checkbox columns in ALL table views
 	/**
 	 * Method that creates custom cellFactories for choicebox, button and checkbox columns in menu TableView. Widgets are created within Callback objects.
 	 * 
 	 */
-	public void createFoodItemCellFactories() {
+	private void createFoodItemCellFactories() {
 		// creating checkbox cellFactory
 		inMenuFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
@@ -524,8 +567,7 @@ public class RestaurantKeeperController {
                 		for (int i = 0; i < categoryArray.length; i++) {
                 			categoryStringArray[i] = categoryArray[i].getName();
                 		}
-                		ObservableList<String> categoryObList = FXCollections.observableArrayList(categoryStringArray);
-                    	choiceBox.setItems(categoryObList);
+                    	choiceBox.setItems(FXCollections.observableArrayList(categoryStringArray));
                     	
                         // change listener for selection change in box
                         choiceBox.getSelectionModel()
@@ -558,7 +600,7 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
@@ -566,9 +608,9 @@ public class RestaurantKeeperController {
                             boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
                             if(success) {
                             	foodItemTableView.getItems().remove(foodItem);
-                            	createNotification("Tuote poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemDeletionSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("foodItemDeletionFailure"));
                             }
                         });
                     }
@@ -592,16 +634,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Tallenna");
+                    Button btn = new Button(bundle.getString("saveButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
                             boolean success = foodItemDao.updateFoodItem(foodItem);
                             if(success) {
-                            	createNotification("Tuotetta muokattu onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemEditSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu muokkaamaan");
+                            	createNotification(bundle.getString("foodItemEditFailure"));
                             }
                             refreshFoodItems();
                         });
@@ -622,42 +664,78 @@ public class RestaurantKeeperController {
 		};
 		// editbutton ends
 		
-		// cancelbutton
-		cancelFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+		// ingredients choicecheckbox cellfactory
+		/*
+		ingredientsFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Peruuta");
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                        	// functionality for cancel button
+					Button button = new Button(bundle.getString("ingrtedientsButton"));
+					{
+                        button.setOnAction((ActionEvent event) -> {
+                        	FoodItem foodItem = getTableView().getItems().get(getIndex());
+                        	List<String> ingredientInFoodItemList;
+                        	if(foodItem.getIngredientsAsList() != null) {
+                        		ingredientInFoodItemList = new LinkedList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
+                        	}else {
+                        		ingredientInFoodItemList = new LinkedList<String>();
+                        	}
+    						ListView<Ingredient> listView = new ListView<Ingredient>();
+    						listView.setItems(ingredientObList);
+    						listView.setCellFactory(CheckBoxListCell.forListView(new Callback<Ingredient, ObservableValue<Boolean>>() {
+    				            @Override
+    				            public ObservableValue<Boolean> call(Ingredient item) {
+    				                BooleanProperty observable = new SimpleBooleanProperty();
+    				                observable.set(ingredientInFoodItemList.contains(item.getName()));
+    				                observable.addListener((obs, wasSelected, isNowSelected) -> {
+    				                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected);
+    				                    
+    				                    if(!isNowSelected) {
+    				                    	ingredientInFoodItemList.remove(item.getName());
+    				                    }else {
+    				                    	ingredientInFoodItemList.add(item.getName());
+    				                    }
+    				                    String[] ingredientInFoodItemArr = new String[ingredientInFoodItemList.size()];
+    				                    ingredientInFoodItemArr = ingredientInFoodItemList.toArray(ingredientInFoodItemArr);
+    				                    foodItem.setIngredients(ingredientInFoodItemArr);
+    				                });
+    				                return observable;
+    				            }
+    				        }));
+    						
+    						StackPane stackPane = new StackPane(listView);
+    	            		Stage popUp = new Stage();
+    	            		Scene popUpScene = new Scene(stackPane, 150, 400);
+    	            		popUp.setScene(popUpScene);
+    	            		popUp.initModality(Modality.APPLICATION_MODAL);	
+    	            		
+                    		popUp.show();
                         });
                     }
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty) {
-                            setGraphic(null);
-                        } else {
 
-                            setGraphic(btn);
+                        } else {        	
+                        	setGraphic(button);
                         }
                     }
                 };
 				return cell;
 			}
 		};
-		// cancel button ends
+		*/
+		// ingredients choicecheckbox ends
+		
 	}
 
 	/**
 	 * Method that creates custom cellFactories for addButton and checkbox columns in addFoodItemTableView.
-	 * addButton CellFactory contains onAction method for adding item to database.
-	 * 
 	 */
-	public void createAddFoodItemCellFactories() {
+	private void createAddFoodItemCellFactories() {
 		// creating checkbox cellFactory
-		addInMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+		addFoodItemInMenuCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
@@ -686,20 +764,20 @@ public class RestaurantKeeperController {
 		// checkbox ends
 		
 		// creating cellFactory for addButton
-		addButtonCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+		addFoodItemButtonCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Lisää Tuote");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("lisäys selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
                             boolean success = foodItemDao.createFoodItem(foodItem);
                             if(success) {
-                            	createNotification("Tuote lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemAddSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("foodItemAddFailure"));
                             }
                             refreshFoodItems();
                             refreshDummyFoodItem();
@@ -721,7 +799,7 @@ public class RestaurantKeeperController {
 		// addButton ends
 		
 		//category choiceBox
-		addCategoryChoiceBoxCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+		addFoodItemCategoryCBCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
@@ -732,8 +810,8 @@ public class RestaurantKeeperController {
                 		for (int i = 0; i < categoryArray.length; i++) {
                 			categoryStringArray[i] = categoryArray[i].getName();
                 		}
-                		ObservableList<String> categoryObList = FXCollections.observableArrayList(categoryStringArray);
-                    	choiceBox.setItems(categoryObList);
+                		
+                    	choiceBox.setItems(FXCollections.observableArrayList(categoryStringArray));
                     	
                         // change listener for selection change in box
                         choiceBox.getSelectionModel()
@@ -758,18 +836,56 @@ public class RestaurantKeeperController {
 			}
 		};
 		// category choice box ends
+		
+		// TODO delete ccb solution, and replace it with something better
+		// ingredients choicecheckbox cellfactory
+		/*
+		addFoodItemIngredientsCCBFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
+			@Override
+			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
+				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
+					CheckComboBox<Ingredient> ingredientsCCB = new CheckComboBox<Ingredient>(ingredientObList);
+					{
+						ingredientsCCB.getCheckModel().getCheckedItems().addListener(new ListChangeListener<Ingredient>(){
+						     public void onChanged(ListChangeListener.Change<? extends Ingredient> c) {
+						    	 ArrayList<String> ingredientList = new ArrayList<String>();
+						    	 for(Ingredient i : ingredientsCCB.getCheckModel().getCheckedItems()) {
+						    		 ingredientList.add(i.getName());
+						    	 }
+						    	 // everytime new item is checked the current fooditem's ingredientlist is updated
+						    	 FoodItem foodItem = getTableView().getItems().get(getIndex());
+						    	 foodItem.setIngredients(ingredientList.toArray(new String[ingredientList.size()]));
+						     }
+						});
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+
+                        } else {   	
+                        	ingredientsCCB.getCheckModel().clearChecks();
+                        	setGraphic(ingredientsCCB);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		*/
+		// ingredients choicecheckbox ends
 	}
 	
 	/**
 	 * Method that creates custom CellFactories for widget columns in category table
 	 */
-	public void createCategoryCellFactories() {
+	private void createCategoryCellFactories() {
 		// delete category cellfactory
 		categoryDeleteCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
 			@Override
 			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
 				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
@@ -777,9 +893,9 @@ public class RestaurantKeeperController {
                             boolean success = categoryDao.deleteCategoryByName(category.getName());
                             if(success) {
                             	categoryTableView.getItems().remove(category);
-                            	createNotification("Tuote poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("categoryDeletionSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("categoryDeletionFailure"));
                             }
                         });
                     }
@@ -803,22 +919,22 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in category adding table
 	 */
-	public void createAddCategoryCellFactories() {
+	private void createAddCategoryCellFactories() {
 		// add category cellfactory
 		addCategoryButtonCellFactory = new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>(){
 			@Override
 			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
 				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
-                    Button btn = new Button("Lisää kategoria");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
                             System.out.println("kategorian lisäys selectedData: " + category.getName());
                             boolean success = categoryDao.createCategory(category);
                             if(success) {
-                            	createNotification("Kategoria lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("categoryAddSuccess"));
                             }else {
-                            	createNotification("Kategoriaa ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("categoryAddFailure"));
                             }
                             refreshCategories();
                             refreshDummyCategory();
@@ -843,7 +959,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in ingredient table
 	 */
-	public void createIngredientCellFactories() {
+	private void createIngredientCellFactories() {
 		// creating checkbox cellFactory
 		ingredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
 			@Override
@@ -878,17 +994,17 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
 				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan poisto selectedData: " + ingredient.getName());
-                            boolean success = ingredientAccessObject.deleteIngredient(ingredient.getItemId());
+                            boolean success = ingredientDao.deleteIngredient(ingredient.getItemId());
                             if(success) {
                             	ingredientTableView.getItems().remove(ingredient);
-                            	createNotification("Ainesosa poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("ingredientDeleteSuccess"));
                             }else {
-                            	createNotification("Ainesosaa ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("ingredientDeleteFailure"));
                             }
                         });
                     }
@@ -911,7 +1027,7 @@ public class RestaurantKeeperController {
 	/**
 	 * Method that creates custom cellFactories for widget columns in ingredient adding table
 	 */
-	public void createAddIngredientCellFactories() {
+	private void createAddIngredientCellFactories() {
 		// creating checkbox cellFactory
 		addIngredientRemovableCellFactory = new Callback<TableColumn<Ingredient, Void>, TableCell<Ingredient, Void>>(){
 			@Override
@@ -946,16 +1062,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
 				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
-                    Button btn = new Button("Lisää ainesosa");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan lisäys selectedData: " + ingredient.getName());
-                            boolean success = ingredientAccessObject.createIngredient(ingredient);
+                            boolean success = ingredientDao.createIngredient(ingredient);
                             if(success) {
-                            	createNotification("Ainesosa lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("ingredientAddSuccess"));
                             }else {
-                            	createNotification("Ainesosaa ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("ingredientAddSuccess"));
                             }
                             refreshIngredients();
                             refreshDummyIngredient();
@@ -980,7 +1096,7 @@ public class RestaurantKeeperController {
 	 * Method that creates custom cellfactories for widget columns in order table
 	 * 
 	 */
-	public void createOrderCellFactories() {
+	private void createOrderCellFactories() {
 		// creating checkbox cellFactory
 		orderReadyCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
 			@Override
@@ -1014,16 +1130,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
 				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
-                    Button btn = new Button("Tallenna");
+                    Button btn = new Button(bundle.getString("saveButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Order order = getTableView().getItems().get(getIndex());
                             System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
                             boolean success = orderDao.updateOrderStatus(order);
                             if(success) {
-                            	createNotification("Tilaus muokattu onnistuneesti!");
+                            	createNotification(bundle.getString("orderEditSuccess"));
                             }else {
-                            	createNotification("Tilausta ei onnistuttu muokkaamaan");
+                            	createNotification(bundle.getString("orderEditFailure"));
                             }
                             refreshOrders();
                         });
