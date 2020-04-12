@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
@@ -38,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 import model.*;
+import util.Bundle;
 
 /**
  * Controller -class for user interface used by restaurant keeper.
@@ -211,6 +213,9 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderReadyCellFactory;
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderEditCellFactory;
 	
+	// resource bundle
+	ResourceBundle bundle;
+	
 	/**
 	 * Empty constructor
 	 * 
@@ -230,6 +235,8 @@ public class RestaurantKeeperController {
 		foodItemDao = new FoodItemAccessObject();
 		ingredientDao = new IngredientAccessObject();
 		orderDao = new OrderAccessObject();
+		
+		bundle = Bundle.getInstance();
 		
 		initAllTableViews();
 	}
@@ -456,7 +463,7 @@ public class RestaurantKeeperController {
 	 * Instantiates a new "default" dummyFoodItem to fill the fields in TableView.
 	 */
 	private void refreshDummyFoodItem() {
-		FoodItem dummyFoodItem = new FoodItem("Uusi tuote", 0.0, true);
+		FoodItem dummyFoodItem = new FoodItem(bundle.getString("newItemText"), 0.0, true);
 		List<FoodItem> tempList = new ArrayList<FoodItem>(0);
 		tempList.add(dummyFoodItem);
 		addItemObList = FXCollections.observableArrayList(tempList);
@@ -476,7 +483,7 @@ public class RestaurantKeeperController {
 	 * Instantiates a dummy category object for category adding table
 	 */
 	private void refreshDummyCategory() {
-		Category dummyCategory = new Category("Uusi kategoria");
+		Category dummyCategory = new Category(bundle.getString("newCategoryText"));
 		List<Category> tempList = new ArrayList<Category>(0);
 		tempList.add(dummyCategory);
 		addCategoryObList = FXCollections.observableArrayList(tempList);
@@ -496,7 +503,7 @@ public class RestaurantKeeperController {
 	 * Instantiates a dummy ingredient object for ingredient adding table
 	 */
 	private void refreshDummyIngredient() {
-		Ingredient dummyIngredient = new Ingredient("Uusi ainesosa", false);
+		Ingredient dummyIngredient = new Ingredient(bundle.getString("newIngredientText"), false);
 		List<Ingredient> tempList = new ArrayList<Ingredient>(0);
 		tempList.add(dummyIngredient);
 		addIngredientObList = FXCollections.observableArrayList(tempList);
@@ -593,7 +600,7 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
@@ -601,9 +608,9 @@ public class RestaurantKeeperController {
                             boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
                             if(success) {
                             	foodItemTableView.getItems().remove(foodItem);
-                            	createNotification("Tuote poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemDeletionSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("foodItemDeletionFailure"));
                             }
                         });
                     }
@@ -627,16 +634,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Tallenna");
+                    Button btn = new Button(bundle.getString("saveButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
                             boolean success = foodItemDao.updateFoodItem(foodItem);
                             if(success) {
-                            	createNotification("Tuotetta muokattu onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemEditSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu muokkaamaan");
+                            	createNotification(bundle.getString("foodItemEditFailure"));
                             }
                             refreshFoodItems();
                         });
@@ -662,7 +669,7 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-					Button button = new Button("Ainekset");
+					Button button = new Button(bundle.getString("ingrtedientsButton"));
 					{
                         button.setOnAction((ActionEvent event) -> {
                         	FoodItem foodItem = getTableView().getItems().get(getIndex());
@@ -759,16 +766,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-                    Button btn = new Button("Lisää Tuote");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("lisäys selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
                             boolean success = foodItemDao.createFoodItem(foodItem);
                             if(success) {
-                            	createNotification("Tuote lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("foodItemAddSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("foodItemAddFailure"));
                             }
                             refreshFoodItems();
                             refreshDummyFoodItem();
@@ -874,7 +881,7 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
 				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
@@ -882,9 +889,9 @@ public class RestaurantKeeperController {
                             boolean success = categoryDao.deleteCategoryByName(category.getName());
                             if(success) {
                             	categoryTableView.getItems().remove(category);
-                            	createNotification("Tuote poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("categoryDeletionSuccess"));
                             }else {
-                            	createNotification("Tuotetta ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("categoryDeletionFailure"));
                             }
                         });
                     }
@@ -914,16 +921,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Category, Void> call(TableColumn<Category, Void> arg0) {
 				TableCell<Category, Void> cell = new TableCell<Category, Void>() {
-                    Button btn = new Button("Lisää kategoria");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
                             System.out.println("kategorian lisäys selectedData: " + category.getName());
                             boolean success = categoryDao.createCategory(category);
                             if(success) {
-                            	createNotification("Kategoria lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("categoryAddSuccess"));
                             }else {
-                            	createNotification("Kategoriaa ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("categoryAddFailure"));
                             }
                             refreshCategories();
                             refreshDummyCategory();
@@ -983,7 +990,7 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
 				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
-                    Button btn = new Button("Poista");
+                    Button btn = new Button(bundle.getString("deleteButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
@@ -991,9 +998,9 @@ public class RestaurantKeeperController {
                             boolean success = ingredientDao.deleteIngredient(ingredient.getItemId());
                             if(success) {
                             	ingredientTableView.getItems().remove(ingredient);
-                            	createNotification("Ainesosa poistettu onnistuneesti!");
+                            	createNotification(bundle.getString("ingredientDeleteSuccess"));
                             }else {
-                            	createNotification("Ainesosaa ei onnistuttu poistamaan");
+                            	createNotification(bundle.getString("ingredientDeleteFailure"));
                             }
                         });
                     }
@@ -1051,16 +1058,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Ingredient, Void> call(TableColumn<Ingredient, Void> arg0) {
 				TableCell<Ingredient, Void> cell = new TableCell<Ingredient, Void>() {
-                    Button btn = new Button("Lisää ainesosa");
+                    Button btn = new Button(bundle.getString("addButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan lisäys selectedData: " + ingredient.getName());
                             boolean success = ingredientDao.createIngredient(ingredient);
                             if(success) {
-                            	createNotification("Ainesosa lisätty onnistuneesti!");
+                            	createNotification(bundle.getString("ingredientAddSuccess"));
                             }else {
-                            	createNotification("Ainesosaa ei onnistuttu lisäämään");
+                            	createNotification(bundle.getString("ingredientAddSuccess"));
                             }
                             refreshIngredients();
                             refreshDummyIngredient();
@@ -1119,16 +1126,16 @@ public class RestaurantKeeperController {
 			@Override
 			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
 				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
-                    Button btn = new Button("Tallenna");
+                    Button btn = new Button(bundle.getString("saveButtonText"));
                     {
                         btn.setOnAction((ActionEvent event) -> {
                         	Order order = getTableView().getItems().get(getIndex());
                             System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
                             boolean success = orderDao.updateOrderStatus(order);
                             if(success) {
-                            	createNotification("Tilaus muokattu onnistuneesti!");
+                            	createNotification(bundle.getString("orderEditSuccess"));
                             }else {
-                            	createNotification("Tilausta ei onnistuttu muokkaamaan");
+                            	createNotification(bundle.getString("orderEditFailure"));
                             }
                             refreshOrders();
                         });
