@@ -28,13 +28,13 @@ public class CustomerController implements ICustomerController {
 	private IOrderDao orderDao;
 	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart;
+	// View layer
 	private IMenuView menuController;
 
 	/**
-	 * Constructor for CustomerController
-	 * @param m IMenuuView
+	 * Initial actions: creating DAO-objects and ShoppingCart object
+	 * @param m
 	 */
-	
 	public CustomerController(IMenuView m) {
 		this.menuController = m;
 		this.foodDao = new FoodItemAccessObject();
@@ -45,7 +45,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Initialize menuUi
+	 * Method for initializing the category list for the customer UI.
 	 */
 	@Override
 	public void initMenu() {
@@ -62,7 +62,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Reads all categories from database for initMenu
+	 * Method for initializing the creating of the customer menu in a category.
 	 */
 	@Override
 	public void readCategories(String name) {
@@ -77,7 +77,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Creates new order and saves it to database
+	 * Method for creating a new order to the database.
 	 */
 	@Override
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
@@ -118,7 +118,7 @@ public class CustomerController implements ICustomerController {
 	}
 	
 	/**
-	 * Empties shopping cart
+	 * Method for emptying the shopping cart object.
 	 */
 	@Override
 	public void emptyShoppingCart() {
@@ -126,8 +126,7 @@ public class CustomerController implements ICustomerController {
 	}
 	
 	/**
-	 * Gets item id from every item in shopping cart
-	 * @return item ids from shopping cart
+	 * Getter for all the item ids of the shopping cart fooditems.
 	 */
 	@Override
 	public int[] getAllItemId() {
@@ -135,7 +134,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Increases amount of item in shopping cart
+	 * Setter for the amount of a certain fooditem in the shopping cart.
 	 */
 	@Override
 	public void setAmount(int itemId, int amount) {
@@ -143,7 +142,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Gets amount of item from shopping cart
+	 * Getter for the amount of a certain fooditem in the shopping cart.
 	 * @return amount of specific food item in shopping cart
 	 */
 	@Override
@@ -152,7 +151,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Adds item to shopping cart
+	 * Method for adding an item of certain amount to the shopping cart.
 	 */
 	@Override
 	public void addToShoppingCart(FoodItem foodItem, int amount) {
@@ -160,7 +159,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * removes item from shopping cart
+	 * Method for removing an item from the shopping cart.
 	 */
 	@Override
 	public void removeFromShoppingCart(FoodItem foodItem) {
@@ -168,7 +167,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * prints shopping cart as string
+	 * Shopping cart toString-method.
 	 * @return shopping cart as a string
 	 */
 	@Override
@@ -177,7 +176,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * gets shopping cart
+	 * Getter for the shopping cart object.
 	 * @return shopping cart object
 	 */
 	@Override
@@ -186,7 +185,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Gets shopping carts sum
+	 * Getter for the sum of the shopping cart.
 	 * @return shopping carts sum
 	 */
 	@Override
@@ -195,7 +194,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * gets food items from shopping cart
+	 * Getter for foodItems in the shopping cart.
 	 * @return list of items in shopping cart
 	 */
 	@Override
