@@ -68,11 +68,11 @@ public class MenuViewController implements IMenuView {
 	@FXML
 	private VBox shoppingCartList;
 	
-	// Button for emptying the shopping cart.
+	// Button element for emptying the shopping cart.
 	@FXML
 	private Button emptyButton;
 	
-	// Button for paying the shopping cart.
+	// Button element for paying the shopping cart.
 	@FXML
 	private Button buyButton;
 	
@@ -99,7 +99,7 @@ public class MenuViewController implements IMenuView {
 	
 	
 	/**
-	 * Setter for 
+	 * Setter for all foodItems in selected category.
 	 */
 	public void setItems(FoodItem[] items) {
 		this.items = items;
@@ -177,27 +177,27 @@ public class MenuViewController implements IMenuView {
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
 		String infoIngredient = "";
-		FoodItem[] items = controller.getFoodItems();
-		for (int i=0; i<items.length; i++) {
+		FoodItem[] shoppingCartItems = controller.getFoodItems();
+		for (int i=0; i<shoppingCartItems.length; i++) {
 			HBox readySingleItem = new HBox();
-			amount = controller.getAmount(items[i].getItemId());
-			price = items[i].getPrice();
-			Label payItem = new Label(items[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
+			amount = controller.getAmount(shoppingCartItems[i].getItemId());
+			price = shoppingCartItems[i].getPrice();
+			Label payItem = new Label(shoppingCartItems[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
-			if (controller.getDatabaseIngredients(items[i]) != null) {
-				if (items[i].getRemovedIngredientsAsList() != null) {
-					String[] removedIngredients =items[i].getRemovedIngredientsAsList();
+			if (controller.getDatabaseIngredients(shoppingCartItems[i]) != null) {
+				if (shoppingCartItems[i].getRemovedIngredientsAsList() != null) {
+					String[] removedIngredients =shoppingCartItems[i].getRemovedIngredientsAsList();
 					String removedIngredientList ="";
 					for (int j = 0; j < removedIngredients.length; j++) {
 						removedIngredientList += removedIngredients[j].toString() + " ";
 					}
 					ingredients.setText(" " + bundle.getString("removedText") + " " + removedIngredientList);
-					infoIngredient += items[i].getItemId() + "=" + removedIngredientList;
+					infoIngredient += shoppingCartItems[i].getItemId() + "=" + removedIngredientList;
 				}
 			}
-			File file = new File(this.getClass().getResource("/imgs/" + items[i].getPath()).getFile());
+			File file = new File(this.getClass().getResource("/imgs/" + shoppingCartItems[i].getPath()).getFile());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(20);
@@ -212,7 +212,7 @@ public class MenuViewController implements IMenuView {
 		payButton.setStyle("-fx-background-color: green;");
 		payButton.setTextFill(Color.WHITE);
 		
-		if (items.length == 0) {
+		if (shoppingCartItems.length == 0) {
 			payButton.setDisable(true);
 		}
 		Button cancelButton = new Button(bundle.getString("cancelText"));
@@ -249,7 +249,7 @@ public class MenuViewController implements IMenuView {
 		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
-		int heightWindow = 200 + 70*items.length;
+		int heightWindow = 200 + 70*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
 		}
