@@ -30,6 +30,10 @@ public class CustomerController implements ICustomerController {
 	private ShoppingCart shoppingCart;
 	private IMenuView menuController;
 
+	/**
+	 * Constructor for CustomerController
+	 * @param m IMenuuView
+	 */
 	
 	public CustomerController(IMenuView m) {
 		this.menuController = m;
@@ -40,6 +44,9 @@ public class CustomerController implements ICustomerController {
 		this.shoppingCart = new ShoppingCart();
 	}
 
+	/**
+	 * Initialize menuUi
+	 */
 	@Override
 	public void initMenu() {
 		Category[] allCategories = categoryDao.readCategories();
@@ -54,6 +61,9 @@ public class CustomerController implements ICustomerController {
 		
 	}
 
+	/**
+	 * Reads all categories from database for initMenu
+	 */
 	@Override
 	public void readCategories(String name) {
 		FoodItem[] items = foodDao.readFoodItemsCategory(name);
@@ -66,6 +76,9 @@ public class CustomerController implements ICustomerController {
 		
 	}
 
+	/**
+	 * Creates new order and saves it to database
+	 */
 	@Override
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
 		Order order = new Order(orderNumber, shoppingCart);
@@ -104,51 +117,87 @@ public class CustomerController implements ICustomerController {
 		}
 	}
 	
+	/**
+	 * Empties shopping cart
+	 */
 	@Override
 	public void emptyShoppingCart() {
 		shoppingCart.emptyShoppingCart();
 	}
 	
+	/**
+	 * Gets item id from every item in shopping cart
+	 * @return item ids from shopping cart
+	 */
 	@Override
 	public int[] getAllItemId() {
 		return shoppingCart.getAllItemId();
 	}
 
+	/**
+	 * Increases amount of item in shopping cart
+	 */
 	@Override
 	public void setAmount(int itemId, int amount) {
 		shoppingCart.setAmount(itemId, amount);
 	}
 
+	/**
+	 * Gets amount of item from shopping cart
+	 * @return amount of specific food item in shopping cart
+	 */
 	@Override
 	public int getAmount(int itemId) {
 		return shoppingCart.getAmount(itemId);
 	}
 
+	/**
+	 * Adds item to shopping cart
+	 */
 	@Override
 	public void addToShoppingCart(FoodItem foodItem, int amount) {
 		shoppingCart.addToShoppingCart(foodItem, amount);
 	}
 
+	/**
+	 * removes item from shopping cart
+	 */
 	@Override
 	public void removeFromShoppingCart(FoodItem foodItem) {
 		shoppingCart.removeFromShoppingCart(foodItem);
 	}
 
+	/**
+	 * prints shopping cart as string
+	 * @return shopping cart as a string
+	 */
 	@Override
 	public String shoppingCartToString() {
 		return shoppingCart.toString();
 	}
 
+	/**
+	 * gets shopping cart
+	 * @return shopping cart object
+	 */
 	@Override
 	public Map<FoodItem, Integer> getShoppingCart() {
 		return shoppingCart.getShoppingCart();
 	}
 
+	/**
+	 * Gets shopping carts sum
+	 * @return shopping carts sum
+	 */
 	@Override
 	public double getShoppingCartSum() {
 		return shoppingCart.getSum();
 	}
 
+	/**
+	 * gets food items from shopping cart
+	 * @return list of items in shopping cart
+	 */
 	@Override
 	public FoodItem[] getFoodItems() {
 		return shoppingCart.getFoodItems();
