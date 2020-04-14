@@ -5,12 +5,24 @@ import javafx.application.Platform;
 
 public class TimingController extends Thread{
 	private boolean rest = true;
+	private boolean notification = false;
 	private long lastWake;
 	private Start control;
 	
 	public void run() {
 		while(true) {
 			if( !rest ) {
+				if( System.currentTimeMillis() - lastWake > 10000) {
+					if(!notification) {
+						Platform.runLater(new Runnable() {
+						    @Override
+						    public void run() {
+								control.timeOutWarning();
+						    }
+						});
+						notification = true;
+					}
+				}
 				if( System.currentTimeMillis() - lastWake > 15000) {
 					Platform.runLater(new Runnable() {
 					    @Override
@@ -18,7 +30,7 @@ public class TimingController extends Thread{
 					        control.initUI();
 					    }
 					});
-					rest = true;
+					rest = notification = true;
 				}
 			}
 			try {
@@ -34,7 +46,7 @@ public class TimingController extends Thread{
 	}
 	
 	public void update() {
-		rest = false;
+		rest = notification = false;
 		lastWake = System.currentTimeMillis();
 	}
 }

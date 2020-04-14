@@ -22,6 +22,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
+import javafx.scene.control.Label;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import util.Bundle;
 import view.MenuViewController;
@@ -98,6 +100,7 @@ public class Start extends Application implements IStart {
 			loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
 			loader.setResources(bundle);
 			menuLayout = (BorderPane) loader.load();
+			
 			Scene scene = new Scene(menuLayout);
 			scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 				@Override
@@ -187,6 +190,11 @@ public class Start extends Application implements IStart {
 		bundle = Bundle.getInstance();
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 		initUI();
+	}
+	
+	public void timeOutWarning() {
+		MenuViewController menuViewController = loader.getController();
+		menuViewController.timeOutWarning();
 	}
 
 	public static void main(String[] args) {

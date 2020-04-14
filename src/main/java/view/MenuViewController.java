@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.Notifications;
+
 import application.IStart;
 import application.Start;
 import controller.CustomerController;
@@ -718,6 +720,14 @@ public class MenuViewController implements IMenuView {
 		
 		
 		System.out.println(shoppingCart);
+	}
+	
+	public void timeOutWarning() {
+        Notifications.create()
+        .title( bundle.getString("notificationTitleText") )
+        .text( bundle.getString("notificationText") )
+        .owner(menu)
+        .showWarning();
 	}
 
 }
