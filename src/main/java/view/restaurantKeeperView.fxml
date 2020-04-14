@@ -119,7 +119,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="%orders">
+            <Tab onSelectionChanged="#initAllTableViews" text="%orders">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -131,7 +131,7 @@
                                   <TableColumn fx:id="orderNumberColumn" prefWidth="120.0" text="%orderNumber" />
                                     <TableColumn fx:id="orderTimeStampColumn" prefWidth="240.0" text="%orderTimeStamp" />
                                     <TableColumn fx:id="orderReadyColumn" prefWidth="120.0" text="%ready" />
-                                    <TableColumn prefWidth="120.0" text="%contents" />
+                                    <TableColumn fx:id="orderContentsColumn" prefWidth="120.0" text="%contents" />
                                     <TableColumn fx:id="orderEditColumn" prefWidth="120.0" text="%saveButtonText" />
                                 </columns>
                               </TableView>

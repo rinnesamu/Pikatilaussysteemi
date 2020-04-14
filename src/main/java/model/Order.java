@@ -36,7 +36,7 @@ public class Order implements Serializable, Comparable<Order>{
 	@Column
 	private boolean status;
 
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
 	@JoinTable(name="order_content", joinColumns=@JoinColumn(name="orderId"))
 	private Map<String, Integer> orderContent;
 	
@@ -140,12 +140,12 @@ public class Order implements Serializable, Comparable<Order>{
 		return this.orderContent.size();
 	}
 	/**
-	 * Getter for the content of the order in hashmap
+	 * Getter for the content of the order in a hashmap
 	 * 
-	 * @return order content as an hashmap
+	 * @return order content as a hashmap
 	 */
-	public HashMap<String, Integer> getOrderContent() {
-		return (HashMap<String, Integer>)this.orderContent;
+	public Map<String, Integer> getOrderContent() {
+		return this.orderContent;
 	}
 	/**
 	 * Setter for the order content

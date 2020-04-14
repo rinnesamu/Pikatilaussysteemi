@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.controlsfx.control.CheckComboBox;
@@ -201,6 +202,8 @@ public class RestaurantKeeperController {
 	@FXML
 	private TableColumn<Order, Void> orderReadyColumn;
 	@FXML
+	private TableColumn<Order, Void> orderContentsColumn;
+	@FXML
 	private TableColumn<Order, Void> orderEditColumn;
 	
 	// formatter for datetime column
@@ -211,6 +214,7 @@ public class RestaurantKeeperController {
 
 	//CellFactories for widget columns in order table
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderReadyCellFactory;
+	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderContentsCellFactory;
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderEditCellFactory;
 	
 	// resource bundle
@@ -324,9 +328,10 @@ public class RestaurantKeeperController {
 		
 		createOrderCellFactories();
 		orderReadyColumn.setCellFactory(orderReadyCellFactory);
+		orderContentsColumn.setCellFactory(orderContentsCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
-		}catch(NullPointerException nE) {
+		}catch(NullPointerException npe) {
 			System.out.println("category, ingerdient, order columns give nullpointerException");
 		}
 	}
@@ -665,6 +670,7 @@ public class RestaurantKeeperController {
 		// editbutton ends
 		
 		// ingredients choicecheckbox cellfactory
+		//TODO TRY TO FIX THIS MESS
 		/*
 		ingredientsFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
 			@Override
@@ -1125,6 +1131,45 @@ public class RestaurantKeeperController {
 		};
 		// checkbox ends
 		
+		//order contents cellfactory
+		orderContentsCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
+			@Override
+			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
+				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
+					Button button = new Button(bundle.getString("orderContentsButton"));
+					{
+                        button.setOnAction((ActionEvent event) -> {
+                        	Order order = getTableView().getItems().get(getIndex());
+                        	List<String> orderContents = new ArrayList<String>();
+                        	Map<String, Integer> contents = order.getOrderContent();
+                        	contents.forEach((item, amount) -> orderContents.add(item + " x" + amount));
+                        	ObservableList<String> orderContentsObList = FXCollections.observableArrayList(orderContents);
+    						ListView<String> listView = new ListView<String>();
+    						listView.setItems(orderContentsObList);
+    						StackPane stackPane = new StackPane(listView);
+    	            		Stage popUp = new Stage();
+    	            		Scene popUpScene = new Scene(stackPane, 150, 400);
+    	            		popUp.setScene(popUpScene);
+    	            		popUp.initModality(Modality.APPLICATION_MODAL);	
+    	            		
+                    		popUp.show();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {                       
+                        	setGraphic(button);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		//order contents cellfactory ends
+		
 		// creating cellFactory for editbutton
 		orderEditCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
 			@Override
@@ -1159,5 +1204,7 @@ public class RestaurantKeeperController {
 			}
 		};
 		// editbutton ends
+		
+		
 	}
 }
