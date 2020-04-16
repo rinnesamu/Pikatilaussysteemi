@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane gridLinesVisible="true" minHeight="600.0" minWidth="1200.0" prefHeight="600.0" prefWidth="1200.0" stylesheets="@Orders.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OrdersViewController">
+   <rowConstraints>
+      <RowConstraints minHeight="100.0" prefHeight="100.0" />
+      <RowConstraints minHeight="10.0" prefHeight="500.0" vgrow="ALWAYS" />
+   </rowConstraints>
+   <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" minWidth="600.0" prefWidth="600.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="600.0" />
+   </columnConstraints>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <children>
+      <Text fx:id="activeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Active orders" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <font>
+            <Font size="46.0" />
+         </font></Text>
+      <Text fx:id="readyText" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <font>
+            <Font size="46.0" />
+         </font></Text>
+      <ListView fx:id="activeOrders" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+      <ListView fx:id="readyOrders" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+   </children>
+</GridPane>

@@ -1,0 +1,7 @@
+.activeOrders {
+	-fx-font-size: 60pt ;
+}
+.list-cell{
+    -fx-font-size: 20.0;
+     -fx-alignment: center;
+}
