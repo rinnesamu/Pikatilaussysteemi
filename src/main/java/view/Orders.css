@@ -1,7 +1,7 @@
-.activeOrders {
-	-fx-font-size: 60pt ;
+.list-view{
+	-fx-control-inner-background-alt: -fx-control-inner-background ;
 }
 .list-cell{
-    -fx-font-size: 20.0;
+    -fx-font-size: 50.0;
      -fx-alignment: center;
 }

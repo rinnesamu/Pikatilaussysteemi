@@ -28,6 +28,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import util.Bundle;
 import view.MenuViewController;
+import view.OrdersViewController;
 import view.RestaurantKeeperController;
 import view.StartViewController;
 
@@ -168,6 +169,8 @@ public class Start extends Application implements IStart {
 			primaryStage.setMinHeight(600);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			OrdersViewController ordersViewController = loader.getController();
+			ordersViewController.setStart(this);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
