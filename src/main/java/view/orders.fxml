@@ -21,11 +21,11 @@
       <Insets />
    </opaqueInsets>
    <children>
-      <Text fx:id="activeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Active orders" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Text fx:id="activeText" strokeType="OUTSIDE" strokeWidth="0.0" text="%activeOrders" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <font>
             <Font size="46.0" />
          </font></Text>
-      <Text fx:id="readyText" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+      <Text fx:id="readyText" strokeType="OUTSIDE" strokeWidth="0.0" text="%readyOrders" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <font>
             <Font size="46.0" />
          </font></Text>
