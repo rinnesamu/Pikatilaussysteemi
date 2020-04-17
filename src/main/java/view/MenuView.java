@@ -234,9 +234,6 @@ public class MenuView implements IMenuView {
 			@Override
 			public void handle(MouseEvent e) {
 				controller.createOrder(orderNumber, controller.getShoppingCart(), infoIngredient2);
-				//Order order = new Order(orderNumber, shoppingCart.getShoppingCart());
-				//order.setAdditionalInfo(infoIngredient2);
-				//orderAO.createOrder(order);
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
 				readyToPay.setOpacity(0.9);
