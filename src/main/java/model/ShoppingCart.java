@@ -1,19 +1,17 @@
 package model;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** 
- * Represents a shopping cart.
+ * Represents an observable shopping cart.
  *
  * @author Kimmo Perälä
  *
  **/
 
-public class ShoppingCart {
+public class ShoppingCart extends Observable {
 	private Map<FoodItem, Integer> cartList;
+	private double priceSum;
 
 	/**
 	 * Creates a new shopping cart object.
@@ -29,6 +27,14 @@ public class ShoppingCart {
 	 */
 	public Map<FoodItem, Integer> getShoppingCart() {
 		return cartList;
+	}
+	
+	/**
+	 * Adds a observer for the shopping cart
+	 * @param observer Observer which reacts to changes.
+	 */
+	public void registerObserver(Observer observer) {
+		this.addObserver(observer);
 	}
 	
 	/**
@@ -63,6 +69,8 @@ public class ShoppingCart {
 		else {
 			cartList.put(foodItem, amount);
 		}
+		setChanged();
+		notifyObservers();
 	}
 
 	/** 
@@ -72,6 +80,8 @@ public class ShoppingCart {
 	 */
 	public void removeFromShoppingCart(FoodItem foodItem) {
 		cartList.entrySet().removeIf(e -> e.getKey().equals(foodItem));
+		setChanged();
+		notifyObservers();
 	}
 	
 	/** Empties the shopping cart
@@ -79,6 +89,8 @@ public class ShoppingCart {
 	 */
 	public void emptyShoppingCart() {
 		cartList.clear();
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
@@ -138,7 +150,8 @@ public class ShoppingCart {
 		else {
 			cartList.put(fItem, newAmount);
 		}
-		
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
@@ -146,16 +159,16 @@ public class ShoppingCart {
 	 * @return Price sum of the shopping cart
 	 */
 	public double getSum() {
-		double priceSum = 0;
+		this.priceSum = 0;
 		double price;
 		int amount;
 		FoodItem[] itemsInShoppingCart = getFoodItems();
 		for (int i=0; i<itemsInShoppingCart.length; i++) {
 			amount = getAmount(itemsInShoppingCart[i].getItemId());
 			price = itemsInShoppingCart[i].getPrice();
-			priceSum += amount*price;
+			this.priceSum += amount*price;
 		}
-		return priceSum;
+		return this.priceSum;
 	}
 	
 	/** 

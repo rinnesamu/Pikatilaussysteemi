@@ -3,6 +3,8 @@ package controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import model.Category;
 import model.CategoryAccessObject;
@@ -29,19 +31,21 @@ public class CustomerController implements ICustomerController {
 	// Shopping cart object: contains the selected fooditems.
 	private ShoppingCart shoppingCart;
 	// View layer
-	private IMenuView menuController;
+	private IMenuView menuView;
 
 	/**
 	 * Initial actions: creating DAO-objects and ShoppingCart object
 	 * @param m View layer to be set
 	 */
 	public CustomerController(IMenuView m) {
-		this.menuController = m;
+		this.menuView = m;
 		this.foodDao = new FoodItemAccessObject();
 		this.categoryDao = new CategoryAccessObject();
 		this.orderDao = new OrderAccessObject();
 		this.ingredientDao = new IngredientAccessObject();
 		this.shoppingCart = new ShoppingCart();
+		ShopCartObserver observer = new ShopCartObserver();
+		this.shoppingCart.registerObserver(observer);
 	}
 
 	/**
@@ -50,28 +54,38 @@ public class CustomerController implements ICustomerController {
 	@Override
 	public void initMenu() {
 		Category[] allCategories = categoryDao.readCategories();
-		menuController.createCategoryList(allCategories);
+		menuView.createCategoryList(allCategories);
 		for (Category c : allCategories) {
 			System.out.println(c.getName());
 		}
 		String categoryName = allCategories[0].getName();
 		readCategories(categoryName);
-		menuController.setSum();
+		menuView.setSum(0);
 		// TODO: what if no categories?
 		
 	}
 
+	/**
+	 * Inner class of the shopping cart observer which updates the sum element.
+	 */
+	private class ShopCartObserver implements Observer {
+		@Override
+		public void update(Observable o, Object arg) {
+			menuView.setSum(getShoppingCartSum());
+		}
+		
+	}
 	/**
 	 * Method for initializing the creating of the customer menu in a category.
 	 */
 	@Override
 	public void readCategories(String name) {
 		FoodItem[] items = foodDao.readFoodItemsCategory(name);
-		menuController.setItems(items);
+		menuView.setItems(items);
 		if (items.length != 0) {
-			menuController.createMenu();
+			menuView.createMenu();
 		}else {
-			menuController.emptyCategory();
+			menuView.emptyCategory();
 		}
 		
 	}

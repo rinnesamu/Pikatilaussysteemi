@@ -134,15 +134,14 @@ public class MenuView implements IMenuView {
 		bundle = Bundle.getInstance();
 
 		controller.initMenu();
-		
 	}
 	
 	/**
 	 * Method for updating the sum of the shopping cart on the shopping cart list item.
 	 * 
 	 */
-	public void setSum() {
-		sumShoppingCart.setText(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
+	public void setSum(double value) {
+		sumShoppingCart.setText(bundle.getString("sumText") + ": " + value + "0 " + bundle.getString("eurosText"));
 	}
 
 	/**
@@ -277,7 +276,6 @@ public class MenuView implements IMenuView {
 	private void pay(Stage s) {
 		controller.emptyShoppingCart();
 		shoppingCartList.getChildren().clear();
-		setSum();
 		orderNumber++;
 		s.close();
 		start.initUI();
@@ -305,9 +303,7 @@ public class MenuView implements IMenuView {
 			System.out.println(controller.shoppingCartToString());
 		}
 		else if (result.get() == cancelDel) {
-		}
-		setSum();
-		
+		}		
 	}
 
 	
@@ -406,8 +402,6 @@ public class MenuView implements IMenuView {
 			controller.addToShoppingCart(foodItem, 1);
 			shoppingCartList.getChildren().add(sCartItem);
 		}
-
-		setSum();
 		
 		sCartItem.setText(controller.getAmount(id) + " x " + foodItem.getName());
 		
@@ -623,7 +617,6 @@ public class MenuView implements IMenuView {
 						shoppingCartList.getChildren().remove(i);
 					}
 				}
-				setSum();
 				popUp.close();
 			}
 			else if (result.get() == cancelDel) {
@@ -632,7 +625,6 @@ public class MenuView implements IMenuView {
 		});
 		okay.setOnAction(event -> {
 			button.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			setSum();
 			popUp.close();
 		});
 		cancel.setOnAction(event -> {
