@@ -21,7 +21,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Order;
-import view.MenuViewController;
+import view.MenuView;
 import view.RestaurantKeeperController;
 
 public class App extends Application {
@@ -74,7 +74,7 @@ public class App extends Application {
 					primaryStage.setScene(scene);
 					primaryStage.show();
 					
-					MenuViewController controller = loader.getController();
+					MenuView controller = loader.getController();
 					
 				} catch (IOException e) {
 					e.printStackTrace();

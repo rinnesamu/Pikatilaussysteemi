@@ -1,9 +1,7 @@
 package application;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -23,11 +21,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
-import javafx.scene.control.Label;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import util.Bundle;
-import view.MenuViewController;
+import view.MenuView;
 import view.OrdersViewController;
 import view.RestaurantKeeperController;
 import view.StartViewController;
@@ -118,8 +114,8 @@ public class Start extends Application implements IStart {
 			});
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			MenuViewController menuViewController = loader.getController();
-			menuViewController.setStart(this);
+			MenuView menuView = loader.getController();
+			menuView.setStart(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -232,7 +228,7 @@ public class Start extends Application implements IStart {
 	}
 	
 	public void timeOutWarning() {
-		MenuViewController menuViewController = loader.getController();
+		MenuView menuViewController = loader.getController();
 		menuViewController.timeOutWarning();
 	}
 

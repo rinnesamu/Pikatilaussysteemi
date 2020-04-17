@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import view.MenuViewController;
+import view.MenuView;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class MainApp extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
-			MenuViewController controller = loader.getController();
+			MenuView controller = loader.getController();
 			
 		} catch (IOException e) {
 			e.printStackTrace();

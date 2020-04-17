@@ -54,7 +54,7 @@ import util.Bundle;
  *
  */
 
-public class MenuViewController implements IMenuView {
+public class MenuView implements IMenuView {
 	
 	// The start view to return to.
 	private IStart start;
@@ -95,7 +95,7 @@ public class MenuViewController implements IMenuView {
 	// ResourceBundle for language selection
 	ResourceBundle bundle;
 			
-	public MenuViewController() {
+	public MenuView() {
 		
 	}
 	
