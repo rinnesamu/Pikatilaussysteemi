@@ -56,7 +56,10 @@ import util.Bundle;
 
 public class MenuViewController implements IMenuView {
 	
+	// The start view to return to.
 	private IStart start;
+	
+	// The controller of the menu view.
 	private ICustomerController controller;
 	
 	// Element where the menu is located.
@@ -96,6 +99,10 @@ public class MenuViewController implements IMenuView {
 		
 	}
 	
+	/**
+	 * Setter for the start view.
+	 * @param start The start view.
+	 */
 	public void setStart(IStart start) {
 		 this.start = start;
 	 }
@@ -119,7 +126,7 @@ public class MenuViewController implements IMenuView {
 	}
 	
 	/**
-	 * Initial actions: starting the creation of the menus.
+	 * Initial actions: starting the creation of the menus with the controller.
 	 */
 	@FXML
 	private void initialize() {
@@ -264,7 +271,7 @@ public class MenuViewController implements IMenuView {
 	}
 	
 	/**
-	 * Method for the paying process.
+	 * Method for the paying process. At the end brings the user back to the start view.
 	 * @param s Stage of the paying process.
 	 */
 	private void pay(Stage s) {
@@ -647,6 +654,9 @@ public class MenuViewController implements IMenuView {
 		System.out.println(controller.shoppingCartToString());
 	}
 	
+	/**
+	 * Popup for informing the user of the upcoming return to the start view.
+	 */
 	public void timeOutWarning() {
         Notifications.create()
         .title( bundle.getString("notificationTitleText") )

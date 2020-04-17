@@ -33,7 +33,7 @@ public class CustomerController implements ICustomerController {
 
 	/**
 	 * Initial actions: creating DAO-objects and ShoppingCart object
-	 * @param m
+	 * @param m View layer to be set
 	 */
 	public CustomerController(IMenuView m) {
 		this.menuController = m;
@@ -186,7 +186,7 @@ public class CustomerController implements ICustomerController {
 
 	/**
 	 * Getter for the sum of the shopping cart.
-	 * @return shopping carts sum
+	 * @return sum of the shopping cart
 	 */
 	@Override
 	public double getShoppingCartSum() {
