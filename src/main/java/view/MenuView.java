@@ -492,6 +492,7 @@ public class MenuView implements IMenuView {
 	 */	
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
+		int height = 300; // defaul height of the popup
 		int amountNow = controller.getAmount(foodItem.getItemId());
 		int originalAmount = amountNow;
 		
@@ -519,7 +520,7 @@ public class MenuView implements IMenuView {
 
 		// If the item has ingredients, create ingredient list.
 		if (ingredientsOfDatabase != null) {
-			
+			height = 700; // change the default height
 			for (int i = 0; i < controller.getAmount(foodItem.getItemId()); i++) {
 				
 				Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
@@ -637,7 +638,7 @@ public class MenuView implements IMenuView {
 		boxOkCancel.getChildren().addAll(okay, cancel);
 		
 		boxWhole.getChildren().addAll(boxInfo, boxButtons, tabPane, boxOkCancel);
-		Scene popUpScene = new Scene(boxWhole, 400, 600);
+		Scene popUpScene = new Scene(boxWhole, 400, height);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.show();
