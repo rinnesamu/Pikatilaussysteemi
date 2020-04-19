@@ -93,7 +93,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Method for creating a new order to the database.
+	 * Method for creating a new order to the database. Creates a new shopping cart copy without duplicate foodItems to be added to the database.
 	 */
 	@Override
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
@@ -102,7 +102,7 @@ public class CustomerController implements ICustomerController {
 		
 		for(Map.Entry<FoodItem, Integer> entry : shoppingCart.entrySet()) {
 			int realAmount = getAmount(entry.getKey().getName());
-			System.out.println("reali on " + realAmount);
+			//System.out.println("realAmount on " + realAmount);
 			if (!setAlready.contains(entry.getKey().getName())) {
 				orderContent.put(entry.getKey(), realAmount);
 				setAlready.add(entry.getKey().getName());

@@ -89,6 +89,7 @@ public class MenuView implements IMenuView {
 	// All the fooditems in a category.
 	private FoodItem[] items;
 	
+	// The variable of the negative id numbers for the foodItems with ingredients.
 	private int newId=0;
 	
 	// Order number reset.
@@ -361,36 +362,15 @@ public class MenuView implements IMenuView {
 	 * @param foodItem The fooditem tied to the particular button.
 	 */
 	private void menuButtonHandler(FoodItem foodItem) {
-		
-		// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
-		/*int[] listOfItemIds= controller.getAllItemId();
-		boolean found = false;
-		for (int i = 0; i < listOfItemIds.length; i++) {
-			if (id == listOfItemIds[i]) {
-				found = true;
-			}	
-		}
-		// If item is already there, increase the amount in the shopping cart.
-		if (found) {
-			int oldAmount = controller.getAmount(id);
-			controller.setAmount(foodItem.getItemId(), (oldAmount+1));
-			
-			for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-				if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-					shoppingCartList.getChildren().set(i, sCartItem);
-				}
-			}
-		}*/
-		// Otherwise add the item to the shopping cart.
-		//else {
-			// If item has ingredients, reset ingredients and removed ingredients.
-		
-		//Create a new FoodItem copy
-		newId -= 1;
-		FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
-		newItem.setPath(foodItem.getPath());
+		Button sCartItem = new Button("");
+
+		// If item has ingredients, reset ingredients and removed ingredients.
 
 		if (foodItem.getIngredientsAsList() != null) {
+			//Create a new FoodItem copy
+			newId -= 1;
+			FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
+			newItem.setPath(foodItem.getPath());
 			
 			// Reset the removed ingredients.
 			String[] reset = new String[0];
@@ -398,22 +378,54 @@ public class MenuView implements IMenuView {
 			
 			// Reset ingredients.
 			newItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
+			controller.addToShoppingCart(newItem, 1);
+			
+			sCartItem.setId(Integer.toString(newId));
+			sCartItem.setFont(new Font(25));
+			sCartItem.setMinSize(375, 60);
+			sCartItem.getStyleClass().add("cartbutton");
+			sCartItem.setText(controller.getAmount(newId) + " x " + newItem.getName());
+			
+			shoppingCartList.getChildren().add(sCartItem);
+			// Adding a handler for the shopping cart item buttons.
+			System.out.println(controller.shoppingCartToString());
+			sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
+			
+		} else {
+			int id = foodItem.getItemId();
+			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
+			int[] listOfItemIds= controller.getAllItemId();
+			boolean found = false;
+			for (int i = 0; i < listOfItemIds.length; i++) {
+				if (id == listOfItemIds[i]) {
+					found = true;
+				}	
+			}
+			sCartItem.setId(Integer.toString(id));
+			sCartItem.setFont(new Font(25));
+			sCartItem.setMinSize(375, 60);
+			sCartItem.getStyleClass().add("cartbutton");
+			
+			// If item is already there, increase the amount in the shopping cart.
+			if (found) {
+				int oldAmount = controller.getAmount(id);
+				controller.setAmount(foodItem.getItemId(), (oldAmount+1));
+				
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().set(i, sCartItem);
+					}
+				}
+			} else {
+				controller.addToShoppingCart(foodItem, 1);
+				shoppingCartList.getChildren().add(sCartItem);
+			}
+			sCartItem.setText(controller.getAmount(id) + " x " + foodItem.getName());
+
+			// Adding a handler for the shopping cart item buttons.
+			System.out.println(controller.shoppingCartToString());
+			sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));
 		}
-
-		//}
-		controller.addToShoppingCart(newItem, 1);
-		Button sCartItem = new Button("");
-
-		sCartItem.setId(Integer.toString(newId));
-		sCartItem.setFont(new Font(25));
-		sCartItem.setMinSize(375, 60);
-		sCartItem.getStyleClass().add("cartbutton");
-		sCartItem.setText(controller.getAmount(newId) + " x " + newItem.getName());
-		
-		shoppingCartList.getChildren().add(sCartItem);
-		// Adding a handler for the shopping cart item buttons.
-		System.out.println(controller.shoppingCartToString());
-		sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
 	}
 	
 	/**
