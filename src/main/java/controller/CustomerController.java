@@ -147,6 +147,12 @@ public class CustomerController implements ICustomerController {
 		return shoppingCart.getAllItemId();
 	}
 
+	
+	@Override
+	public String getFoodItemName(int itemId) {
+		return shoppingCart.getFoodItemName(itemId);
+	}
+	
 	/**
 	 * Setter for the amount of a certain fooditem in the shopping cart.
 	 */
@@ -215,5 +221,6 @@ public class CustomerController implements ICustomerController {
 	public FoodItem[] getFoodItems() {
 		return shoppingCart.getFoodItems();
 	}
+
 
 }

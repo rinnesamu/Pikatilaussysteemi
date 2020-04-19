@@ -12,6 +12,7 @@ public interface ICustomerController {
 	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem);
 	public void emptyShoppingCart();
 	public int[] getAllItemId();
+	public String getFoodItemName(int itemId);
 	public void setAmount(int itemId, int amount);
 	public int getAmount(int itemId);
 	public void addToShoppingCart(FoodItem foodItem, int amount);

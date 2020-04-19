@@ -98,6 +98,15 @@ class ShoppingCartTest {
 	}
 	
 	@Test
+	@DisplayName("Getting the name of a foodItem")
+	void testGetName() {
+		assertEquals("Big Mac", sCart.getFoodItemName(1), "Not getting the right name for positive itemId");
+		foodItem2 = new FoodItem("Pieni kahvi", 2, true, -5);
+		sCart.addToShoppingCart(foodItem2, 2);
+		assertEquals("Pieni kahvi", sCart.getFoodItemName(-5), "Not getting the right name for negative itemId");
+	}
+	
+	@Test
 	@DisplayName("Getting the amount of a product")
 	void testGetAmount() {
 		assertEquals(4, sCart.getAmount(foodItem.getItemId()), "Getting the wrong amount");

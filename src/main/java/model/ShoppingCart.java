@@ -30,7 +30,7 @@ public class ShoppingCart extends Observable {
 	}
 	
 	/**
-	 * Adds a observer for the shopping cart
+	 * Adds an observer for the shopping cart
 	 * @param observer Observer which reacts to changes.
 	 */
 	public void registerObserver(Observer observer) {
@@ -102,6 +102,19 @@ public class ShoppingCart extends Observable {
 		Set<FoodItem> foodItems = cartList.keySet();
 		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
 		return fItemsArray;
+	}
+	
+	public String getFoodItemName(int itemId) {
+		FoodItem fItem = new FoodItem();
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+		
+		for (int i = 0; i < fItemsArray.length; i++) {
+			if (itemId == fItemsArray[i].getItemId()) {
+				fItem = fItemsArray[i];
+			}
+		}
+		return fItem.getName();
 	}
 	
 	/**

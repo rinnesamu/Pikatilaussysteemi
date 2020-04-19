@@ -191,7 +191,7 @@ public class MenuView implements IMenuView {
 			HBox readySingleItem = new HBox();
 			amount = controller.getAmount(shoppingCartItems[i].getItemId());
 			price = shoppingCartItems[i].getPrice();
-			Label payItem = new Label(shoppingCartItems[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
+			Label payItem = new Label(controller.getFoodItemName(shoppingCartItems[i].getItemId()) + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
 			payItem.setFont(new Font(14));
 			readySingleItem.getChildren().add(payItem);
 			Label ingredients = new Label();
