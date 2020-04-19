@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Order;
 import view.MenuView;
-import view.RestaurantKeeperController;
+import view.RestaurantKeeper;
 
 public class App extends Application {
 	private Stage primaryStage;
@@ -90,7 +90,7 @@ public class App extends Application {
 					loader.setLocation(RestaurantKeeperGUI.class.getResource("/view/restaurantKeeperView.fxml"));
 					restaurantKeeperView = (AnchorPane) loader.load();
 					
-					RestaurantKeeperController rkController = loader.getController();
+					RestaurantKeeper rkController = loader.getController();
 					
 					Scene scene = new Scene(restaurantKeeperView);
 					scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>

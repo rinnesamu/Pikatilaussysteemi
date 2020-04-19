@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
 
+import controller.IRKController;
+import controller.RKController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -48,7 +51,9 @@ import util.Bundle;
  * @author Arttu Seuna
  *
  */
-public class RestaurantKeeperController {
+public class RestaurantKeeper {
+	
+	private IRKController controller = new RKController(this);
 	
 	private FoodItemAccessObject foodItemDao;
 	private CategoryAccessObject categoryDao;
@@ -217,6 +222,32 @@ public class RestaurantKeeperController {
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderContentsCellFactory;
 	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> orderEditCellFactory;
 	
+	// Table and Columns for searching orders
+	@FXML
+	private TableView<Order> searchOrderTableView;
+	@FXML
+	private TableColumn<Order, Integer> searchOrderIdColumn;
+	@FXML
+	private TableColumn<Order, Integer> searchOrderNumberColumn;
+	@FXML
+	private TableColumn<Order, String> searchOrderTimeStampColumn;
+	@FXML
+	private TableColumn<Order, Void> searchOrderContentsColumn;
+	
+	// Observable list for orders
+	private ObservableList<Order> searchOrderObList;
+	
+	//CellFactories for widget columns in search order table
+	Callback<TableColumn<Order, Void>, TableCell<Order, Void>> searchOrderContentsCellFactory;
+	
+	// datepickers and search button
+	@FXML
+	private DatePicker startDate;
+	@FXML
+	private DatePicker endDate;
+	@FXML
+	private Button searchButton;
+	
 	// resource bundle
 	ResourceBundle bundle;
 	
@@ -224,7 +255,7 @@ public class RestaurantKeeperController {
 	 * Empty constructor
 	 * 
 	 */
-	public RestaurantKeeperController() {
+	public RestaurantKeeper() {
 		
 	}
 	
@@ -331,6 +362,15 @@ public class RestaurantKeeperController {
 		orderContentsColumn.setCellFactory(orderContentsCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
+		
+		// initiliazing searching order column cellfactories
+		searchOrderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
+		searchOrderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
+		searchOrderTimeStampColumn.setCellValueFactory(order-> new SimpleStringProperty(order.getValue().getDate().format(formatter)));
+		
+		createSearchOrderCellFactories();
+		searchOrderContentsColumn.setCellFactory(searchOrderContentsCellFactory);
+		
 		}catch(NullPointerException npe) {
 			System.out.println("category, ingerdient, order columns give nullpointerException");
 		}
@@ -344,7 +384,7 @@ public class RestaurantKeeperController {
 	 */
 	private void createNotification(String msg) {
 		Notifications.create()
-		.title("Alert!")
+		.title("")
 		.text(msg)
 		.owner(tabPane)
 		.showWarning();
@@ -434,6 +474,18 @@ public class RestaurantKeeperController {
 	private void onEditCommitAddIngredientNameColumn(CellEditEvent<?,String> event) {
 		addIngredientTableView.getItems().get(event.getTablePosition().getRow()).setName(event.getNewValue());
 	}
+	
+	/**
+	 * Method for handling button press action on searchOrder button
+	 */
+	@FXML
+	private void onSearchButtonPress() {
+		Order[] searchedOrders = controller.searchOrdersByDate(startDate.getValue(), endDate.getValue());	
+		searchOrderObList = FXCollections.observableArrayList(Arrays.asList(searchedOrders));
+		searchOrderTableView.setItems(searchOrderObList);
+		
+	}
+	
 	
 	/**
 	 * Method for refreshing all tableview items
@@ -1205,6 +1257,48 @@ public class RestaurantKeeperController {
 		};
 		// editbutton ends
 		
-		
+	}
+	/**
+	 * Method for creating cellFactories for searching orders table view
+	 */
+	private void createSearchOrderCellFactories() {
+		// searched order contents
+		searchOrderContentsCellFactory = new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>(){
+			@Override
+			public TableCell<Order, Void> call(TableColumn<Order, Void> arg0) {
+				TableCell<Order, Void> cell = new TableCell<Order, Void>() {
+					Button button = new Button(bundle.getString("orderContentsButton"));
+					{
+                        button.setOnAction((ActionEvent event) -> {
+                        	Order order = getTableView().getItems().get(getIndex());
+                        	List<String> orderContents = new ArrayList<String>();
+                        	Map<String, Integer> contents = order.getOrderContent();
+                        	contents.forEach((item, amount) -> orderContents.add(item + " x" + amount));
+                        	ObservableList<String> orderContentsObList = FXCollections.observableArrayList(orderContents);
+    						ListView<String> listView = new ListView<String>();
+    						listView.setItems(orderContentsObList);
+    						StackPane stackPane = new StackPane(listView);
+    	            		Stage popUp = new Stage();
+    	            		Scene popUpScene = new Scene(stackPane, 150, 400);
+    	            		popUp.setScene(popUpScene);
+    	            		popUp.initModality(Modality.APPLICATION_MODAL);	
+    	            		
+                    		popUp.show();
+                        });
+                    }
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {                       
+                        	setGraphic(button);
+                        }
+                    }
+                };
+				return cell;
+			}
+		};
+		// order contents ends	
 	}
 }

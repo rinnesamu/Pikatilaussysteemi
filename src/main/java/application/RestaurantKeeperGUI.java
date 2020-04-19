@@ -7,7 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import view.RestaurantKeeperController;
+import view.RestaurantKeeper;
 
 public class RestaurantKeeperGUI extends Application{
 
@@ -28,7 +28,7 @@ public class RestaurantKeeperGUI extends Application{
 			loader.setLocation(RestaurantKeeperGUI.class.getResource("/view/restaurantKeeperView.fxml"));
 			restaurantKeeperView = (AnchorPane) loader.load();
 			
-			RestaurantKeeperController rkController = loader.getController();
+			RestaurantKeeper rkController = loader.getController();
 			
 			Scene scene = new Scene(restaurantKeeperView);
 			primaryStage.setScene(scene);

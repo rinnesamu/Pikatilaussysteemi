@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -145,4 +147,29 @@ public class OrderAccessObject implements IOrderDao {
 			return true;
 		}
 	}
+	
+	/**
+	 * Method for searching orders between dates
+	 */
+	@Override
+	public Order[] readOrdersByDate(LocalDateTime startDate, LocalDateTime endDate) {
+		List<Order> orders = null;
+		Transaction transaction = null;
+		try (Session session = sessionFactory.openSession()) {
+			transaction = session.beginTransaction();
+			orders = session.createQuery("From Order where creationTimeStamp >= :date1 and creationTimeStamp <= :date2")
+					.setParameter("date1", startDate)
+					.setParameter("date2", endDate)
+					.getResultList();
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+				throw e;
+			}
+		}
+		Order[] returnOrders = new Order[orders.size()];
+		return (Order[]) orders.toArray(returnOrders);
+	}
+	
 }

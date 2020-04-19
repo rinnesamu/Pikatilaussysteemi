@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -8,11 +10,13 @@ import java.util.List;
  * @author Arttu Seuna
  */
 public interface IOrderDao {
-	boolean createOrder(Order order);
-	Order[] readOrders();
-	boolean deleteAllOrders();
-	boolean deleteOrder(int orderId);
-	Order readOrderById(int orderId);
-	boolean updateOrderStatus(Order order);
-
+	public boolean createOrder(Order order);
+	public Order[] readOrders();
+	public boolean deleteAllOrders();
+	public boolean deleteOrder(int orderId);
+	public Order readOrderById(int orderId);
+	public boolean updateOrderStatus(Order order);
+	// public Order[] readOrdersByDate(LocalDate startDate, LocalDate endDate);
+	public Order[] readOrdersByDate(LocalDateTime startDate, LocalDateTime endDate);
+	
 }

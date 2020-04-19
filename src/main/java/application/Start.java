@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 import util.Bundle;
 import view.MenuView;
 import view.OrdersViewController;
-import view.RestaurantKeeperController;
+import view.RestaurantKeeper;
 import view.StartViewController;
 
 public class Start extends Application implements IStart {
@@ -138,7 +138,7 @@ public class Start extends Application implements IStart {
 			});
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			RestaurantKeeperController controller = loader.getController();
+			RestaurantKeeper controller = loader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
