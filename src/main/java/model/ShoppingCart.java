@@ -11,7 +11,6 @@ import java.util.*;
 
 public class ShoppingCart extends Observable {
 	private Map<FoodItem, Integer> cartList;
-	private double priceSum;
 
 	/**
 	 * Creates a new shopping cart object.
@@ -104,21 +103,8 @@ public class ShoppingCart extends Observable {
 		return fItemsArray;
 	}
 	
-	public String getFoodItemName(int itemId) {
-		FoodItem fItem = new FoodItem();
-		Set<FoodItem> foodItems = cartList.keySet();
-		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
-		
-		for (int i = 0; i < fItemsArray.length; i++) {
-			if (itemId == fItemsArray[i].getItemId()) {
-				fItem = fItemsArray[i];
-			}
-		}
-		return fItem.getName();
-	}
-	
 	/**
-	 * Returns the amount of a certain product in the shopping cart.
+	 * Returns the amount of a  product of a certain itemId in the shopping cart.
 	 * 
 	 * @param itemId ItemId of the product of which amount will be returned.
 	 * @return An integer presenting the quantity of the product.
@@ -135,6 +121,30 @@ public class ShoppingCart extends Observable {
 				}
 			}
 			int amount = (int) cartList.get(fItem);
+			return amount;
+		} catch (NullPointerException e) {
+			return 0;
+		}
+	}
+	
+	/**
+	 * Returns the amount of a certain name product in the shopping cart.
+	 * 
+	 * @param name Name of the product of which amount will be returned.
+	 * @return An integer presenting the quantity of the product.
+	 */
+	public int getAmount(String name) {
+		try {
+			FoodItem fItem = new FoodItem();
+			Set<FoodItem> foodItems = cartList.keySet();
+			FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+			int amount=0;
+			for(int i = 0; i < fItemsArray.length; i++) {
+				if (name == fItemsArray[i].getName()) {
+					fItem = fItemsArray[i];
+					amount += (int) cartList.get(fItem);
+				}
+			}
 			return amount;
 		} catch (NullPointerException e) {
 			return 0;
@@ -167,21 +177,47 @@ public class ShoppingCart extends Observable {
 		notifyObservers();
 	}
 	
+	/** 
+	 * Increases or decreases the amount of a certain product in the shopping cart.
+	 * 
+	 * @param name Name of the product of which amount will be set.
+	 * @param newAmount The new amount of the product.
+	 */
+	public void setAmount(String name, int newAmount) {
+		FoodItem fItem = new FoodItem();
+		Set<FoodItem> foodItems = cartList.keySet();
+		FoodItem[] fItemsArray = foodItems.toArray(new FoodItem[foodItems.size()]);
+
+		for(int i = 0; i < fItemsArray.length; i++) {
+			if (name == fItemsArray[i].getName()) {
+				fItem = fItemsArray[i];
+			}
+		}
+		if (newAmount == 0) {
+			cartList.keySet().remove(fItem);
+		}
+		else {
+			cartList.put(fItem, newAmount);
+		}
+		setChanged();
+		notifyObservers();
+	}
+	
 	/**
 	 * Getter for the price sum of the shopping cart
 	 * @return Price sum of the shopping cart
 	 */
 	public double getSum() {
-		this.priceSum = 0;
+		double priceSum = 0;
 		double price;
 		int amount;
 		FoodItem[] itemsInShoppingCart = getFoodItems();
 		for (int i=0; i<itemsInShoppingCart.length; i++) {
 			amount = getAmount(itemsInShoppingCart[i].getItemId());
 			price = itemsInShoppingCart[i].getPrice();
-			this.priceSum += amount*price;
+			priceSum += amount*price;
 		}
-		return this.priceSum;
+		return priceSum;
 	}
 	
 	/** 

@@ -12,9 +12,10 @@ public interface ICustomerController {
 	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem);
 	public void emptyShoppingCart();
 	public int[] getAllItemId();
-	public String getFoodItemName(int itemId);
 	public void setAmount(int itemId, int amount);
+	public void setAmount(String name, int amount);
 	public int getAmount(int itemId);
+	public int getAmount(String name);
 	public void addToShoppingCart(FoodItem foodItem, int amount);
 	public void removeFromShoppingCart(FoodItem foodItem);
 	public String shoppingCartToString();

@@ -98,23 +98,26 @@ class ShoppingCartTest {
 	}
 	
 	@Test
-	@DisplayName("Getting the name of a foodItem")
-	void testGetName() {
-		assertEquals("Big Mac", sCart.getFoodItemName(1), "Not getting the right name for positive itemId");
-		foodItem2 = new FoodItem("Pieni kahvi", 2, true, -5);
-		sCart.addToShoppingCart(foodItem2, 2);
-		assertEquals("Pieni kahvi", sCart.getFoodItemName(-5), "Not getting the right name for negative itemId");
-	}
-	
-	@Test
-	@DisplayName("Getting the amount of a product")
-	void testGetAmount() {
+	@DisplayName("Getting the amount of a product, way 1")
+	void testGetAmountItemId() {
 		assertEquals(4, sCart.getAmount(foodItem.getItemId()), "Getting the wrong amount");
 	}
 	
 	@Test
-	@DisplayName("Setting the amount of a product")
-	void testSetAmount() {
+	@DisplayName("Getting the amount of a product, way 2")
+	void testGetAmountName() {
+		assertEquals(4, sCart.getAmount(foodItem.getName()), "Getting the wrong amount");
+		foodItem2 = new FoodItem("Big Mac", 3, true, -1);
+		sCart.addToShoppingCart(foodItem2, 2);
+		assertEquals(6, sCart.getAmount(foodItem.getName()), "Getting the wrong amount after adding one same name fooditem");
+		foodItem3 = new FoodItem("Big Mac", 3, true, -3);
+		sCart.addToShoppingCart(foodItem2, 5);
+		assertEquals(11, sCart.getAmount(foodItem.getName()), "Getting the wrong amount after adding two same name fooditems");
+	}
+	
+	@Test
+	@DisplayName("Setting the amount of a product, way 1")
+	void testSetAmountItemId() {
 		foodItem2 = new FoodItem("Pieni kahvi", 2, true);
 		sCart.addToShoppingCart(foodItem2, 2);
 		foodItem3 = new FoodItem("Jaffa", 3.5, true);
@@ -125,6 +128,21 @@ class ShoppingCartTest {
 		assertEquals(27, sCart.getAmount(foodItem2.getItemId()), "Wrong amount");
 		sCart.setAmount(foodItem3.getItemId(), 31);
 		assertEquals(31, sCart.getAmount(foodItem3.getItemId()), "Wrong amount");
+	}
+	
+	@Test
+	@DisplayName("Setting the amount of a product, way 2")
+	void testSetAmountName() {
+		foodItem2 = new FoodItem("Pieni kahvi", 2, true, 2);
+		sCart.addToShoppingCart(foodItem2, 2);
+		foodItem3 = new FoodItem("Jaffa", 3.5, true, 3);
+		sCart.addToShoppingCart(foodItem3, 2);
+		sCart.setAmount(foodItem.getName(), 12);
+		assertEquals(12, sCart.getAmount(foodItem.getItemId()), "Wrong amount");
+		sCart.setAmount(foodItem2.getName(), 27);
+		assertEquals(27, sCart.getAmount(foodItem2.getItemId()), "Wrong amount");
+		sCart.setAmount(foodItem3.getName(), 1);
+		assertEquals(1, sCart.getAmount(foodItem3.getItemId()), "Wrong amount");
 	}
 
 	@Test

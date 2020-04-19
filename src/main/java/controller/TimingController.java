@@ -12,7 +12,7 @@ public class TimingController extends Thread{
 	public void run() {
 		while(true) {
 			if( !rest ) {
-				if( System.currentTimeMillis() - lastWake > 10000) {
+				if( System.currentTimeMillis() - lastWake > 100000) {
 					if(!notification) {
 						Platform.runLater(new Runnable() {
 						    @Override
@@ -23,7 +23,7 @@ public class TimingController extends Thread{
 						notification = true;
 					}
 				}
-				if( System.currentTimeMillis() - lastWake > 15000) {
+				if( System.currentTimeMillis() - lastWake > 150000) {
 					Platform.runLater(new Runnable() {
 					    @Override
 					    public void run() {

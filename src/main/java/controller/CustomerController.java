@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -95,7 +97,18 @@ public class CustomerController implements ICustomerController {
 	 */
 	@Override
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
-		Order order = new Order(orderNumber, shoppingCart);
+		Map<FoodItem, Integer> orderContent = new HashMap<FoodItem, Integer>();
+		List<String> setAlready = new ArrayList<String>();
+		
+		for(Map.Entry<FoodItem, Integer> entry : shoppingCart.entrySet()) {
+			int realAmount = getAmount(entry.getKey().getName());
+			System.out.println("reali on " + realAmount);
+			if (!setAlready.contains(entry.getKey().getName())) {
+				orderContent.put(entry.getKey(), realAmount);
+				setAlready.add(entry.getKey().getName());
+			}
+		}
+		Order order = new Order(orderNumber, orderContent);
 		order.setAdditionalInfo(additionalInfo);
 		orderDao.createOrder(order);
 	}
@@ -147,18 +160,20 @@ public class CustomerController implements ICustomerController {
 		return shoppingCart.getAllItemId();
 	}
 
-	
-	@Override
-	public String getFoodItemName(int itemId) {
-		return shoppingCart.getFoodItemName(itemId);
-	}
-	
 	/**
 	 * Setter for the amount of a certain fooditem in the shopping cart.
 	 */
 	@Override
 	public void setAmount(int itemId, int amount) {
 		shoppingCart.setAmount(itemId, amount);
+	}
+	
+	/**
+	 * Setter for the amount of a certain fooditem in the shopping cart.
+	 */
+	@Override
+	public void setAmount(String name, int amount) {
+		shoppingCart.setAmount(name, amount);
 	}
 
 	/**
@@ -170,6 +185,15 @@ public class CustomerController implements ICustomerController {
 		return shoppingCart.getAmount(itemId);
 	}
 
+	/**
+	 * Getter for the amount of a certain fooditem in the shopping cart.
+	 * @return amount of specific food item in shopping cart
+	 */
+	@Override
+	public int getAmount(String name) {
+		return shoppingCart.getAmount(name);
+	}
+	
 	/**
 	 * Method for adding an item of certain amount to the shopping cart.
 	 */
