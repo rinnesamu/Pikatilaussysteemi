@@ -149,7 +149,7 @@ public class OrderAccessObject implements IOrderDao {
 	}
 	
 	/**
-	 * Method for searching orders between dates
+	 * Method for reading orders from database between dates
 	 */
 	@Override
 	public Order[] readOrdersByDate(LocalDateTime startDate, LocalDateTime endDate) {
