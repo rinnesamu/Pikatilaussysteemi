@@ -362,12 +362,13 @@ public class MenuView implements IMenuView {
 	 * @param foodItem The fooditem tied to the particular button.
 	 */
 	private void menuButtonHandler(FoodItem foodItem) {
+		// Shopping cart element
 		Button sCartItem = new Button("");
 
-		// If item has ingredients, reset ingredients and removed ingredients.
+		// If item has ingredients, create a fooditem with negative id number, reset ingredients and removed ingredients of the fooditem.
 
 		if (foodItem.getIngredientsAsList() != null) {
-			//Create a new FoodItem copy
+			//Create a new FoodItem copy with negative id, starting from -1.
 			newId -= 1;
 			FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
 			newItem.setPath(foodItem.getPath());
@@ -380,6 +381,7 @@ public class MenuView implements IMenuView {
 			newItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
 			controller.addToShoppingCart(newItem, 1);
 			
+			// Shopping cart element properties
 			sCartItem.setId(Integer.toString(newId));
 			sCartItem.setFont(new Font(25));
 			sCartItem.setMinSize(375, 60);
@@ -387,6 +389,7 @@ public class MenuView implements IMenuView {
 			sCartItem.setText(controller.getAmount(newId) + " x " + newItem.getName());
 			
 			shoppingCartList.getChildren().add(sCartItem);
+			
 			// Adding a handler for the shopping cart item buttons.
 			System.out.println(controller.shoppingCartToString());
 			sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
@@ -401,6 +404,7 @@ public class MenuView implements IMenuView {
 					found = true;
 				}	
 			}
+			// Shopping cart element properties
 			sCartItem.setId(Integer.toString(id));
 			sCartItem.setFont(new Font(25));
 			sCartItem.setMinSize(375, 60);
@@ -416,7 +420,9 @@ public class MenuView implements IMenuView {
 						shoppingCartList.getChildren().set(i, sCartItem);
 					}
 				}
-			} else {
+			}
+			// Otherwise add a new element to the shopping cart.
+			else {
 				controller.addToShoppingCart(foodItem, 1);
 				shoppingCartList.getChildren().add(sCartItem);
 			}
@@ -659,8 +665,7 @@ public class MenuView implements IMenuView {
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
 		popUp.show();
-		
-		
+			
 		System.out.println(controller.shoppingCartToString());
 	}
 	

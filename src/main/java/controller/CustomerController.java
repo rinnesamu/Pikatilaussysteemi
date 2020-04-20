@@ -97,10 +97,14 @@ public class CustomerController implements ICustomerController {
 	 */
 	@Override
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
+		//Empty copy of the shopping cart.
 		Map<FoodItem, Integer> orderContent = new HashMap<FoodItem, Integer>();
+		// ArrayList including the names of fooditems already in the new copy of the shopping cart
 		List<String> setAlready = new ArrayList<String>();
 		
+		// Iterate through the shopping cart
 		for(Map.Entry<FoodItem, Integer> entry : shoppingCart.entrySet()) {
+			// Get the amount of fooditem of the same name (also the fooditems with different ingredients)
 			int realAmount = getAmount(entry.getKey().getName());
 			//System.out.println("realAmount on " + realAmount);
 			if (!setAlready.contains(entry.getKey().getName())) {
@@ -161,7 +165,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Setter for the amount of a certain fooditem in the shopping cart.
+	 * Setter for the amount of a certain fooditem in the shopping cart with itemId parameter.
 	 */
 	@Override
 	public void setAmount(int itemId, int amount) {
@@ -169,7 +173,7 @@ public class CustomerController implements ICustomerController {
 	}
 	
 	/**
-	 * Setter for the amount of a certain fooditem in the shopping cart.
+	 * Setter for the amount of a certain fooditem in the shopping cart with name parameter.
 	 */
 	@Override
 	public void setAmount(String name, int amount) {
@@ -177,7 +181,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Getter for the amount of a certain fooditem in the shopping cart.
+	 * Getter for the amount of a certain fooditem in the shopping cart with itemId parameter.
 	 * @return amount of specific food item in shopping cart
 	 */
 	@Override
@@ -186,7 +190,7 @@ public class CustomerController implements ICustomerController {
 	}
 
 	/**
-	 * Getter for the amount of a certain fooditem in the shopping cart.
+	 * Getter for the amount of a certain fooditem in the shopping cart with name parameter.
 	 * @return amount of specific food item in shopping cart
 	 */
 	@Override
