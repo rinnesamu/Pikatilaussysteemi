@@ -1,5 +1,4 @@
 package model;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -243,7 +242,7 @@ public class FoodItem {
 	}
 	
 	/**
-	 * Getter for list of ingredients. transforms from string to list. Removes all empty list items.
+	 * Getter for list of ingredients. Transforms from string to list. Removes all empty list items.
 	 * @return list of ingredients
 	 */
 	public String[] getIngredientsAsList() {
@@ -296,6 +295,10 @@ public class FoodItem {
 		this.ingredients = String.join(",", newIngredients);
 	}
 	
+	/**
+	 * Getter for list of removed ingredients. Transforms from string to list. Removes all empty list items.
+	 * @return list of remoded ingredients
+	 */
 	public String[] getRemovedIngredientsAsList() {
 		if (this.removedIngredients.trim().length() == 0) {
 			return null;
@@ -320,6 +323,20 @@ public class FoodItem {
 		return (String[])items.toArray(returnList);
 	}
 	
+	
+	/**
+	 * Getter for removed ingredients as a String.
+	 * @return list of remoded ingredients
+	 */
+	public String getRemovedIngredientsAsString() {
+		return this.removedIngredients;
+	}
+	
+	
+	/**
+	 * Sets removed ingredients string array. Transforms from list to string
+	 * @param ingredients list of removed ingredients
+	 */
 	public void setRemovedIngredients(String[] ingredients) {
 		int i = 0;
 		int size = ingredients.length;
@@ -341,6 +358,9 @@ public class FoodItem {
 		this.removedIngredients = String.join(",", newIngredients);
 	}
 	
+	/**
+	 * An implementation of toString method.
+	 */
 	public String toString() {
 		return this.name + ", price: "+ this.price;
 	}

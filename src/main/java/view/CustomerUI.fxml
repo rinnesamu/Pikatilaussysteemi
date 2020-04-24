@@ -29,7 +29,7 @@
       </HBox>
    </top>
    <left>
-      <VBox fx:id="categoryList" prefHeight="440.0" prefWidth="250.0" BorderPane.alignment="CENTER" />
+      <VBox fx:id="categoryList" prefHeight="825.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
    <bottom>
       <BorderPane prefHeight="35.0" prefWidth="1100.0" BorderPane.alignment="CENTER" />
@@ -38,28 +38,28 @@
       <FlowPane fx:id="menu" prefHeight="525.0" styleClass="menu" stylesheets="@CustomerTheme.css" BorderPane.alignment="CENTER" />
    </center>
    <right>
-      <VBox alignment="CENTER" prefHeight="525.0" prefWidth="462.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="525.0" prefWidth="562.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="TOP_CENTER" prefHeight="77.0" prefWidth="462.0" style="-fx-background-color: gold;" text="%headerShopcartText">
+            <Label alignment="TOP_CENTER" prefHeight="77.0" prefWidth="562.0" style="-fx-background-color: gold;" text="%headerShopcartText">
                <font>
                   <Font size="36.0" />
                </font>
             </Label>
-            <ScrollPane prefHeight="305.0" prefWidth="462.0">
+            <ScrollPane prefHeight="604.0" prefWidth="562.0">
                <content>
                   <VBox fx:id="shoppingCartList" prefHeight="276.0" prefWidth="440.0" />
                </content></ScrollPane>
-            <Label fx:id="sumShoppingCart" prefHeight="65.0" prefWidth="462.0" text="%sumText">
+            <Label fx:id="sumShoppingCart" prefHeight="50.0" prefWidth="562.0" text="%sumText">
                <font>
                   <Font size="28.0" />
                </font>
             </Label>
-            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="70.0" prefWidth="462.0" style="-fx-background-color: red;" text="%emptyShopcartText" textFill="WHITE">
+            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="56.0" prefWidth="562.0" style="-fx-background-color: red;" text="%emptyShopcartText" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="54.0" prefWidth="462.0" style="-fx-background-color: green;" text="%payShopcartText" textFill="WHITE">
+            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="25.0" prefWidth="562.0" style="-fx-background-color: green;" text="%payShopcartText" textFill="WHITE">
                <font>
                   <Font size="38.0" />
                </font>

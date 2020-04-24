@@ -131,8 +131,7 @@ public class CustomerController implements ICustomerController {
 
 		// If foodItem has no ingredients in the database return null.
 		if (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
-			return ingredientsOfItem;
+			return null;
 		}
 		else {
 			ingredientsNames = foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
