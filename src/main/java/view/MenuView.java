@@ -289,8 +289,8 @@ public class MenuView implements IMenuView {
 	@FXML
 	private void emptyShoppingCart() {
 		Alert options = new Alert(AlertType.CONFIRMATION);
-		options.setTitle(bundle.getString("cancellationText"));
-		options.setHeaderText(bundle.getString("cancellationQuestion"));
+		options.setTitle(bundle.getString("emptyingText"));
+		options.setHeaderText(bundle.getString("emptyingQuestion"));
 		options.setContentText(bundle.getString("cancellationChoice"));
 	
 		ButtonType okayDel = new ButtonType(bundle.getString("okayText"));
@@ -304,8 +304,6 @@ public class MenuView implements IMenuView {
 			shoppingCartList.getChildren().clear();
 			System.out.println(controller.shoppingCartToString());
 		}
-		else if (result.get() == cancelDel) {
-		}		
 	}
 
 	
@@ -362,8 +360,11 @@ public class MenuView implements IMenuView {
 	 * @param foodItem The fooditem tied to the particular button.
 	 */
 	private void menuButtonHandler(FoodItem foodItem) {
-		// Shopping cart element
+		// Shopping cart element properties
 		Button sCartItem = new Button("");
+		sCartItem.setFont(new Font(25));
+		sCartItem.setMinSize(459, 60);
+		sCartItem.getStyleClass().add("cartbutton");
 
 		// If item has ingredients, create a fooditem with negative id number, reset ingredients and removed ingredients of the fooditem.
 
@@ -381,11 +382,9 @@ public class MenuView implements IMenuView {
 			newItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
 			controller.addToShoppingCart(newItem, 1);
 			
-			// Shopping cart element properties
+			// Set negative id of newItem
 			sCartItem.setId(Integer.toString(newId));
-			sCartItem.setFont(new Font(25));
-			sCartItem.setMinSize(375, 60);
-			sCartItem.getStyleClass().add("cartbutton");
+									
 			sCartItem.setText(controller.getAmount(newId) + " x " + newItem.getName());
 			
 			shoppingCartList.getChildren().add(sCartItem);
@@ -394,7 +393,9 @@ public class MenuView implements IMenuView {
 			System.out.println(controller.shoppingCartToString());
 			sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
 			
-		} else {
+		} 
+		// If item does not have ingredients, add the original foodItem.
+		else {
 			int id = foodItem.getItemId();
 			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 			int[] listOfItemIds= controller.getAllItemId();
@@ -404,11 +405,9 @@ public class MenuView implements IMenuView {
 					found = true;
 				}	
 			}
-			// Shopping cart element properties
+			
+			// Set id of foodItem
 			sCartItem.setId(Integer.toString(id));
-			sCartItem.setFont(new Font(25));
-			sCartItem.setMinSize(375, 60);
-			sCartItem.getStyleClass().add("cartbutton");
 			
 			// If item is already there, increase the amount in the shopping cart.
 			if (found) {
@@ -664,6 +663,7 @@ public class MenuView implements IMenuView {
 		Scene popUpScene = new Scene(boxWhole, 400, height);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
+		popUp.setAlwaysOnTop(true);
 		popUp.show();
 			
 		System.out.println(controller.shoppingCartToString());

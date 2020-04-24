@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1100.0" stylesheets="@CustomerTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuView">
+<BorderPane prefHeight="1000.0" prefWidth="1400.0" style="-fx-background-color: #DCDCDC;" stylesheets="@CustomerTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuView">
    <top>
       <HBox prefHeight="140.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
          <children>
@@ -35,31 +35,31 @@
       <BorderPane prefHeight="35.0" prefWidth="1100.0" BorderPane.alignment="CENTER" />
    </bottom>
    <center>
-      <FlowPane fx:id="menu" prefHeight="200.0" prefWidth="200.0" styleClass="menu" stylesheets="@CustomerTheme.css" BorderPane.alignment="CENTER" />
+      <FlowPane fx:id="menu" prefHeight="525.0" styleClass="menu" stylesheets="@CustomerTheme.css" BorderPane.alignment="CENTER" />
    </center>
    <right>
-      <VBox alignment="CENTER" prefHeight="535.0" prefWidth="395.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="525.0" prefWidth="462.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="TOP_CENTER" prefHeight="77.0" prefWidth="400.0" style="-fx-background-color: gold;" text="%headerShopcartText">
+            <Label alignment="TOP_CENTER" prefHeight="77.0" prefWidth="462.0" style="-fx-background-color: gold;" text="%headerShopcartText">
                <font>
                   <Font size="36.0" />
                </font>
             </Label>
-            <ScrollPane prefHeight="305.0" prefWidth="383.0">
+            <ScrollPane prefHeight="305.0" prefWidth="462.0">
                <content>
-                  <VBox fx:id="shoppingCartList" prefHeight="276.0" prefWidth="393.0" />
+                  <VBox fx:id="shoppingCartList" prefHeight="276.0" prefWidth="440.0" />
                </content></ScrollPane>
-            <Label fx:id="sumShoppingCart" prefHeight="65.0" prefWidth="395.0" text="%sumText">
+            <Label fx:id="sumShoppingCart" prefHeight="65.0" prefWidth="462.0" text="%sumText">
                <font>
                   <Font size="28.0" />
                </font>
             </Label>
-            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="70.0" prefWidth="395.0" style="-fx-background-color: red;" text="%emptyShopcartText" textFill="WHITE">
+            <Button fx:id="emptyButton" alignment="CENTER" mnemonicParsing="false" onAction="#emptyShoppingCart" prefHeight="70.0" prefWidth="462.0" style="-fx-background-color: red;" text="%emptyShopcartText" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="54.0" prefWidth="395.0" style="-fx-background-color: green;" text="%payShopcartText" textFill="WHITE">
+            <Button fx:id="buyButton" mnemonicParsing="false" onAction="#readyToPayShoppingCart" prefHeight="54.0" prefWidth="462.0" style="-fx-background-color: green;" text="%payShopcartText" textFill="WHITE">
                <font>
                   <Font size="38.0" />
                </font>

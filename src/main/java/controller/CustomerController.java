@@ -77,6 +77,7 @@ public class CustomerController implements ICustomerController {
 		}
 		
 	}
+	
 	/**
 	 * Method for initializing the creating of the customer menu in a category.
 	 */
