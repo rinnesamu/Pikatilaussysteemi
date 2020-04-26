@@ -20,6 +20,18 @@
 .cartbutton {
 	-fx-background-color: gold;
 	-fx-border-color: black;
+	-fx-border-width: 3 0 3 3;
+	-fx-border-insets: 1px;
+}
+.amountbutton {
+	-fx-background-color: gold;
+	-fx-border-color: black;
+	-fx-border-width: 3;
+	-fx-border-insets: 1px;
+}
+.deletebutton {
+	-fx-background-color: #ff0000;
+	-fx-border-color: black;
 	-fx-border-width: 3;
 	-fx-border-insets: 1px;
 }
@@ -27,6 +39,18 @@
 	-fx-background-color: white;
 }
 .cartbutton:pressed {
+	-fx-background-color: orange;
+}
+.amountbutton:hover {
+	-fx-background-color: white;
+}
+.amountbutton:pressed {
+	-fx-background-color: orange;
+}
+.deletebutton:hover {
+	-fx-background-color: white;
+}
+.deletebutton:pressed {
 	-fx-background-color: orange;
 }
 .categorybutton {

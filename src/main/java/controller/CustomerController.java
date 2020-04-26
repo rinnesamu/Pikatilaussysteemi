@@ -46,8 +46,8 @@ public class CustomerController implements ICustomerController {
 		this.orderDao = new OrderAccessObject();
 		this.ingredientDao = new IngredientAccessObject();
 		this.shoppingCart = new ShoppingCart();
-		ShopCartObserver observer = new ShopCartObserver();
-		this.shoppingCart.registerObserver(observer);
+		ShopCartObserver shopCartObserver = new ShopCartObserver();
+		this.shoppingCart.registerObserver(shopCartObserver);
 	}
 
 	/**
@@ -66,6 +66,48 @@ public class CustomerController implements ICustomerController {
 		// TODO: what if no categories?
 		
 	}
+	
+	public void createFoodItemObserver(FoodItem foodItem) {
+		FoodItemObserver fItemObserver = new FoodItemObserver();
+		foodItem.registerObserver(fItemObserver);
+	}
+	
+	/**
+	 * Method for adding one item in the shopping cart.
+	 * @param foodItem Fooditem of which amount is added.
+	 * @return The updated amount of the fooditem.
+	 */
+	public int plusButton(FoodItem foodItem) {
+		int amount = getAmount(foodItem.getItemId());
+		amount += 1;
+		setAmount(foodItem.getItemId(), amount);
+		return amount;
+	}
+
+	/**
+	 * Method for removing one item in the shopping cart.
+	 * @param foodItem Fooditem of which amount is reduced.
+	 * @return The updated amount of the fooditem.
+	 */
+	public int minusButton(FoodItem foodItem) {
+		int amount = getAmount(foodItem.getItemId());
+		if (amount != 1) {
+			amount -= 1;
+		}
+		setAmount(foodItem.getItemId(), amount);
+		return amount;
+	}
+	
+	/**
+	 * Inner class of the food item observer which updates the user view of removed ingredients.
+	 */
+	private class FoodItemObserver implements Observer {
+		@Override
+		public void update(Observable o, Object arg) {
+			menuView.setElementRemovedIngredients(o, (String) arg);
+		}
+		
+	}
 
 	/**
 	 * Inner class of the shopping cart observer which updates the sum element.
@@ -77,6 +119,7 @@ public class CustomerController implements ICustomerController {
 		}
 		
 	}
+	
 	/**
 	 * Method for initializing the creating of the customer menu in a category.
 	 */
@@ -130,8 +173,7 @@ public class CustomerController implements ICustomerController {
 
 		// If foodItem has no ingredients in the database return null.
 		if (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
-			ingredientsOfItem = null;
-			return ingredientsOfItem;
+			return null;
 		}
 		else {
 			ingredientsNames = foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
