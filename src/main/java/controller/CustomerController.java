@@ -46,8 +46,8 @@ public class CustomerController implements ICustomerController {
 		this.orderDao = new OrderAccessObject();
 		this.ingredientDao = new IngredientAccessObject();
 		this.shoppingCart = new ShoppingCart();
-		ShopCartObserver observer = new ShopCartObserver();
-		this.shoppingCart.registerObserver(observer);
+		ShopCartObserver shopCartObserver = new ShopCartObserver();
+		this.shoppingCart.registerObserver(shopCartObserver);
 	}
 
 	/**
@@ -64,6 +64,48 @@ public class CustomerController implements ICustomerController {
 		readCategories(categoryName);
 		menuView.setSum(0);
 		// TODO: what if no categories?
+		
+	}
+	
+	public void createFoodItemObserver(FoodItem foodItem) {
+		FoodItemObserver fItemObserver = new FoodItemObserver();
+		foodItem.registerObserver(fItemObserver);
+	}
+	
+	/**
+	 * Method for adding one item in the shopping cart.
+	 * @param foodItem Fooditem of which amount is added.
+	 * @return The updated amount of the fooditem.
+	 */
+	public int plusButton(FoodItem foodItem) {
+		int amount = getAmount(foodItem.getItemId());
+		amount += 1;
+		setAmount(foodItem.getItemId(), amount);
+		return amount;
+	}
+
+	/**
+	 * Method for removing one item in the shopping cart.
+	 * @param foodItem Fooditem of which amount is reduced.
+	 * @return The updated amount of the fooditem.
+	 */
+	public int minusButton(FoodItem foodItem) {
+		int amount = getAmount(foodItem.getItemId());
+		if (amount != 1) {
+			amount -= 1;
+		}
+		setAmount(foodItem.getItemId(), amount);
+		return amount;
+	}
+	
+	/**
+	 * Inner class of the food item observer which updates the user view of removed ingredients.
+	 */
+	private class FoodItemObserver implements Observer {
+		@Override
+		public void update(Observable o, Object arg) {
+			menuView.setElementRemovedIngredients(o, (String) arg);
+		}
 		
 	}
 

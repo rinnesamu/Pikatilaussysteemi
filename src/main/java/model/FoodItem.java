@@ -1,6 +1,8 @@
 package model;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.persistence.*;
 
@@ -12,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="foodItems")
-public class FoodItem {
+public class FoodItem extends Observable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column
@@ -90,6 +92,14 @@ public class FoodItem {
 		this.ready = 0;
 	}
 
+	/**
+	 * Adds an observer for the food item
+	 * @param observer Observer which reacts to changes.
+	 */
+	public void registerObserver(Observer observer) {
+		this.addObserver(observer);
+	}
+	
 	/**
 	 * Getter of price
 	 * @return price
@@ -326,7 +336,7 @@ public class FoodItem {
 	
 	/**
 	 * Getter for removed ingredients as a String.
-	 * @return list of remoded ingredients
+	 * @return list of removed ingredients
 	 */
 	public String getRemovedIngredientsAsString() {
 		return this.removedIngredients;
@@ -356,6 +366,8 @@ public class FoodItem {
 			newIngredients[b] = ingredients[b];
 		}
 		this.removedIngredients = String.join(",", newIngredients);
+		setChanged();
+		notifyObservers(this.removedIngredients);
 	}
 	
 	/**

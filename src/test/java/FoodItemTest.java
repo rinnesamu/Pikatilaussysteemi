@@ -178,7 +178,19 @@ class FoodItemTest {
 	}
 	
 	@Test
-	@DisplayName("Test fo toString")
+	@DisplayName("Test getting removed ingredients as string")
+	void testRemoved2() {
+		assertEquals(null, foodItem.getRemovedIngredientsAsString(), "Couldnt get the right removed ingredients string (empty)");
+		String[] list = {"tomaatti", "kurkku", "pihvi", "sämpylä", "juusto"};
+		foodItem.setRemovedIngredients(list);
+		assertEquals("tomaatti,kurkku,pihvi,sämpylä,juusto", foodItem.getRemovedIngredientsAsString(), "Couldnt get the right removed ingredients string");
+		String[] list2 = {""};
+		foodItem.setRemovedIngredients(list2);
+		assertEquals("", foodItem.getRemovedIngredientsAsString(), "Couldnt get the right removed ingredients string (emptied)");
+	}
+	
+	@Test
+	@DisplayName("Test for toString")
 	void testToString() {
 		assertEquals("kokis, price: 2.5", foodItem.toString(), "Couldnt read toString correctly.");
 	}
