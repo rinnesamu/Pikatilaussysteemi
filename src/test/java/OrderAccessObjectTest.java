@@ -16,6 +16,12 @@ import model.FoodItemAccessObject;
 import model.Order;
 import model.OrderAccessObject;
 
+/**
+ * Test -class for the Order -data access object
+ * 
+ * @author Arttu Seuna
+ *
+ */
 class OrderAccessObjectTest {
 
 	private Order order;
@@ -51,6 +57,9 @@ class OrderAccessObjectTest {
 		orderDao.deleteAllOrders();
 	}
 	
+	/**
+	 * Test method for adding order to database
+	 */
 	@Test
 	@DisplayName("Adding order to database")
 	void testCreateOrder() {
@@ -58,6 +67,9 @@ class OrderAccessObjectTest {
 		assertEquals(1, orderDao.readOrders().length, "Expected length not fitting");
 	}
 
+	/**
+	 * Test method for reading all orders from database
+	 */
 	@Test
 	@DisplayName("Reading orders")
 	void testReadOrders() {
@@ -66,6 +78,9 @@ class OrderAccessObjectTest {
 		assertEquals(2, orderDao.readOrders().length, "Couldn't read correct order length");
 	}
 	
+	/**
+	 * Test method for reading order from database based on id
+	 */
 	@Test
 	@DisplayName("Reading order by id")
 	void testReadOrderById() {
@@ -75,12 +90,19 @@ class OrderAccessObjectTest {
 
 	}
 	
+	/**
+	 * Test method for updating the status of the order
+	 */
 	@Test
 	@DisplayName("Updating order status")
 	void testUpdateOrderStatus() {
 		order.setStatus(true);
 		assertEquals(true, orderDao.updateOrderStatus(order), "Couldn't update order");
 	}
+	
+	/**
+	 * Test method for deleting one order from database
+	 */
 	@Test
 	@DisplayName("Deleting one order from database")
 	void testDeleteOrderById() {
@@ -94,6 +116,9 @@ class OrderAccessObjectTest {
 		assertEquals(0, orderDao.readOrders().length, "Couldn't read correct order array length");
 	}
 	
+	/**
+	 * Test method for deleting all orders from database
+	 */
 	@Test
 	@DisplayName("Deleting all orders from db")
 	void testDeleteAllOrders() {

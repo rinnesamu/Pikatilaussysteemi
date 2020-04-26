@@ -46,7 +46,7 @@ import model.*;
 import util.Bundle;
 
 /**
- * Controller -class for user interface used by restaurant keeper.
+ * View -class for user interface used by restaurant keeper.
  * 
  * @author Arttu Seuna
  *
@@ -485,20 +485,6 @@ public class RestaurantKeeper {
 		searchOrderTableView.setItems(searchOrderObList);
 		
 	}
-	
-	
-	/**
-	 * Method for refreshing all tableview items
-	 */
-	/*
-	@FXML
-	private void refreshAll() {
-		refreshFoodItems();
-		refreshCategories();
-		refreshIngredients();
-		refreshOrders();
-	}
-	*/
 	
 	/**
 	 * Method for fetching foodItems from the database
@@ -1259,7 +1245,7 @@ public class RestaurantKeeper {
 		
 	}
 	/**
-	 * Method for creating cellFactories for searching orders table view
+	 * Method for creating cellFactories for order search table view
 	 */
 	private void createSearchOrderCellFactories() {
 		// searched order contents
@@ -1299,6 +1285,6 @@ public class RestaurantKeeper {
 				return cell;
 			}
 		};
-		// order contents ends	
+		// order contents ends
 	}
 }
