@@ -278,6 +278,10 @@ public class MenuView implements IMenuView {
 			heightWindow = 700;
 		}
 		Scene payScene = new Scene(sPane, 600, heightWindow);
+		payScene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+			if(start != null)
+				start.timeoutWake();
+		});
 		readyToPay.setScene(payScene);
 		readyToPay.initModality(Modality.APPLICATION_MODAL);
 		readyToPay.initStyle(StageStyle.UNDECORATED);

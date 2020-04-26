@@ -90,8 +90,7 @@ public class Start extends Application implements IStart {
 	}
 
 	public void startOrder() {
-		if(timeOut != null)
-			timeOut.update();
+		timeoutWake();
 		BorderPane menuLayout;
 		try {
 			loader = new FXMLLoader();
@@ -109,8 +108,7 @@ public class Start extends Application implements IStart {
 				}
 			});
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-				if(timeOut != null)
-					timeOut.update();
+				timeoutWake();
 			});
 			primaryStage.setScene(scene);
 			primaryStage.show();
@@ -225,6 +223,11 @@ public class Start extends Application implements IStart {
 		bundle = Bundle.getInstance();
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 		initUI();
+	}
+	
+	public void timeoutWake() {
+		if(timeOut != null)
+			timeOut.update();
 	}
 	
 	public void timeOutWarning() {

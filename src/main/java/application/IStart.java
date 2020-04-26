@@ -7,5 +7,6 @@ public interface IStart {
 	public void setLanguage(String l, String c);
 	public void startDemo();
 	public void startRestaurant();
+	public void timeoutWake();
 
 }
