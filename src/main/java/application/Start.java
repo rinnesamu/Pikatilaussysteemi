@@ -133,6 +133,8 @@ public class Start extends Application implements IStart {
 				public void handle(KeyEvent t) {
 					if (t.getCode() == KeyCode.ESCAPE) {
 						startDemo();
+						if(timeOut != null)
+							timeOut.cease();
 					}
 				}
 			});
