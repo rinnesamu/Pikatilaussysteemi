@@ -4,6 +4,8 @@ import application.Start;
 import javafx.application.Platform;
 
 public class TimingController extends Thread{
+	private volatile Thread TimingController;
+	
 	final private int TIMEOUT = 25; //Time out in seconds
 	final private int WARNING = 5; //Warning time before the view is returned back to start, in seconds
 	
@@ -13,7 +15,8 @@ public class TimingController extends Thread{
 	private Start control;
 	
 	public void run() {
-		while(true) {
+		Thread thisThread = Thread.currentThread();
+		while(TimingController == thisThread) {
 			if( !rest ) {
 				if( System.currentTimeMillis() - lastWake > (TIMEOUT - WARNING) * 1000) {
 					if(!notification) {
@@ -44,6 +47,10 @@ public class TimingController extends Thread{
 		}
 	}
 	
+	public void cease() {
+		TimingController = null;
+	}
+	
 	public void setControllable(Start start) {
 		control = start;
 	}
@@ -52,5 +59,10 @@ public class TimingController extends Thread{
 		System.out.println("Click");
 		rest = notification = false;
 		lastWake = System.currentTimeMillis();
+	}
+	
+	public void reset() {
+		rest = true;
+		notification = false;
 	}
 }

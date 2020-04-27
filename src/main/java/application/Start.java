@@ -80,6 +80,8 @@ public class Start extends Application implements IStart {
 					}
 				}
 			});
+			if(timeOut != null)
+				timeOut.reset();
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			StartViewController startViewController = loader.getController();

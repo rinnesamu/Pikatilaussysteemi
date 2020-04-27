@@ -11,7 +11,7 @@ public interface ICustomerController {
 	public int plusButton(FoodItem foodItem);
 	public int minusButton(FoodItem foodItem);
 	public void readCategories(String name);
-	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo);
+	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo, boolean takeaway);
 	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem);
 	public void emptyShoppingCart();
 	public int[] getAllItemId();

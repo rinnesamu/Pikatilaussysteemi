@@ -34,6 +34,8 @@ public class Order implements Serializable, Comparable<Order>{
 	@Column
 	private String additionalInfo;
 	@Column
+	private boolean takeaway;
+	@Column
 	private boolean status;
 
 	@ElementCollection(fetch=FetchType.EAGER)
@@ -105,6 +107,14 @@ public class Order implements Serializable, Comparable<Order>{
 	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
+	}
+	
+	public boolean getTakeaway() {
+		return takeaway;
+	}
+	
+	public void setTakeaway(Boolean takeaway) {
+		this.takeaway = takeaway;
 	}
 	/**
 	 * Getter for the status of the order, the order is completed when true

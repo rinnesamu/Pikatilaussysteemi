@@ -234,6 +234,7 @@ public class MenuView implements IMenuView {
 		}
 		Label sumText = new Label(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 		sumText.setFont(new Font(23));
+		CheckBox takeaway = new CheckBox("Takeaway?");
 		Button payButton = new Button(bundle.getString("payShopcartText"));
 		payButton.setFont(new Font(20));
 		payButton.setStyle("-fx-background-color: green;");
@@ -247,11 +248,11 @@ public class MenuView implements IMenuView {
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
 		String infoIngredient2 = infoIngredient;
-		readyList.getChildren().addAll(sumText, payButton, cancelButton);
+		readyList.getChildren().addAll(sumText, takeaway, payButton, cancelButton);
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				controller.createOrder(orderNumber, controller.getShoppingCart(), infoIngredient2);
+				controller.createOrder(orderNumber, controller.getShoppingCart(), infoIngredient2, takeaway.isSelected());
 				HBox popBox = new HBox(1);
 				Scene payPopUp = new Scene(popBox);
 				readyToPay.setOpacity(0.9);
@@ -273,7 +274,7 @@ public class MenuView implements IMenuView {
 		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
-		int heightWindow = 200 + 70*shoppingCartItems.length;
+		int heightWindow = 215 + 70*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
 		}

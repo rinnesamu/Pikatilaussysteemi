@@ -139,7 +139,7 @@ public class CustomerController implements ICustomerController {
 	 * Method for creating a new order to the database. Creates a new shopping cart copy without duplicate foodItems to be added to the database.
 	 */
 	@Override
-	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo) {
+	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo, boolean takeaway) {
 		//Empty copy of the shopping cart.
 		Map<FoodItem, Integer> orderContent = new HashMap<FoodItem, Integer>();
 		// ArrayList including the names of fooditems already in the new copy of the shopping cart
@@ -157,6 +157,7 @@ public class CustomerController implements ICustomerController {
 		}
 		Order order = new Order(orderNumber, orderContent);
 		order.setAdditionalInfo(additionalInfo);
+		order.setTakeaway(takeaway);
 		orderDao.createOrder(order);
 	}
 
