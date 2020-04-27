@@ -34,7 +34,7 @@ public class Start extends Application implements IStart {
 	private AnchorPane rootLayout;
 	private GridPane orderUi;
 	FXMLLoader loader;
-	private TimingController timeOut;
+	private volatile TimingController timeOut;
 	public Locale curLocale = new Locale("fi", "FI"); // Default Finland
 	ResourceBundle bundle;
 	String appConfigPath = "app.properties";
@@ -106,6 +106,9 @@ public class Start extends Application implements IStart {
 				public void handle(KeyEvent t) {
 					if (t.getCode() == KeyCode.ESCAPE) {
 						startDemo();
+						if(timeOut != null)
+							timeOut.cease();
+						System.out.println("Esc");
 					}
 				}
 			});
@@ -133,8 +136,6 @@ public class Start extends Application implements IStart {
 				public void handle(KeyEvent t) {
 					if (t.getCode() == KeyCode.ESCAPE) {
 						startDemo();
-						if(timeOut != null)
-							timeOut.cease();
 					}
 				}
 			});
@@ -193,7 +194,8 @@ public class Start extends Application implements IStart {
 		EventHandler<MouseEvent> goCustomer = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				timeOut = new TimingController();
+				if(timeOut == null)
+					timeOut = new TimingController();
 				timeOut.setControllable(instance);
 				timeOut.setDaemon(true);
 				timeOut.start();
