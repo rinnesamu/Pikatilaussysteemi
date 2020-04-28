@@ -56,7 +56,7 @@ public class OrdersViewController {
 						text.setText(stringToAdd);
 						GridPane.setHalignment(text, HPos.CENTER);
 						activeOrders.add(text, x, y);
-						Integer a = new Integer(i);
+						int a = i;
 						EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 							@Override
 							public void handle(MouseEvent e) {
@@ -97,9 +97,8 @@ public class OrdersViewController {
 	
 	private void updateList(Order o) {
 		System.out.println(o.getOrderId());
-		o.setStatus(true); 
-		//TODO Tähän viel daokutsu, että päivittyy myös tietokantaan.
-		//orderDao.updateOrderStatus(o);
+		o.setStatus(true);
+		orderDao.updateOrderStatus(o);
 		updateOrders();
 	}
 	
