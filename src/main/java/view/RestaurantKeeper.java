@@ -3,7 +3,6 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -13,12 +12,8 @@ import org.controlsfx.control.Notifications;
 
 import controller.IRKController;
 import controller.RKController;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,8 +28,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
@@ -54,12 +47,7 @@ import util.Bundle;
 public class RestaurantKeeper {
 	
 	private IRKController controller = new RKController(this);
-	
-	private FoodItemAccessObject foodItemDao;
-	private CategoryAccessObject categoryDao;
-	private IngredientAccessObject ingredientDao;
-	private OrderAccessObject orderDao;
-	
+
 	// Owner node for notification pop-ups
 	@FXML
 	private TabPane tabPane;
@@ -265,14 +253,7 @@ public class RestaurantKeeper {
 	@FXML
 	public void initialize() {		
 		
-		// init data access objects needed
-		categoryDao = new CategoryAccessObject();
-		foodItemDao = new FoodItemAccessObject();
-		ingredientDao = new IngredientAccessObject();
-		orderDao = new OrderAccessObject();
-		
-		bundle = Bundle.getInstance();
-		
+		bundle = Bundle.getInstance();		
 		initAllTableViews();
 	}
 	
@@ -492,7 +473,7 @@ public class RestaurantKeeper {
 	private void refreshFoodItems() {
 		try {
 			// setting foodItems into the menu table
-			foodItemObList = FXCollections.observableArrayList(Arrays.asList(foodItemDao.readFoodItems()));
+			foodItemObList = FXCollections.observableArrayList(Arrays.asList(controller.readFoodItems()));
 			foodItemTableView.setItems(foodItemObList);
 			foodItemTableView.setEditable(true);
 			
@@ -518,7 +499,7 @@ public class RestaurantKeeper {
 	 * Method for fetching categories from database, and setting them on TableView
 	 */
 	private void refreshCategories() {
-		categoryObList = FXCollections.observableArrayList(categoryDao.readCategories());
+		categoryObList = FXCollections.observableArrayList(controller.readCategories());
 		categoryTableView.setItems(categoryObList);
 	}
 	
@@ -538,7 +519,7 @@ public class RestaurantKeeper {
 	 * Method for fetching ingrtedients from database, and setting them in TableView
 	 */
 	private void refreshIngredients() {
-		ingredientObList = FXCollections.observableArrayList(ingredientDao.readIngredients());
+		ingredientObList = FXCollections.observableArrayList(controller.readIngredients());
 		ingredientTableView.setItems(ingredientObList);
 	}
 	
@@ -557,7 +538,7 @@ public class RestaurantKeeper {
 	 * Method for fetching orders from database
 	 */
 	private void refreshOrders() {
-		Order[] orders = orderDao.readOrders();
+		Order[] orders = controller.readOrders();
 		Arrays.sort(orders);
 		orderObList = FXCollections.observableArrayList(orders);
 		orderTableView.setItems(orderObList);
@@ -605,7 +586,7 @@ public class RestaurantKeeper {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
                     ChoiceBox<String> choiceBox = new ChoiceBox<String>();
                     {
-                        Category[] categoryArray = categoryDao.readCategories();
+                        Category[] categoryArray = controller.readCategories();
                         String[] categoryStringArray = new String[categoryArray.length];
                 		for (int i = 0; i < categoryArray.length; i++) {
                 			categoryStringArray[i] = categoryArray[i].getName();
@@ -648,7 +629,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("poisto selectedData: " + foodItem + ", itemId" + foodItem.getItemId());
-                            boolean success = foodItemDao.deleteFoodItem(foodItem.getItemId());
+                            boolean success = controller.deleteFoodItem(foodItem.getItemId());
                             if(success) {
                             	foodItemTableView.getItems().remove(foodItem);
                             	createNotification(bundle.getString("foodItemDeletionSuccess"));
@@ -682,7 +663,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("muokkaus selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
-                            boolean success = foodItemDao.updateFoodItem(foodItem);
+                            boolean success = controller.updateFoodItem(foodItem);
                             if(success) {
                             	createNotification(bundle.getString("foodItemEditSuccess"));
                             }else {
@@ -817,7 +798,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                             FoodItem foodItem = getTableView().getItems().get(getIndex());
                             System.out.println("lisäys selectedData: " + foodItem + ", itemId " + foodItem.getItemId() + ", kateg. " + foodItem.getCategory());
-                            boolean success = foodItemDao.createFoodItem(foodItem);
+                            boolean success = controller.createFoodItem(foodItem);
                             if(success) {
                             	createNotification(bundle.getString("foodItemAddSuccess"));
                             }else {
@@ -849,7 +830,7 @@ public class RestaurantKeeper {
 				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
                     ChoiceBox<String> choiceBox = new ChoiceBox<String>();
                     {
-                        Category[] categoryArray = categoryDao.readCategories();
+                        Category[] categoryArray = controller.readCategories();
                         String[] categoryStringArray = new String[categoryArray.length];
                 		for (int i = 0; i < categoryArray.length; i++) {
                 			categoryStringArray[i] = categoryArray[i].getName();
@@ -934,7 +915,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
                             System.out.println("kategorian poisto selectedData: " + category.getName());
-                            boolean success = categoryDao.deleteCategoryByName(category.getName());
+                            boolean success = controller.deleteCategoryByName(category.getName());
                             if(success) {
                             	categoryTableView.getItems().remove(category);
                             	createNotification(bundle.getString("categoryDeletionSuccess"));
@@ -974,7 +955,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                         	Category category = getTableView().getItems().get(getIndex());
                             System.out.println("kategorian lisäys selectedData: " + category.getName());
-                            boolean success = categoryDao.createCategory(category);
+                            boolean success = controller.createCategory(category);
                             if(success) {
                             	createNotification(bundle.getString("categoryAddSuccess"));
                             }else {
@@ -1043,7 +1024,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan poisto selectedData: " + ingredient.getName());
-                            boolean success = ingredientDao.deleteIngredient(ingredient.getItemId());
+                            boolean success = controller.deleteIngredient(ingredient.getItemId());
                             if(success) {
                             	ingredientTableView.getItems().remove(ingredient);
                             	createNotification(bundle.getString("ingredientDeleteSuccess"));
@@ -1111,7 +1092,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                         	Ingredient ingredient = getTableView().getItems().get(getIndex());
                             System.out.println("ainesosan lisäys selectedData: " + ingredient.getName());
-                            boolean success = ingredientDao.createIngredient(ingredient);
+                            boolean success = controller.createIngredient(ingredient);
                             if(success) {
                             	createNotification(bundle.getString("ingredientAddSuccess"));
                             }else {
@@ -1218,7 +1199,7 @@ public class RestaurantKeeper {
                         btn.setOnAction((ActionEvent event) -> {
                         	Order order = getTableView().getItems().get(getIndex());
                             System.out.println("tilauksen muutos selectedData: status" + order.isStatus());
-                            boolean success = orderDao.updateOrderStatus(order);
+                            boolean success = controller.updateOrderStatus(order);
                             if(success) {
                             	createNotification(bundle.getString("orderEditSuccess"));
                             }else {
