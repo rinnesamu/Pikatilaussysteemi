@@ -56,15 +56,15 @@ public class OrdersViewController {
 						text.setText(stringToAdd);
 						GridPane.setHalignment(text, HPos.CENTER);
 						activeOrders.add(text, x, y);
-						i++;
+						Integer a = new Integer(i);
 						EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 							@Override
 							public void handle(MouseEvent e) {
-								updateList(text);
+								updateList(activeOrdersList[a]);
 							}
 						};
-						
 						text.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
+						i++;
 					}
 				}
 			}
@@ -82,6 +82,8 @@ public class OrdersViewController {
 	}
 
 	private void updateActiveOrders() {
+		activeOrdersArrayList.clear();
+		activeOrders.getChildren().clear();
 		for (Order o : allOrders) {
 			if (o.isStatus() == false) {
 				activeOrdersArrayList.add(o);
@@ -93,8 +95,13 @@ public class OrdersViewController {
 		this.start = s;
 	}
 	
-	private void updateList(Label label) {
-		System.out.println(label);
+	private void updateList(Order o) {
+		System.out.println(o.getOrderId());
+		o.setStatus(true); 
+		//TODO Tähän viel daokutsu, että päivittyy myös tietokantaan.
+		//orderDao.updateOrderStatus(o);
+		updateOrders();
 	}
+	
 
 }
