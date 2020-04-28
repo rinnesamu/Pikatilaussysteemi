@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -129,5 +130,17 @@ class OrderAccessObjectTest {
 		assertEquals(true, orderDao.deleteAllOrders(), "Couldn't delete all food items");
 		assertEquals(0, orderDao.readOrders().length, "Couldn't delete all items");
 	}
-	
+	/**
+	 * Test Method for reading orders between dates
+	 * 
+	 */
+	@Test
+	@DisplayName("Reading order from database between dates")
+	void testReadOrdersByDate() {
+		
+		assertEquals(true, orderDao.createOrder(order), "Couldn't create 1st order");
+		assertEquals(true, orderDao.createOrder(order2), "Couldn't create 2nd order");
+		
+		assertEquals(2, orderDao.readOrdersByDate(LocalDateTime.now(), LocalDateTime.now()), "Couldn't read orders between dates");
+	}
 }
