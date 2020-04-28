@@ -77,7 +77,7 @@ public class CustomerController implements ICustomerController {
 	 * @param foodItem Fooditem of which amount is added.
 	 * @return The updated amount of the fooditem.
 	 */
-	public int plusButton(FoodItem foodItem) {
+	public int addOneToShoppingCart(FoodItem foodItem) {
 		int amount = getAmount(foodItem.getItemId());
 		amount += 1;
 		setAmount(foodItem.getItemId(), amount);
@@ -89,7 +89,7 @@ public class CustomerController implements ICustomerController {
 	 * @param foodItem Fooditem of which amount is reduced.
 	 * @return The updated amount of the fooditem.
 	 */
-	public int minusButton(FoodItem foodItem) {
+	public int removeOneFromShoppingCart(FoodItem foodItem) {
 		int amount = getAmount(foodItem.getItemId());
 		if (amount != 1) {
 			amount -= 1;

@@ -8,8 +8,8 @@ import model.FoodItem;
 public interface ICustomerController {
 	public void initMenu();
 	public void createFoodItemObserver(FoodItem foodItem);
-	public int plusButton(FoodItem foodItem);
-	public int minusButton(FoodItem foodItem);
+	public int addOneToShoppingCart(FoodItem foodItem);
+	public int removeOneFromShoppingCart(FoodItem foodItem);
 	public void readCategories(String name);
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo);
 	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem);
