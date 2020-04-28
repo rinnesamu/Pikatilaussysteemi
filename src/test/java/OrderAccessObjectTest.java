@@ -141,6 +141,6 @@ class OrderAccessObjectTest {
 		assertEquals(true, orderDao.createOrder(order), "Couldn't create 1st order");
 		assertEquals(true, orderDao.createOrder(order2), "Couldn't create 2nd order");
 		
-		assertEquals(2, orderDao.readOrdersByDate(LocalDateTime.now(), LocalDateTime.now()), "Couldn't read orders between dates");
+		assertEquals(2, orderDao.readOrdersByDate(LocalDateTime.now(), LocalDateTime.now()).length, "Couldn't read orders between dates");
 	}
 }
