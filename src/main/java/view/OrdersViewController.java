@@ -7,80 +7,94 @@ import application.IStart;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.IOrderDao;
 import model.Order;
 import model.OrderAccessObject;
 
 public class OrdersViewController {
-	
+
 	private IStart start;
-	
+
 	@FXML
-	private ListView<String> activeOrders, readyOrders;
-	
+	private GridPane activeOrders, readyOrders;
+
 	@FXML
 	private Text activeText, readyText;
-	
-	private ObservableList<String> ready, active;
-	
+
 	private IOrderDao orderDao = new OrderAccessObject();
 
 	private Order[] allOrders = orderDao.readOrders();
-	
+
+	private List<Order> activeOrdersArrayList = new ArrayList<Order>();
+
 	public void updateOrders() {
-		active = FXCollections.observableArrayList();
-		ready = FXCollections.observableArrayList();
+		updateActiveOrders();
+		Order[] activeOrdersList = getPrimitiveList();
 		System.out.println(allOrders.length);
-		String readyString = "";
-		String activeString = "";
-		int activeCount = 0;
-		int readyCount = 0;
-		String stringToAdd;
-		if (allOrders.length!= 0) {
-			for (int i = 0; i < allOrders.length; i++) {
-				if(allOrders[i].getOrderNumber() < 10) {
-					stringToAdd = "0" + allOrders[i].getOrderNumber();
-				}else {
-					stringToAdd = Integer.toString(allOrders[i].getOrderNumber());
-				}
-				if (allOrders[i].isStatus() == false) {
-					activeString = activeString + "   " + stringToAdd + "   ";
-					activeCount++;
-					if (activeCount % 4 == 0) {
-						active.add(activeString);
-						activeString = "";
+		System.out.println(activeOrdersList.length);
+		int i = 0;
+		if (activeOrdersList.length != 0) {
+			for (int y = 0; y < 5; y++) {
+				for (int x = 0; x < 5; x++) {
+					if (i < activeOrdersList.length) {
+						int orderNumber = activeOrdersList[i].getOrderNumber();
+						String stringToAdd = Integer.toString(orderNumber);
+						if (orderNumber < 10) {
+							stringToAdd = 0 + stringToAdd;
+						}
+						Label text = new Label();
+						text.setFont(new Font("Arial", 30));
+						text.setText(stringToAdd);
+						GridPane.setHalignment(text, HPos.CENTER);
+						activeOrders.add(text, x, y);
+						i++;
+						EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+							@Override
+							public void handle(MouseEvent e) {
+								updateList(text);
+							}
+						};
+						
+						text.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
 					}
-					
-				}else {
-					readyString = readyString + "   " + stringToAdd + "   ";
-					readyCount++;
-					if (readyCount % 4 == 0) {
-						ready.add(readyString);
-						readyString = "";
-					}
 				}
 			}
-			if (!activeString.equals("")) {
-				active.add(activeString);
-			}
-			if (!readyString.equals("")) {
-				ready.add(readyString);
-			}
-			activeOrders.setItems(active);
-			readyOrders.setItems(ready);
 		}
-		
+
 	}
-	
+
 	public void initialize() {
 		updateOrders();
 	}
-	
+
+	private Order[] getPrimitiveList() {
+		Order[] returnOrders = new Order[activeOrdersArrayList.size()];
+		return (Order[]) activeOrdersArrayList.toArray(returnOrders);
+	}
+
+	private void updateActiveOrders() {
+		for (Order o : allOrders) {
+			if (o.isStatus() == false) {
+				activeOrdersArrayList.add(o);
+			}
+		}
+	}
+
 	public void setStart(IStart s) {
 		this.start = s;
 	}
 	
+	private void updateList(Label label) {
+		System.out.println(label);
+	}
+
 }
