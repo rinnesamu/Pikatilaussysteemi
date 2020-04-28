@@ -200,7 +200,7 @@ public class RestaurantKeeper {
 	private TableColumn<Order, Void> orderEditColumn;
 	
 	// formatter for datetime column
-	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 	
 	// Observable list for orders
 	private ObservableList<Order> orderObList;
