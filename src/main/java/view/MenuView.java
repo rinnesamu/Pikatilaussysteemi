@@ -728,6 +728,8 @@ public class MenuView implements IMenuView {
 		Scene popUpScene = new Scene(boxWhole, 400, height);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
+		popUp.initStyle(StageStyle.UNDECORATED);
+		popUp.centerOnScreen();
 		popUp.show();
 			
 		System.out.println(controller.shoppingCartToString());

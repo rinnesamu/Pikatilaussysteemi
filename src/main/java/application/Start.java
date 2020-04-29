@@ -83,6 +83,7 @@ public class Start extends Application implements IStart {
 			primaryStage.setHeight(700.0);
 			primaryStage.setWidth(1100.0);
 			primaryStage.setScene(scene);
+			primaryStage.setFullScreen(true);
 			primaryStage.show();
 			StartViewController startViewController = loader.getController();
 			startViewController.setController(this);
@@ -117,6 +118,7 @@ public class Start extends Application implements IStart {
 			primaryStage.setHeight(1000.0);
 			primaryStage.setWidth(1400.0);
 			primaryStage.setScene(scene);
+			primaryStage.setFullScreen(true);
 			primaryStage.show();
 			MenuView menuView = loader.getController();
 			menuView.setStart(this);
