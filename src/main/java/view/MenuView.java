@@ -442,7 +442,7 @@ public class MenuView implements IMenuView {
 			sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
 			
 			increase.setOnAction(event -> {
-				int amount = controller.plusButton(newItem);
+				int amount = controller.addOneToShoppingCart(newItem);
 				String removedIngredients =newItem.getRemovedIngredientsAsString();
 				// Set the item's name and amount + possible ingredients to shopping cart element button.
 				if (removedIngredients.length() != 0) {
@@ -453,7 +453,7 @@ public class MenuView implements IMenuView {
 				sCartItem.setText(amount + " x " + newItem.getName() + "\n" + itemIngredientsLabel.getText());
 			});
 			decrease.setOnAction(event -> {
-				int amount = controller.minusButton(newItem);
+				int amount = controller.removeOneFromShoppingCart(newItem);
 				String removedIngredients2 =newItem.getRemovedIngredientsAsString();
 				if (removedIngredients2.length() != 0) {
 					itemIngredientsLabel.setText(bundle.getString("removedText") + removedIngredients2);
@@ -524,17 +524,14 @@ public class MenuView implements IMenuView {
 			/*System.out.println(controller.shoppingCartToString());
 			sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));*/
 			
-			
 			increase.setOnAction(event -> {
-				int amount = controller.plusButton(foodItem);
+				int amount = controller.addOneToShoppingCart(foodItem);
 
 				// Set the item's amount and name
 				sCartItem.setText(amount + " x " + foodItem.getName());
 			});
-			
-			
 			decrease.setOnAction(event -> {
-				int amount = controller.minusButton(foodItem);
+				int amount = controller.removeOneFromShoppingCart(foodItem);
 
 				// Set the item's amount and name
 				sCartItem.setText(amount + " x " + foodItem.getName());
@@ -646,20 +643,15 @@ public class MenuView implements IMenuView {
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
 		System.out.println("getshopc on " + controller.getShoppingCart());
-		int height = 600; // default height of the popup
-		int amountNow = controller.getAmount(foodItem.getItemId());
+		int height = 500; // default height of the popup
 		
-		Label nameAndAmount = new Label(String.format(bundle.getString("chooseText") + " %s " + bundle.getString("amountText") + ": ", foodItem.getName() ));
-		nameAndAmount.setFont(new Font(18));
-		nameAndAmount.setPadding(new Insets(0,0,0,20));
-		Label pick = new Label(Integer.toString(amountNow));
-		pick.setFont(new Font(20));
-		pick.setPadding(new Insets(0,0,0,20));
-		HBox boxInfo = new HBox(20);
+		Label nameLabel = new Label(foodItem.getName());
+		nameLabel.setFont(new Font(18));
+		nameLabel.setPadding(new Insets(10,0,0,10));
 		
 		VBox boxWhole = new VBox(20);
 		HBox boxOkCancel = new HBox(20);
-		boxOkCancel.setPadding(new Insets(10,0,0,10));
+		boxOkCancel.setPadding(new Insets(0,0,0,10));
 
 		VBox boxIngredient = new VBox(20);
 		//TabPane tabPane = new TabPane();
@@ -669,7 +661,6 @@ public class MenuView implements IMenuView {
 		// Database ingredients.
 		ArrayList<String> ingredientsOfDatabase = controller.getDatabaseIngredients(foodItem);
 		
-
 		//for (int i = 0; i < controller.getAmount(foodItem.getItemId()); i++) {
 		
 		//Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
@@ -680,7 +671,7 @@ public class MenuView implements IMenuView {
 		System.out.println("ingredientsOfDatabase on " + ingredientsOfDatabase);
 		System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 
-		Label header = new Label(bundle.getString("ingredientsText") + " " + bundle.getString("productText"));
+		Label header = new Label(bundle.getString("ingredientsText"));
 		header.setFont(new Font(17));
 		boxIngredient.getChildren().add(header);
 
@@ -736,13 +727,14 @@ public class MenuView implements IMenuView {
 			popUp.close();
 		});*/
 		
-		boxInfo.getChildren().addAll(nameAndAmount, pick);
 		boxOkCancel.getChildren().add(okay);
 		
-		boxWhole.getChildren().addAll(boxInfo, boxIngredient, boxOkCancel);
+		boxWhole.getChildren().addAll(nameLabel, boxIngredient, boxOkCancel);
 		Scene popUpScene = new Scene(boxWhole, 400, height);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);
+		popUp.initStyle(StageStyle.UNDECORATED);
+		popUp.centerOnScreen();
 		popUp.show();
 			
 		System.out.println(controller.shoppingCartToString());

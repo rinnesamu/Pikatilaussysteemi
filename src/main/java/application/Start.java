@@ -82,7 +82,10 @@ public class Start extends Application implements IStart {
 			});
 			if(timeOut != null)
 				timeOut.reset();
+			primaryStage.setHeight(700.0);
+			primaryStage.setWidth(1100.0);
 			primaryStage.setScene(scene);
+			primaryStage.setFullScreen(true);
 			primaryStage.show();
 			StartViewController startViewController = loader.getController();
 			startViewController.setController(this);
@@ -115,7 +118,10 @@ public class Start extends Application implements IStart {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
 				timeoutWake();
 			});
+			primaryStage.setHeight(1000.0);
+			primaryStage.setWidth(1400.0);
 			primaryStage.setScene(scene);
+			primaryStage.setFullScreen(true);
 			primaryStage.show();
 			MenuView menuView = loader.getController();
 			menuView.setStart(this);
@@ -139,6 +145,8 @@ public class Start extends Application implements IStart {
 					}
 				}
 			});
+			primaryStage.setHeight(600.0);
+			primaryStage.setWidth(1440.0);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			RestaurantKeeper controller = loader.getController();
@@ -187,7 +195,9 @@ public class Start extends Application implements IStart {
 		HBox hBox = new HBox();
 		hBox.getChildren().addAll(owner, customer, orders);
 		tile.getChildren().add(hBox);
-		Scene scene = new Scene(tile, 500, 300);
+		Scene scene = new Scene(tile, 600, 300);
+		primaryStage.setHeight(300.0);
+		primaryStage.setWidth(600.0);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		Start instance = this;

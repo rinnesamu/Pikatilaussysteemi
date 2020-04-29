@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Interface for OrderAccessObject
+ * Interface for Order Data access object
  * 
  * @author Arttu Seuna
  */
@@ -16,7 +16,6 @@ public interface IOrderDao {
 	public boolean deleteOrder(int orderId);
 	public Order readOrderById(int orderId);
 	public boolean updateOrderStatus(Order order);
-	// public Order[] readOrdersByDate(LocalDate startDate, LocalDate endDate);
 	public Order[] readOrdersByDate(LocalDateTime startDate, LocalDateTime endDate);
 	
 }

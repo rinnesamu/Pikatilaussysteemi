@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import model.*;
 
 /**
- * Testiluokka Order luokalle
+ * Test -class for the order object
  * 
  * @author Arttu Seuna
  *
@@ -35,12 +35,18 @@ class OrderTest {
 		order = new Order(4, shoppingCart);
 	}
 	
+	/**
+	 * Test method forgetting the number of the order
+	 */
 	@Test
 	@DisplayName("Getting order number")
 	void testGetOrderNumber() {
 		assertEquals(4, order.getOrderNumber(), DELTA, "Wrong order number");
 	}
 	
+	/**
+	 * Test method for setting the order number
+	 */
 	@Test
 	@DisplayName("Setting order number")
 	void testSetOrderNumber() {
@@ -48,12 +54,18 @@ class OrderTest {
 		assertEquals(10, order.getOrderNumber(), DELTA, "Couldn't change order number");
 	}
 	
+	/**
+	 * Test method for getting the additional information string
+	 */
 	@Test
 	@DisplayName("Getting additional info")
 	void testGetAdditionalInfo() {
 		assertEquals("", order.getAdditionalInfo(), "Wrong additional info");
 	}
 	
+	/**
+	 * Test method for setting the additional information string
+	 */
 	@Test
 	@DisplayName("Setting additional info")
 	void testSetAddtionalInfo() {
@@ -62,18 +74,28 @@ class OrderTest {
 
 	}
 	
+	/**
+	 * Test method for checking the status of the order
+	 */
 	@Test
 	@DisplayName("Checking the status of the order")
 	void testIsStatus() {
 		assertEquals(false, order.isStatus(), "Couldn't check the order status");
 	}
 	
+	/**
+	 * Test method for changing the status of the order
+	 */
 	@Test
 	@DisplayName("Changing the status of the order")
 	void testsetStatus() {
 		order.setStatus(false);
 		assertEquals(false, order.isStatus(), "Couldn't change the order status");
 	}
+	
+	/**
+	 * Test method for adding the contents to order
+	 */
 	/*
 	@Test
 	@DisplayName("Adding order content as list")
@@ -81,12 +103,6 @@ class OrderTest {
 		order.setOrderContent(shoppingCart);
 		assertEquals(2, order.getOrderSize(), DELTA, "Couldn't add the order as list");
 	}
-	
-	@Test
-	@DisplayName("Getting the size of the order")
-	void testGetOrderSize() {
-		order.setOrderContent(shoppingCart);
-		assertEquals(2, order.getOrderSize(), DELTA, "Couldn't get order size");
-	}*/
+	*/
 
 }
