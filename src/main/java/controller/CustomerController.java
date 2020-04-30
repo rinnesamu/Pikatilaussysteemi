@@ -34,6 +34,7 @@ public class CustomerController implements ICustomerController {
 	private ShoppingCart shoppingCart;
 	// View layer
 	private IMenuView menuView;
+	private FoodItem[] foodItemsWithIngredients;
 
 	/**
 	 * Initial actions: creating DAO-objects and ShoppingCart object
@@ -55,6 +56,7 @@ public class CustomerController implements ICustomerController {
 	 */
 	@Override
 	public void initMenu() {
+		setFoodItemsWithIngredients();
 		Category[] allCategories = categoryDao.readCategories();
 		menuView.createCategoryList(allCategories);
 		for (Category c : allCategories) {
@@ -138,6 +140,27 @@ public class CustomerController implements ICustomerController {
 		}
 		
 	}
+	
+	public String[] getFoodItemWithIngredients(FoodItem searchableFoodItem) {
+		for (int i = 0; i < foodItemsWithIngredients.length; i++) {
+			// look for a "fooditem with ingredients" of the same name
+			if (foodItemsWithIngredients[i].getName().equals(searchableFoodItem.getName())) {
+				return foodItemsWithIngredients[i].getIngredientsAsList();
+			}
+		}
+		return null;
+	}
+	
+	public void setFoodItemsWithIngredients() {
+		FoodItem[] allFoodItems = foodDao.readFoodItems();
+		List<FoodItem> foodItemsArray = new ArrayList<FoodItem>();
+		for (int i = 0; i < allFoodItems.length; i++) {
+			if (allFoodItems[i].getIngredientsAsList() != null) {
+				foodItemsArray.add(allFoodItems[i]);
+			}
+		}
+		this.foodItemsWithIngredients = foodItemsArray.toArray(new FoodItem[foodItemsArray.size()]);
+	}
 
 	/**
 	 * Method for creating a new order to the database. Creates a new shopping cart copy without duplicate foodItems to be added to the database.
@@ -165,35 +188,32 @@ public class CustomerController implements ICustomerController {
 		orderDao.createOrder(order);
 	}
 
+	
+	// KORVATTU getFoodItemWithIngredients - METODILLA
 	/**
 	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
 	 * @param foodItem Fooditem of which ingredients are retrieved.
 	 * @return Ingredients of the database object.
 	 */
-	@Override
-	public ArrayList<String> getDatabaseIngredients(FoodItem foodItem) {
-		
-		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
-		String[] ingredientsNames;
-
-		// If foodItem has no ingredients in the database return null.
-		if (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() == null ) {
-			return null;
-		}
-		else {
-			ingredientsNames = foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
-
-			// Checks which ingredients are removable
-			for (int i = 0; i < ingredientsNames.length; i++) {
-				Ingredient ingredientsAsIngredients= ingredientDao.readIngredientByName(ingredientsNames[i]);
-				if (ingredientsAsIngredients.isRemoveable()) {
-					ingredientsOfItem.add(ingredientsNames[i]);
-				}
-			}
-			Collections.sort(ingredientsOfItem);
-			return ingredientsOfItem;
-		}
-	}
+	/*
+	 * @Override public ArrayList<String> getDatabaseIngredients(FoodItem foodItem)
+	 * {
+	 * 
+	 * ArrayList<String> ingredientsOfItem = new ArrayList<String>(); String[]
+	 * ingredientsNames;
+	 * 
+	 * // If foodItem has no ingredients in the database return null. if
+	 * (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() ==
+	 * null ) { return null; } else { ingredientsNames =
+	 * foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
+	 * 
+	 * // Checks which ingredients are removable for (int i = 0; i <
+	 * ingredientsNames.length; i++) { Ingredient ingredientsAsIngredients=
+	 * ingredientDao.readIngredientByName(ingredientsNames[i]); if
+	 * (ingredientsAsIngredients.isRemoveable()) {
+	 * ingredientsOfItem.add(ingredientsNames[i]); } }
+	 * Collections.sort(ingredientsOfItem); return ingredientsOfItem; } }
+	 */
 	
 	/**
 	 * Method for emptying the shopping cart object.

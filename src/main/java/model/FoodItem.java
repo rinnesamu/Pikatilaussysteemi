@@ -256,7 +256,6 @@ public class FoodItem extends Observable {
 	 * @return list of ingredients
 	 */
 	public String[] getIngredientsAsList() {
-		System.out.println(this.ingredients);
 		if (this.ingredients == null || this.ingredients.trim().length() == 0) {
 			return null;
 		}

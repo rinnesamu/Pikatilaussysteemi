@@ -142,6 +142,7 @@ class FoodItemTest {
 	@Test
 	@DisplayName("Test getting and setting incredients")
 	void testIncredients() {
+		assertEquals(null, foodItem.getIngredientsAsList(), "Couldn't get correct incredient list");
 		String[] list = {"Tomaatti", "kurkku", "pihvi", "sämpylä", "juusto"};
 		foodItem.setIngredients(list);
 		assertEquals("kurkku", foodItem.getIngredientsAsList()[1], "Couldn't get correct incredient list");

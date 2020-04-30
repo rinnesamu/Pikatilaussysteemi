@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import org.controlsfx.control.Notifications;
-
 
 import application.IStart;
 import controller.CustomerController;
@@ -166,7 +166,6 @@ public class MenuView implements IMenuView {
 		iv2.setFitHeight(80);
 		iv2.setFitWidth(80);
 		rightPart.getChildren().add(iv2);
-
 		controller.initMenu();
 	}
 	
@@ -181,7 +180,8 @@ public class MenuView implements IMenuView {
 	public void setElementRemovedIngredients(Object observable, String removedIngredients) {
 		FoodItem foodItem = (FoodItem) observable;
 		int id = foodItem.getItemId();
-		System.out.println("ID ON " + id);
+		//System.out.println("ID ON " + id);
+		// Another observer, not finished #############
 		/*		
 		for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
 			if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
@@ -227,6 +227,7 @@ public class MenuView implements IMenuView {
 		readyList.setPadding(new Insets(10,0,0,10));
 		double price;
 		int amount;
+		// Header
 		Label header = new Label(bundle.getString("chosenProducts"));
 		header.setFont(new Font(25));
 		header.setUnderline(true);
@@ -241,7 +242,7 @@ public class MenuView implements IMenuView {
 			payItem.setFont(new Font(14));
 			Label ingredients = new Label();
 			// if item has ingredients (null exception)
-			if (controller.getDatabaseIngredients(shoppingCartItems[i]) != null) {
+			if (controller.getFoodItemWithIngredients(shoppingCartItems[i]) != null) {
 				// if item has removed ingredients
 				if (shoppingCartItems[i].getRemovedIngredientsAsList() != null) {
 					String[] removedIngredients =shoppingCartItems[i].getRemovedIngredientsAsList();
@@ -465,7 +466,8 @@ public class MenuView implements IMenuView {
 			newItem.setRemovedIngredients(reset);
 			
 			// Reset ingredients.
-			newItem.setIngredients(controller.getDatabaseIngredients(foodItem).toArray(new String[controller.getDatabaseIngredients(foodItem).size()]));
+			newItem.setIngredients(controller.getFoodItemWithIngredients(foodItem));
+
 			controller.addToShoppingCart(newItem, 1);
 			
 			// Set negative id of newItem
@@ -560,8 +562,6 @@ public class MenuView implements IMenuView {
 			sCartItem.setText(itemNameLabel.getText() + "\n" + itemIngredientsLabel.getText());
 
 			// Adding a handler for the shopping cart item buttons.
-			/*System.out.println(controller.shoppingCartToString());
-			sCartItem.setOnAction(event -> editItem(sCartItem, foodItem));*/
 			
 			increase.setOnAction(event -> {
 				int amount = controller.addOneToShoppingCart(foodItem);
@@ -608,17 +608,10 @@ public class MenuView implements IMenuView {
 	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
 		ArrayList<String> ingredientsOfItem;
 		
-		// If foodItem has no ingredients, return empty ArrayList for possible addable ingredients (which were removed earlier in the shopping cart).
-		if (foodItem.getIngredientsAsList() == null ) {
-			ingredientsOfItem = new ArrayList<String>();
-			return ingredientsOfItem;
-		}
-		// Otherwise return the ingredients of the foodItem.
-		else {
-			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
-			Collections.sort(ingredientsOfItem);
-			return ingredientsOfItem;
-		}
+		// Return the ingredients of the foodItem.
+		ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
+		Collections.sort(ingredientsOfItem);
+		return ingredientsOfItem;
 	}	
 	
 	
@@ -647,7 +640,7 @@ public class MenuView implements IMenuView {
 				}
 			}
 			foodItem.setRemovedIngredients(removedIngredients);
-			
+			System.out.println("Added " + ingredientName);
 		}
 		// If checkbox has been unchosen.
 		else if (!included) {
@@ -670,6 +663,7 @@ public class MenuView implements IMenuView {
 				listRemoved[0] = ingredientName;					
 			}
 			foodItem.setRemovedIngredients(listRemoved);
+			System.out.println("Removed " + ingredientName);
 		}
 	}
 	
@@ -681,7 +675,6 @@ public class MenuView implements IMenuView {
 	 */	
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
-		System.out.println("getshopc on " + controller.getShoppingCart());
 		int height = 500; // default height of the popup
 		
 		Label nameLabel = new Label(foodItem.getName());
@@ -693,16 +686,10 @@ public class MenuView implements IMenuView {
 		boxOkCancel.setPadding(new Insets(0,0,0,10));
 
 		VBox boxIngredient = new VBox(20);
-		//TabPane tabPane = new TabPane();
-		//tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		//tabPane.setTabMinHeight(100);
 		
 		// Database ingredients.
-		ArrayList<String> ingredientsOfDatabase = controller.getDatabaseIngredients(foodItem);
-		
-		//for (int i = 0; i < controller.getAmount(foodItem.getItemId()); i++) {
-		
-		//Tab tab = new Tab(bundle.getString("productText") + " " + (i+1));
+		List<String> ingredientsOfDatabase = new ArrayList<String>(Arrays.asList(controller.getFoodItemWithIngredients(foodItem)));
+				
 		boxIngredient.setPadding(new Insets(10,0,0,10));
 		// Local ingredients.
 		ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
@@ -736,9 +723,7 @@ public class MenuView implements IMenuView {
 			
 			boxIngredient2.getChildren().addAll(newIngredient, included);
 			boxIngredient.getChildren().add(boxIngredient2);
-			//}
-			//tab.setContent(boxIngredient);
-			//tabPane.getTabs().add(tab);
+			
 		}
 		
 		Button okay = new Button(bundle.getString("okayText"));
@@ -775,7 +760,6 @@ public class MenuView implements IMenuView {
 		popUp.centerOnScreen();
 		popUp.show();
 			
-		System.out.println(controller.shoppingCartToString());
 	}
 	
 	/**
