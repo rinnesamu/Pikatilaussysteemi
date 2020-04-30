@@ -126,7 +126,17 @@ public class MenuView implements IMenuView {
 	}
 	
 	/**
-	 * If there are no categories in database, the method informs the user.
+	 * If there are no categories in the database, the method informs the user.
+	 */
+	public void noCategories() {
+		menu.getChildren().clear();
+		Label noCategoriesText = new Label(bundle.getString("noCategories"));
+		menu.getChildren().add(noCategoriesText);
+		noCategoriesText.setFont(new Font(25));
+	}
+
+	/**
+	 * If category is empty in the database, the method informs the user.
 	 */
 	public void emptyCategory() {
 		menu.getChildren().clear();
@@ -262,6 +272,7 @@ public class MenuView implements IMenuView {
 		
 		if (shoppingCartItems.length == 0) {
 			payButton.setDisable(true);
+			takeaway.setDisable(true);
 		}
 		Button cancelButton = new Button(bundle.getString("cancelText"));
 		cancelButton.setFont(new Font(17));
@@ -294,7 +305,7 @@ public class MenuView implements IMenuView {
 		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
-		int heightWindow = 230 + 70*shoppingCartItems.length;
+		int heightWindow = 240 + 70*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
 		}
@@ -741,7 +752,6 @@ public class MenuView implements IMenuView {
 			String removedIngredients =foodItem.getRemovedIngredientsAsString();
 			Label itemIngredientsLabel = new Label();
 
-			System.out.println("lengthi" + removedIngredients.length());
 			// Set the item's name and amount + possible ingredients to shopping cart element button.
 			if (removedIngredients.length() != 0) {
 				itemIngredientsLabel.setText(bundle.getString("removedText") + removedIngredients);

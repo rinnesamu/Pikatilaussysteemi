@@ -60,11 +60,15 @@ public class CustomerController implements ICustomerController {
 		for (Category c : allCategories) {
 			System.out.println(c.getName());
 		}
-		String categoryName = allCategories[0].getName();
-		readCategories(categoryName);
-		menuView.setSum(0);
-		// TODO: what if no categories?
-		
+		String categoryName="";
+		try {
+			categoryName = allCategories[0].getName();
+			readCategories(categoryName);
+			menuView.setSum(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			menuView.noCategories();
+		}
 	}
 	
 	public void createFoodItemObserver(FoodItem foodItem) {

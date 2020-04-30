@@ -8,6 +8,7 @@ public interface IMenuView {
 	public void setSum(double value);
 	public void setElementRemovedIngredients(Object observable, String removedIngredients);
 	public void setItems(FoodItem[] items);
+	public void noCategories();
 	public void createMenu();
 	public void emptyCategory();
 }
