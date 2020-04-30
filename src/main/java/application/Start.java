@@ -85,7 +85,7 @@ public class Start extends Application implements IStart {
 			primaryStage.setHeight(700.0);
 			primaryStage.setWidth(1100.0);
 			primaryStage.setScene(scene);
-			primaryStage.setFullScreen(true);
+			primaryStage.centerOnScreen();
 			primaryStage.show();
 			StartViewController startViewController = loader.getController();
 			startViewController.setController(this);
@@ -118,10 +118,10 @@ public class Start extends Application implements IStart {
 			scene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
 				timeoutWake();
 			});
-			primaryStage.setHeight(1000.0);
-			primaryStage.setWidth(1400.0);
+			primaryStage.setHeight(800.0);
+			primaryStage.setWidth(1200.0);
 			primaryStage.setScene(scene);
-			primaryStage.setFullScreen(true);
+			primaryStage.centerOnScreen();
 			primaryStage.show();
 			MenuView menuView = loader.getController();
 			menuView.setStart(this);

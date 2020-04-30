@@ -18,10 +18,22 @@
 	-fx-background-color: orange;
 }
 .cartbutton {
-	-fx-background-color: gold;
+	-fx-background-color: #DCDCDC;
 	-fx-border-color: black;
 	-fx-border-width: 3 0 3 3;
 	-fx-border-insets: 1px;
+}
+.modifybutton{
+	-fx-background-image: url('/imgs/editbuttonGold.png');
+	-fx-background-size: stretch;
+}
+.modifybutton:hover{
+	-fx-background-image: url('/imgs/editbuttonWhite.png');
+	-fx-background-size: stretch;
+}
+.modifybutton:pressed{
+	-fx-background-image: url('/imgs/editbuttonOrange.png');
+	-fx-background-size: stretch;
 }
 .amountbutton {
 	-fx-background-color: gold;
@@ -34,12 +46,6 @@
 	-fx-border-color: black;
 	-fx-border-width: 3;
 	-fx-border-insets: 1px;
-}
-.cartbutton:hover {
-	-fx-background-color: white;
-}
-.cartbutton:pressed {
-	-fx-background-color: orange;
 }
 .amountbutton:hover {
 	-fx-background-color: white;
@@ -63,5 +69,5 @@
 	-fx-background-color: gold;
 }
 .categorybutton:pressed {
-	-fx-background-color: grey;
+	-fx-background-color: white;
 }

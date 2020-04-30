@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import org.controlsfx.control.Notifications;
@@ -25,9 +24,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.Tooltip;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -38,6 +34,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -72,6 +69,14 @@ public class MenuView implements IMenuView {
 	@FXML
 	private VBox categoryList;
 	
+	// Top left element for restaurant logo.
+	@FXML
+	private Pane leftPart;
+
+	// Top right element for NoQ logo.
+	@FXML
+	private Pane rightPart;
+
 	// Shopping cart list element.
 	@FXML
 	private VBox shoppingCartList;
@@ -137,6 +142,20 @@ public class MenuView implements IMenuView {
 	private void initialize() {
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
+		
+		File file1 = new File(this.getClass().getResource("/imgs/logo.png").getFile());
+		Image image1 = new Image(file1.toURI().toString());
+		ImageView iv1 = new ImageView(image1);
+		iv1.setFitHeight(80);
+		iv1.setFitWidth(80);
+		leftPart.getChildren().add(iv1);
+		
+		File file2 = new File(this.getClass().getResource("/imgs/rect4547.png").getFile());
+		Image image2 = new Image(file2.toURI().toString());
+		ImageView iv2 = new ImageView(image2);
+		iv2.setFitHeight(80);
+		iv2.setFitWidth(80);
+		rightPart.getChildren().add(iv2);
 
 		controller.initMenu();
 	}
@@ -171,8 +190,8 @@ public class MenuView implements IMenuView {
 		for (int i = 0; i < categories.length; i++) {
 			String categoryName = categories[i].getName();
 			Button categoryButton = new Button(categoryName);
-			int categoryButtonSize = 500 / categories.length;
-			categoryButton.setMinSize(230, categoryButtonSize);
+			int categoryButtonHeight = 600 / categories.length;
+			categoryButton.setMinSize(230, categoryButtonHeight);
 			categoryButton.setFont(new Font(25));
 			categoryButton.getStyleClass().add("categorybutton");
 			
@@ -235,6 +254,7 @@ public class MenuView implements IMenuView {
 		Label sumText = new Label(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
 		sumText.setFont(new Font(23));
 		CheckBox takeaway = new CheckBox("Takeaway?");
+		takeaway.setMinSize(50, 50);
 		Button payButton = new Button(bundle.getString("payShopcartText"));
 		payButton.setFont(new Font(20));
 		payButton.setStyle("-fx-background-color: green;");
@@ -274,7 +294,7 @@ public class MenuView implements IMenuView {
 		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
-		int heightWindow = 215 + 70*shoppingCartItems.length;
+		int heightWindow = 230 + 70*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
 		}
@@ -381,7 +401,7 @@ public class MenuView implements IMenuView {
 		// Shopping cart element button properties
 		Button sCartItem = new Button("");
 		sCartItem.setFont(new Font(15));
-		sCartItem.setMinSize(400, 60);
+		sCartItem.setMinSize(390, 60);
 		sCartItem.getStyleClass().add("cartbutton");
 		
 		// Labels for the shopping cart element buttons (amount + price & removed ingredients)
@@ -406,11 +426,19 @@ public class MenuView implements IMenuView {
 		delete.setMinSize(50, 60);
 		delete.getStyleClass().add("deletebutton");
 		
-		HBox itemBox = new HBox(sCartItem, increase, decrease, delete);
+		HBox itemBox = new HBox(sCartItem);
 
 		// If item has ingredients, create a fooditem with negative id number, reset ingredients and removed ingredients of the fooditem.
 
 		if (foodItem.getIngredientsAsList() != null) {
+			
+			sCartItem.setMinSize(340, 60);
+
+			Button modify = new Button();
+			modify.setMinSize(50, 60);
+			modify.getStyleClass().add("modifybutton");
+			itemBox.getChildren().addAll(modify, increase, decrease, delete);
+			
 			//Create a new FoodItem copy with negative id, starting from -1.
 			newId -= 1;
 			FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
@@ -439,7 +467,7 @@ public class MenuView implements IMenuView {
 			
 			// Adding a handler for the shopping cart item buttons.
 			System.out.println(controller.shoppingCartToString());
-			sCartItem.setOnAction(event -> editItem(sCartItem, newItem));
+			modify.setOnAction(event -> editItem(sCartItem, newItem));
 			
 			increase.setOnAction(event -> {
 				int amount = controller.addOneToShoppingCart(newItem);
@@ -487,7 +515,7 @@ public class MenuView implements IMenuView {
 		} 
 		// If item does not have ingredients, add the original foodItem.
 		else {
-			
+			itemBox.getChildren().addAll(increase, decrease, delete);
 			int id = foodItem.getItemId();
 			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
 			int[] listOfItemIds= controller.getAllItemId();

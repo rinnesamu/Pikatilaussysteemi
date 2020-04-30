@@ -7,27 +7,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="1000.0" prefWidth="1400.0" style="-fx-background-color: #DCDCDC;" stylesheets="@CustomerTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MenuView">
-   <top>
-      <HBox prefHeight="140.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="106.0" prefWidth="346.0" text="%customerHeader">
-               <font>
-                  <Font size="61.0" />
-               </font>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </Label>
-         </children>
-      </HBox>
-   </top>
    <left>
       <VBox fx:id="categoryList" prefHeight="825.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
@@ -70,4 +55,22 @@
          </BorderPane.margin>
       </VBox>
    </right>
+   <top>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="leftPart" prefHeight="200.0" prefWidth="200.0" />
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="73.0" prefWidth="402.0" text="%customerHeader" textFill="#232deb">
+               <font>
+                  <Font name="Avenir Black" size="48.0" />
+               </font>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+            <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="rightPart" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </HBox>
+   </top>
 </BorderPane>
