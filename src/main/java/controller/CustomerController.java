@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import model.ICategoryDao;
 import model.IFoodItemDao;
 import model.IIngredientDao;
 import model.IOrderDao;
-import model.Ingredient;
 import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
@@ -141,7 +139,11 @@ public class CustomerController implements ICustomerController {
 		
 	}
 	
-	public String[] getFoodItemWithIngredients(FoodItem searchableFoodItem) {
+	/**
+	 * Get the original ingredients of a certain fooditem using the array with all the foodItems with ingredients.
+	 * If fooditem has no ingredients, return null. 
+	 */
+	public String[] getOriginalIngredients(FoodItem searchableFoodItem) {
 		for (int i = 0; i < foodItemsWithIngredients.length; i++) {
 			// look for a "fooditem with ingredients" of the same name
 			if (foodItemsWithIngredients[i].getName().equals(searchableFoodItem.getName())) {
@@ -151,6 +153,9 @@ public class CustomerController implements ICustomerController {
 		return null;
 	}
 	
+	/**
+	 * Search and set an array with all the foodItems with ingredients in database
+	 */
 	public void setFoodItemsWithIngredients() {
 		FoodItem[] allFoodItems = foodDao.readFoodItems();
 		List<FoodItem> foodItemsArray = new ArrayList<FoodItem>();

@@ -11,7 +11,7 @@ public interface ICustomerController {
 	public int addOneToShoppingCart(FoodItem foodItem);
 	public int removeOneFromShoppingCart(FoodItem foodItem);
 	public void readCategories(String name);
-	public String[] getFoodItemWithIngredients(FoodItem searchableFoodItem);
+	public String[] getOriginalIngredients(FoodItem searchableFoodItem);
 	public void setFoodItemsWithIngredients();
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo, boolean takeaway);
 	public void emptyShoppingCart();

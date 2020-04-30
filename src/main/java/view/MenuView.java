@@ -227,13 +227,16 @@ public class MenuView implements IMenuView {
 		readyList.setPadding(new Insets(10,0,0,10));
 		double price;
 		int amount;
-		// Header
+		// Header text
 		Label header = new Label(bundle.getString("chosenProducts"));
 		header.setFont(new Font(25));
 		header.setUnderline(true);
 		readyList.getChildren().add(header);
+		// Removed ingredients text
 		String infoIngredient = "";
+		// Iterate all shopping cart items
 		FoodItem[] shoppingCartItems = controller.getFoodItems();
+		
 		for (int i=0; i<shoppingCartItems.length; i++) {
 			HBox readySingleItem = new HBox();
 			amount = controller.getAmount(shoppingCartItems[i].getItemId());
@@ -242,7 +245,7 @@ public class MenuView implements IMenuView {
 			payItem.setFont(new Font(14));
 			Label ingredients = new Label();
 			// if item has ingredients (null exception)
-			if (controller.getFoodItemWithIngredients(shoppingCartItems[i]) != null) {
+			if (controller.getOriginalIngredients(shoppingCartItems[i]) != null) {
 				// if item has removed ingredients
 				if (shoppingCartItems[i].getRemovedIngredientsAsList() != null) {
 					String[] removedIngredients =shoppingCartItems[i].getRemovedIngredientsAsList();
@@ -254,6 +257,7 @@ public class MenuView implements IMenuView {
 					infoIngredient += controller.getAmount(shoppingCartItems[i].getItemId()) + "*" + shoppingCartItems[i].getName() + "=" + removedIngredientList;
 				}
 			}
+			// Small fooditem pictures
 			File file = new File(this.getClass().getResource("/imgs/" + shoppingCartItems[i].getPath()).getFile());
 			Image image = new Image(file.toURI().toString());
 			ImageView iv = new ImageView(image);
@@ -271,6 +275,7 @@ public class MenuView implements IMenuView {
 		payButton.setStyle("-fx-background-color: green;");
 		payButton.setTextFill(Color.WHITE);
 		
+		// If shopping cart is empty, set buttons disable
 		if (shoppingCartItems.length == 0) {
 			payButton.setDisable(true);
 			takeaway.setDisable(true);
@@ -281,6 +286,7 @@ public class MenuView implements IMenuView {
 		cancelButton.setTextFill(Color.WHITE);
 		String infoIngredient2 = infoIngredient;
 		readyList.getChildren().addAll(sumText, takeaway, payButton, cancelButton);
+		
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -306,6 +312,7 @@ public class MenuView implements IMenuView {
 		cancelButton.setOnAction(event -> readyToPay.close());
 		sPane.setContent(readyList);
 
+		// Popup height
 		int heightWindow = 240 + 70*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
@@ -466,7 +473,7 @@ public class MenuView implements IMenuView {
 			newItem.setRemovedIngredients(reset);
 			
 			// Reset ingredients.
-			newItem.setIngredients(controller.getFoodItemWithIngredients(foodItem));
+			newItem.setIngredients(controller.getOriginalIngredients(foodItem));
 
 			controller.addToShoppingCart(newItem, 1);
 			
@@ -688,7 +695,7 @@ public class MenuView implements IMenuView {
 		VBox boxIngredient = new VBox(20);
 		
 		// Database ingredients.
-		List<String> ingredientsOfDatabase = new ArrayList<String>(Arrays.asList(controller.getFoodItemWithIngredients(foodItem)));
+		List<String> ingredientsOfDatabase = new ArrayList<String>(Arrays.asList(controller.getOriginalIngredients(foodItem)));
 				
 		boxIngredient.setPadding(new Insets(10,0,0,10));
 		// Local ingredients.
