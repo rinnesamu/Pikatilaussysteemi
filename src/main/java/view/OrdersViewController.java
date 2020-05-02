@@ -35,13 +35,17 @@ public class OrdersViewController {
 	private Order[] allOrders = orderDao.readOrders();
 
 	private List<Order> activeOrdersArrayList = new ArrayList<Order>();
+	
+	private List<Order> readyOrdersArrayList = new ArrayList<Order>();
 
 	public void updateOrders() {
 		updateActiveOrders();
-		Order[] activeOrdersList = getPrimitiveList();
+		Order[] activeOrdersList = getPrimitiveList(activeOrdersArrayList);
+		Order[] readyOrdersList = getPrimitiveList(readyOrdersArrayList);
 		System.out.println(allOrders.length);
 		System.out.println(activeOrdersList.length);
 		int i = 0;
+		int j = 0;
 		if (activeOrdersList.length != 0) {
 			for (int y = 0; y < 5; y++) {
 				for (int x = 0; x < 5; x++) {
@@ -69,6 +73,33 @@ public class OrdersViewController {
 				}
 			}
 		}
+		if (readyOrdersList.length != 0) {
+			for (int y = 0; y < 5; y++) {
+				for (int x = 0; x < 5; x++) {
+					if (j < readyOrdersList.length){
+						int orderNumber = readyOrdersList[j].getOrderNumber();
+						String stringToAdd = Integer.toString(orderNumber);
+						if (orderNumber < 10) {
+							stringToAdd = 0 + stringToAdd;
+						}
+						Label text = new Label();
+						text.setFont(new Font("Arial", 30));
+						text.setText(stringToAdd);
+						GridPane.setHalignment(text, HPos.CENTER);
+						readyOrders.add(text, x, y);
+						int b = j;
+						EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+							@Override
+							public void handle(MouseEvent e) {
+								removeFromReady(readyOrdersList[b]);
+							}
+						};
+						text.addEventHandler(MouseEvent.MOUSE_PRESSED, eventHandler);
+						j++;
+					}
+				}
+			}
+		}
 
 	}
 
@@ -76,9 +107,9 @@ public class OrdersViewController {
 		updateOrders();
 	}
 
-	private Order[] getPrimitiveList() {
-		Order[] returnOrders = new Order[activeOrdersArrayList.size()];
-		return (Order[]) activeOrdersArrayList.toArray(returnOrders);
+	private Order[] getPrimitiveList(List list) {
+		Order[] returnOrders = new Order[list.size()];
+		return (Order[]) list.toArray(returnOrders);
 	}
 
 	private void updateActiveOrders() {
@@ -98,7 +129,14 @@ public class OrdersViewController {
 	private void updateList(Order o) {
 		System.out.println(o.getOrderId());
 		o.setStatus(true);
+		readyOrdersArrayList.add(o);
 		orderDao.updateOrderStatus(o);
+		updateOrders();
+	}
+	
+	public void removeFromReady(Order o) {
+		readyOrdersArrayList.remove(o);
+		readyOrders.getChildren().clear();
 		updateOrders();
 	}
 	
