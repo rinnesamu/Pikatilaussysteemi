@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import application.IStart;
@@ -20,6 +21,12 @@ import model.IOrderDao;
 import model.Order;
 import model.OrderAccessObject;
 
+/**
+ * ViewControlelr for orders view
+ * 
+ * @author Samu Rinne
+ *
+ */
 public class OrdersViewController {
 
 	private IStart start;
@@ -35,10 +42,10 @@ public class OrdersViewController {
 	private Order[] allOrders = orderDao.readOrders();
 
 	private List<Order> activeOrdersArrayList = new ArrayList<Order>();
-	
+
 	private List<Order> readyOrdersArrayList = new ArrayList<Order>();
 
-	public void updateOrders() {
+	private void updateOrders() {
 		updateActiveOrders();
 		Order[] activeOrdersList = getPrimitiveList(activeOrdersArrayList);
 		Order[] readyOrdersList = getPrimitiveList(readyOrdersArrayList);
@@ -76,7 +83,7 @@ public class OrdersViewController {
 		if (readyOrdersList.length != 0) {
 			for (int y = 0; y < 5; y++) {
 				for (int x = 0; x < 5; x++) {
-					if (j < readyOrdersList.length){
+					if (j < readyOrdersList.length) {
 						int orderNumber = readyOrdersList[j].getOrderNumber();
 						String stringToAdd = Integer.toString(orderNumber);
 						if (orderNumber < 10) {
@@ -102,8 +109,10 @@ public class OrdersViewController {
 		}
 
 	}
-	
 
+	/**
+	 * init method
+	 */
 	public void initialize() {
 		updateOrders();
 	}
@@ -123,10 +132,14 @@ public class OrdersViewController {
 		}
 	}
 
+	/**
+	 * Setter for Start
+	 * @param s
+	 */
 	public void setStart(IStart s) {
 		this.start = s;
 	}
-	
+
 	private void updateList(Order o) {
 		System.out.println(o.getOrderId());
 		o.setStatus(true);
@@ -134,12 +147,11 @@ public class OrdersViewController {
 		orderDao.updateOrderStatus(o);
 		updateOrders();
 	}
-	
-	public void removeFromReady(Order o) {
+
+	private void removeFromReady(Order o) {
 		readyOrdersArrayList.remove(o);
 		readyOrders.getChildren().clear();
 		updateOrders();
 	}
-	
 
 }
