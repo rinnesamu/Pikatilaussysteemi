@@ -2,7 +2,6 @@ package controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ResourceBundle;
 
 import model.Category;
 import model.CategoryAccessObject;
@@ -13,7 +12,6 @@ import model.Ingredient;
 import model.IngredientAccessObject;
 import model.Order;
 import model.OrderAccessObject;
-import util.Bundle;
 import view.RestaurantKeeper;
 
 /**
@@ -32,7 +30,6 @@ public class RKController implements IRKController {
 	private IngredientAccessObject ingredientDao;
 	
 	private RestaurantKeeper restaurantKeeper;
-	private ResourceBundle bundle;
 	
 	/**
 	 * Constructor for the restaurant keeper controller -class. Constructor defines the data access objects for database operations.
@@ -47,9 +44,7 @@ public class RKController implements IRKController {
 		ingredientDao = new IngredientAccessObject();
 		orderDao = new OrderAccessObject();
 		
-		
 		this.restaurantKeeper = restaurantKeeper;
-		this.bundle = Bundle.getInstance();
 	}
 	
 	/**
@@ -196,5 +191,4 @@ public class RKController implements IRKController {
 		return ingredientDao.createIngredient(ingredient);
 	}
 
-	
 }

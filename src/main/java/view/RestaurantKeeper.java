@@ -3,6 +3,7 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -10,12 +11,17 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
 
+import application.IStart;
 import controller.IRKController;
 import controller.RKController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,11 +29,13 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
@@ -51,7 +59,18 @@ public class RestaurantKeeper {
 	// Owner node for notification pop-ups
 	@FXML
 	private TabPane tabPane;
-		
+	// Tabs
+	@FXML
+	private Tab browseTab;
+	@FXML
+	private Tab categoryTab;
+	@FXML
+	private Tab ingredientTab;
+	@FXML
+	private Tab orderTab;
+	@FXML
+	private Tab orderSearchTab;
+	
 	// Table and columns for restaurant menu
 	@FXML
 	private TableView<FoodItem> foodItemTableView;
@@ -236,6 +255,14 @@ public class RestaurantKeeper {
 	@FXML
 	private Button searchButton;
 	
+	// language buttons
+	@FXML
+	private Button buttonFi;
+	@FXML
+	private Button buttonEn;
+	
+	private IStart start;
+	
 	// resource bundle
 	ResourceBundle bundle;
 	
@@ -249,12 +276,40 @@ public class RestaurantKeeper {
 	
 	/**
 	 * Initial actions for using controller class. Setting CellFactories for the menu table, and instantiating a DataAccessObject for FoodItem.
+	 * setting event listeners for tabs and language change buttons
 	 */
 	@FXML
 	public void initialize() {		
 		
 		bundle = Bundle.getInstance();		
 		initAllTableViews();
+		
+		// creating change listener for tab pane for listening selection changes in tabs
+		tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
+			if(newTab == browseTab) {
+				this.initFoodItemTables();
+			}else if(newTab == categoryTab) {
+				this.initCategoryTables();
+			}else if(newTab == ingredientTab) {
+				this.initIngredientTables();
+			}else if(newTab == orderTab) {
+				this.initOrderTable();
+			}
+		});
+		
+		buttonFi.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				start.setLanguageRestaurantKeeper("languageFi", "countryFi");
+			}
+		});
+		
+		buttonEn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				start.setLanguageRestaurantKeeper("languageEn", "countryEn");
+			}
+		});
 	}
 	
 	/**
@@ -263,6 +318,23 @@ public class RestaurantKeeper {
 	@FXML
 	private void initAllTableViews() {
 		try {
+			initFoodItemTables();		
+			initCategoryTables();
+			initIngredientTables();
+			initOrderTable();
+			initSearchOrderTable();
+			
+		}catch(NullPointerException npe) {
+			System.out.println("category, ingerdient, order columns give nullPointerException");
+		}
+	}
+	
+	/**
+	 * Method for initializing the tableviews for foodItems
+	 * 
+	 * @throws NullPointerException
+	 */
+	private void initFoodItemTables() throws NullPointerException{
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
@@ -299,7 +371,13 @@ public class RestaurantKeeper {
 		addFoodItemCategoryColumn.setCellFactory(addFoodItemCategoryCBCellFactory);
 		//addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
 		refreshDummyFoodItem();
-		
+	}
+	
+	/**
+	 * Method for initializing the tableviews for Categories
+	 * @throws NullPointerException
+	 */
+	private void initCategoryTables() throws NullPointerException{
 		// initializing category column cellfactories
 		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
@@ -315,7 +393,13 @@ public class RestaurantKeeper {
 		createAddCategoryCellFactories();
 		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
 		refreshDummyCategory();
-
+	}
+	
+	/**
+	 * Method for initializing ingredient tableviews
+	 * @throws NullPointerException
+	 */
+	private void initIngredientTables() throws NullPointerException{
 		//initializing ingredient column cellfactories
 		ingredientIdColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("ItemId"));
 		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
@@ -332,7 +416,13 @@ public class RestaurantKeeper {
 		addIngredientRemovableColumn.setCellFactory(addIngredientRemovableCellFactory);
 		addIngredientButtonColumn.setCellFactory(addIngredientButtonCellFactory);
 		refreshDummyIngredient();
-		
+	}
+	
+	/**
+	 * Method for initializing Order tableview
+	 * @throws NullPointerException
+	 */
+	private void initOrderTable() throws NullPointerException{
 		// initiliazing order column cellfactories
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
 		orderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
@@ -343,7 +433,13 @@ public class RestaurantKeeper {
 		orderContentsColumn.setCellFactory(orderContentsCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
-		
+	}
+	
+	/**
+	 * Method for initializing order search table view
+	 * @throws NullPointerException
+	 */
+	private void initSearchOrderTable() throws NullPointerException{
 		// initiliazing searching order column cellfactories
 		searchOrderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
 		searchOrderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
@@ -351,13 +447,9 @@ public class RestaurantKeeper {
 		
 		createSearchOrderCellFactories();
 		searchOrderContentsColumn.setCellFactory(searchOrderContentsCellFactory);
-		
-		}catch(NullPointerException npe) {
-			System.out.println("category, ingerdient, order columns give nullpointerException");
-		}
 	}
 	
-	
+
 	
 	/**
 	 * Private helper method for creating popup toast notifications.
@@ -636,6 +728,7 @@ public class RestaurantKeeper {
                             }else {
                             	createNotification(bundle.getString("foodItemDeletionFailure"));
                             }
+                            refreshFoodItems();
                         });
                     }
                     @Override
@@ -1267,5 +1360,14 @@ public class RestaurantKeeper {
 			}
 		};
 		// order contents ends
+	}
+	
+	/**
+	 * Method for setting start class. Used for changing the language of the ui
+	 * 
+	 * @param start start class
+	 */
+	public void setStart(IStart start) {
+		this.start = start;
 	}
 }
