@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import application.IStart;
+import application.Start;
 import model.Category;
 import model.CategoryAccessObject;
 import model.FoodItem;
@@ -33,6 +35,7 @@ public class RKController implements IRKController {
 	
 	private RestaurantKeeper restaurantKeeper;
 	private ResourceBundle bundle;
+	private IStart start;
 	
 	/**
 	 * Constructor for the restaurant keeper controller -class. Constructor defines the data access objects for database operations.
@@ -47,6 +50,7 @@ public class RKController implements IRKController {
 		ingredientDao = new IngredientAccessObject();
 		orderDao = new OrderAccessObject();
 		
+		start = new Start();
 		
 		this.restaurantKeeper = restaurantKeeper;
 		this.bundle = Bundle.getInstance();
@@ -196,5 +200,4 @@ public class RKController implements IRKController {
 		return ingredientDao.createIngredient(ingredient);
 	}
 
-	
 }

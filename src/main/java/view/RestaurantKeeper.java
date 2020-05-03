@@ -3,6 +3,7 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -10,12 +11,17 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
 
+import application.IStart;
 import controller.IRKController;
 import controller.RKController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,6 +35,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
@@ -248,6 +255,14 @@ public class RestaurantKeeper {
 	@FXML
 	private Button searchButton;
 	
+	// language buttons
+	@FXML
+	private Button buttonFi;
+	@FXML
+	private Button buttonEn;
+	
+	private IStart start;
+	
 	// resource bundle
 	ResourceBundle bundle;
 	
@@ -261,6 +276,7 @@ public class RestaurantKeeper {
 	
 	/**
 	 * Initial actions for using controller class. Setting CellFactories for the menu table, and instantiating a DataAccessObject for FoodItem.
+	 * setting event listeners for tabs and language change buttons
 	 */
 	@FXML
 	public void initialize() {		
@@ -278,6 +294,20 @@ public class RestaurantKeeper {
 				this.initIngredientTables();
 			}else if(newTab == orderTab) {
 				this.initOrderTable();
+			}
+		});
+		
+		buttonFi.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				start.setLanguageRestaurantKeeper("languageFi", "countryFi");
+			}
+		});
+		
+		buttonEn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				start.setLanguageRestaurantKeeper("languageEn", "countryEn");
 			}
 		});
 	}
@@ -698,6 +728,7 @@ public class RestaurantKeeper {
                             }else {
                             	createNotification(bundle.getString("foodItemDeletionFailure"));
                             }
+                            refreshFoodItems();
                         });
                     }
                     @Override
@@ -1330,4 +1361,15 @@ public class RestaurantKeeper {
 		};
 		// order contents ends
 	}
+	
+	/**
+	 * Method for setting start class. Used for changing the language of the ui
+	 * 
+	 * @param start start class
+	 */
+	public void setStart(IStart start) {
+		this.start = start;
+	}
 }
+
+

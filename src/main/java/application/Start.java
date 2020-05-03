@@ -150,7 +150,8 @@ public class Start extends Application implements IStart {
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			primaryStage.show();
-			RestaurantKeeper controller = loader.getController();
+			RestaurantKeeper restaurantKeeper = loader.getController();
+			restaurantKeeper.setStart(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -242,6 +243,17 @@ public class Start extends Application implements IStart {
 		bundle = Bundle.getInstance();
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 		initUI();
+	}
+	
+	public void setLanguageRestaurantKeeper(String l, String c) {
+		String language = properties.getProperty(l);
+		String country = properties.getProperty(c);
+		curLocale = new Locale(language, country);
+		Locale.setDefault(curLocale);
+		Bundle.changeBundle(curLocale);
+		bundle = Bundle.getInstance();
+		this.primaryStage.setTitle(bundle.getString("headerText"));
+		startRestaurant();
 	}
 	
 	public void timeoutWake() {
