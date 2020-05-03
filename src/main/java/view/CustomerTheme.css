@@ -71,3 +71,11 @@
 .categorybutton:pressed {
 	-fx-background-color: white;
 }
+.engbutton{
+	-fx-background-image: url('/imgs/eng.png');
+	-fx-background-size: stretch;
+}
+.finbutton{
+	-fx-background-image: url('/imgs/fin.png');
+	-fx-background-size: stretch;
+}

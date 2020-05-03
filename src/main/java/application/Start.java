@@ -244,6 +244,17 @@ public class Start extends Application implements IStart {
 		initUI();
 	}
 	
+	public void setLanguageCustomer(String l, String c) {
+		System.out.println("Kieli vaihdetaan " + l + " " + c);
+		String language = properties.getProperty(l);
+		String country = properties.getProperty(c);
+		curLocale = new Locale(language, country);
+		Locale.setDefault(curLocale);
+		Bundle.changeBundle(curLocale);
+		bundle = Bundle.getInstance();
+		this.primaryStage.setTitle(bundle.getString("headerText"));
+	}
+	
 	public void timeoutWake() {
 		if(timeOut != null)
 			timeOut.update();

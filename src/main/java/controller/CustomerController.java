@@ -298,6 +298,10 @@ public class CustomerController implements ICustomerController {
 	public FoodItem[] getFoodItems() {
 		return shoppingCart.getFoodItems();
 	}
+	
+	public void notifyShoppingcartObserver() {
+		shoppingCart.notifyObserver();
+	}
 
 
 }

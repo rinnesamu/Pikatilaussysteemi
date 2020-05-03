@@ -25,7 +25,7 @@
    <right>
       <VBox alignment="CENTER" prefHeight="525.0" prefWidth="562.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="TOP_CENTER" prefHeight="77.0" prefWidth="562.0" style="-fx-background-color: gold;" text="%headerShopcartText">
+            <Label fx:id="shopcartHeader" alignment="TOP_CENTER" prefHeight="77.0" prefWidth="562.0" style="-fx-background-color: gold;" text="%headerShopcartText">
                <font>
                   <Font name="Chalkduster" size="36.0" />
                </font>
@@ -60,7 +60,7 @@
          <children>
             <Pane fx:id="leftPart" prefHeight="200.0" prefWidth="200.0" />
             <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-            <Label alignment="CENTER" contentDisplay="TOP" prefHeight="73.0" prefWidth="402.0" text="%customerHeader" textFill="#eb8a23">
+            <Label fx:id="customerHeaderText" alignment="CENTER" contentDisplay="TOP" prefHeight="73.0" prefWidth="402.0" text="%customerHeader" textFill="#eb8a23">
                <font>
                   <Font name="Chalkduster" size="53.0" />
                </font>
@@ -69,6 +69,16 @@
                </padding>
             </Label>
             <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onMouseClicked="#setLanguageFi" prefHeight="30.0" prefWidth="60.0" styleClass="finbutton">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onMouseClicked="#setLanguageEn" prefHeight="30.0" prefWidth="60.0" styleClass="engbutton">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
             <Pane fx:id="rightPart" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </HBox>

@@ -26,4 +26,5 @@ public interface ICustomerController {
 	public Map<FoodItem, Integer> getShoppingCart();
 	public double getShoppingCartSum();
 	public FoodItem[] getFoodItems();
+	public void notifyShoppingcartObserver();
 }

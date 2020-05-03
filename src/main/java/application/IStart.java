@@ -8,5 +8,6 @@ public interface IStart {
 	public void startDemo();
 	public void startRestaurant();
 	public void timeoutWake();
+	public void setLanguageCustomer(String l, String c);
 
 }
