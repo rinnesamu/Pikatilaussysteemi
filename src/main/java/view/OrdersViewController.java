@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import application.IStart;
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -43,7 +39,7 @@ public class OrdersViewController {
 
 	private List<Order> activeOrdersArrayList = new ArrayList<Order>();
 
-	private List<Order> readyOrdersArrayList = new ArrayList<Order>();
+	private static List<Order> readyOrdersArrayList = new ArrayList<Order>();
 
 	private void updateOrders() {
 		updateActiveOrders();
@@ -53,6 +49,9 @@ public class OrdersViewController {
 		System.out.println(activeOrdersList.length);
 		int i = 0;
 		int j = 0;
+		/*
+		 * Update Received orders
+		 */
 		if (activeOrdersList.length != 0) {
 			for (int y = 0; y < 5; y++) {
 				for (int x = 0; x < 5; x++) {
@@ -80,6 +79,9 @@ public class OrdersViewController {
 				}
 			}
 		}
+		/*
+		 * Update ready orders
+		 */
 		if (readyOrdersList.length != 0) {
 			for (int y = 0; y < 5; y++) {
 				for (int x = 0; x < 5; x++) {
