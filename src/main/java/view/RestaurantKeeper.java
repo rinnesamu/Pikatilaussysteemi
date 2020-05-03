@@ -1371,5 +1371,3 @@ public class RestaurantKeeper {
 		this.start = start;
 	}
 }
-
-
