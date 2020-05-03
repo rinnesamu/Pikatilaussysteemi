@@ -238,4 +238,9 @@ public class ShoppingCart extends Observable {
 	public String toString() {
 		return cartList.entrySet().toString();
 	}
+	
+	public void notifyObserver() {
+		setChanged();
+		notifyObservers();
+	}
 }

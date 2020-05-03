@@ -94,6 +94,12 @@ public class MenuView implements IMenuView {
 	@FXML
 	private Label sumShoppingCart;
 	
+	@FXML
+	private Label shopcartHeader;
+	
+	@FXML
+	private Label customerHeaderText;
+	
 	// All the fooditems in a category.
 	private FoodItem[] items;
 	
@@ -812,6 +818,29 @@ public class MenuView implements IMenuView {
         .text( bundle.getString("notificationText") )
         .owner(menu)
         .showWarning();
+	}
+	
+	@FXML 
+	public void setLanguageFi() {
+		 start.setLanguageCustomer("languageFi", "countryFi");
+		 bundle = Bundle.getInstance();
+		 updateElements();
+	 }
+	
+	@FXML 
+	public void setLanguageEn() {
+		 start.setLanguageCustomer("languageEn", "countryEn");
+		 bundle = Bundle.getInstance();
+		 updateElements();
+	 }
+	
+	private void updateElements() {
+		emptyButton.setText(bundle.getString("emptyShopcartText"));
+		customerHeaderText.setText(bundle.getString("customerHeader"));
+		buyButton.setText(bundle.getString("payShopcartText"));
+		shopcartHeader.setText(bundle.getString("headerShopcartText"));
+		controller.notifyShoppingcartObserver();
+		
 	}
 
 }
