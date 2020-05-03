@@ -15,7 +15,7 @@
    <children>
       <TabPane fx:id="tabPane" prefHeight="500.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-            <Tab onSelectionChanged="#initAllTableViews" text="%browseItems">
+            <Tab fx:id="browseTab" text="%browseItems">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="463.0" prefWidth="750.0">
                      <children>
@@ -62,7 +62,7 @@
               	</AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#initAllTableViews" text="%categories">
+            <Tab fx:id="categoryTab" text="%categories">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -91,7 +91,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#initAllTableViews" text="%ingredients">
+            <Tab fx:id="ingredientTab" text="%ingredients">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -123,7 +123,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab onSelectionChanged="#initAllTableViews" text="%orders">
+            <Tab fx:id="orderTab" text="%orders">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -145,7 +145,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="%searchOrders">
+            <Tab fx:id="orderSearchTab" text="%searchOrders">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

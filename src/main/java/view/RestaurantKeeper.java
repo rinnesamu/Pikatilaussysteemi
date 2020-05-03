@@ -23,6 +23,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -51,7 +52,18 @@ public class RestaurantKeeper {
 	// Owner node for notification pop-ups
 	@FXML
 	private TabPane tabPane;
-		
+	// Tabs
+	@FXML
+	private Tab browseTab;
+	@FXML
+	private Tab categoryTab;
+	@FXML
+	private Tab ingredientTab;
+	@FXML
+	private Tab orderTab;
+	@FXML
+	private Tab orderSearchTab;
+	
 	// Table and columns for restaurant menu
 	@FXML
 	private TableView<FoodItem> foodItemTableView;
@@ -255,6 +267,19 @@ public class RestaurantKeeper {
 		
 		bundle = Bundle.getInstance();		
 		initAllTableViews();
+		
+		// creating change listener for tab pane for listening selection changes in tabs
+		tabPane.getSelectionModel().selectedItemProperty().addListener((ov, oldTab, newTab) -> {
+			if(newTab == browseTab) {
+				this.initFoodItemTables();
+			}else if(newTab == categoryTab) {
+				this.initCategoryTables();
+			}else if(newTab == ingredientTab) {
+				this.initIngredientTables();
+			}else if(newTab == orderTab) {
+				this.initOrderTable();
+			}
+		});
 	}
 	
 	/**
@@ -263,6 +288,23 @@ public class RestaurantKeeper {
 	@FXML
 	private void initAllTableViews() {
 		try {
+			initFoodItemTables();		
+			initCategoryTables();
+			initIngredientTables();
+			initOrderTable();
+			initSearchOrderTable();
+			
+		}catch(NullPointerException npe) {
+			System.out.println("category, ingerdient, order columns give nullPointerException");
+		}
+	}
+	
+	/**
+	 * Method for initializing the tableviews for foodItems
+	 * 
+	 * @throws NullPointerException
+	 */
+	private void initFoodItemTables() throws NullPointerException{
 		// initializing menu cellFactories
 		idColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, Integer>("ItemId"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<FoodItem, String>("name"));
@@ -299,7 +341,13 @@ public class RestaurantKeeper {
 		addFoodItemCategoryColumn.setCellFactory(addFoodItemCategoryCBCellFactory);
 		//addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
 		refreshDummyFoodItem();
-		
+	}
+	
+	/**
+	 * Method for initializing the tableviews for Categories
+	 * @throws NullPointerException
+	 */
+	private void initCategoryTables() throws NullPointerException{
 		// initializing category column cellfactories
 		categoryIdColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("Id"));
 		categoryNameColumn.setCellValueFactory(new PropertyValueFactory<Category, String>("name"));
@@ -315,7 +363,13 @@ public class RestaurantKeeper {
 		createAddCategoryCellFactories();
 		addCategoryButtonColumn.setCellFactory(addCategoryButtonCellFactory);
 		refreshDummyCategory();
-
+	}
+	
+	/**
+	 * Method for initializing ingredient tableviews
+	 * @throws NullPointerException
+	 */
+	private void initIngredientTables() throws NullPointerException{
 		//initializing ingredient column cellfactories
 		ingredientIdColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("ItemId"));
 		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
@@ -332,7 +386,13 @@ public class RestaurantKeeper {
 		addIngredientRemovableColumn.setCellFactory(addIngredientRemovableCellFactory);
 		addIngredientButtonColumn.setCellFactory(addIngredientButtonCellFactory);
 		refreshDummyIngredient();
-		
+	}
+	
+	/**
+	 * Method for initializing Order tableview
+	 * @throws NullPointerException
+	 */
+	private void initOrderTable() throws NullPointerException{
 		// initiliazing order column cellfactories
 		orderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
 		orderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
@@ -343,7 +403,13 @@ public class RestaurantKeeper {
 		orderContentsColumn.setCellFactory(orderContentsCellFactory);
 		orderEditColumn.setCellFactory(orderEditCellFactory);
 		refreshOrders();
-		
+	}
+	
+	/**
+	 * Method for initializing order search table view
+	 * @throws NullPointerException
+	 */
+	private void initSearchOrderTable() throws NullPointerException{
 		// initiliazing searching order column cellfactories
 		searchOrderIdColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
 		searchOrderNumberColumn.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderNumber"));
@@ -351,13 +417,9 @@ public class RestaurantKeeper {
 		
 		createSearchOrderCellFactories();
 		searchOrderContentsColumn.setCellFactory(searchOrderContentsCellFactory);
-		
-		}catch(NullPointerException npe) {
-			System.out.println("category, ingerdient, order columns give nullpointerException");
-		}
 	}
 	
-	
+
 	
 	/**
 	 * Private helper method for creating popup toast notifications.
