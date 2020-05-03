@@ -43,7 +43,7 @@ public class OrdersViewController {
 
 	private List<Order> activeOrdersArrayList = new ArrayList<Order>();
 
-	private List<Order> readyOrdersArrayList = new ArrayList<Order>();
+	private static List<Order> readyOrdersArrayList = new ArrayList<Order>();
 
 	private void updateOrders() {
 		updateActiveOrders();
