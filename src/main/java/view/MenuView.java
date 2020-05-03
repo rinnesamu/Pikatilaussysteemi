@@ -38,6 +38,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -99,6 +100,12 @@ public class MenuView implements IMenuView {
 	// The variable of the negative id numbers for the foodItems with ingredients.
 	private int newId=0;
 	
+	// Font number 1 of the UI
+	private String mainFont = "";
+	
+	// Font number 2 of the UI
+	private String secondaryFont = "";
+
 	// Order number reset.
 	private static int orderNumber = 1;
 
@@ -152,19 +159,22 @@ public class MenuView implements IMenuView {
 	private void initialize() {
 		this.controller = new CustomerController(this);
 		bundle = Bundle.getInstance();
+		// The font of the categories and menu
+		mainFont = "Chalkduster";
+		secondaryFont = "Gurmukhi Sangam MN";
 		
 		File file1 = new File(this.getClass().getResource("/imgs/logo.png").getFile());
 		Image image1 = new Image(file1.toURI().toString());
 		ImageView iv1 = new ImageView(image1);
-		iv1.setFitHeight(80);
-		iv1.setFitWidth(80);
+		iv1.setFitHeight(100);
+		iv1.setFitWidth(100);
 		leftPart.getChildren().add(iv1);
 		
 		File file2 = new File(this.getClass().getResource("/imgs/rect4547.png").getFile());
 		Image image2 = new Image(file2.toURI().toString());
 		ImageView iv2 = new ImageView(image2);
-		iv2.setFitHeight(80);
-		iv2.setFitWidth(80);
+		iv2.setFitHeight(50);
+		iv2.setFitWidth(50);
 		rightPart.getChildren().add(iv2);
 		controller.initMenu();
 	}
@@ -175,6 +185,7 @@ public class MenuView implements IMenuView {
 	 */
 	public void setSum(double value) {
 		sumShoppingCart.setText(bundle.getString("sumText") + ": " + value + "0 " + bundle.getString("eurosText"));
+		sumShoppingCart.setFont(new Font(secondaryFont, 35));
 	}
 	
 	public void setElementRemovedIngredients(Object observable, String removedIngredients) {
@@ -202,7 +213,7 @@ public class MenuView implements IMenuView {
 			Button categoryButton = new Button(categoryName);
 			int categoryButtonHeight = 600 / categories.length;
 			categoryButton.setMinSize(230, categoryButtonHeight);
-			categoryButton.setFont(new Font(25));
+			categoryButton.setFont(new Font(mainFont, 20));
 			categoryButton.getStyleClass().add("categorybutton");
 			
 			EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
@@ -222,16 +233,18 @@ public class MenuView implements IMenuView {
 	@FXML
 	private void readyToPayShoppingCart() {
 		Stage readyToPay = new Stage();
+		VBox wholeBox = new VBox(5);
+		// ScrollPane for products
 		ScrollPane sPane = new ScrollPane();
+		wholeBox.setPadding(new Insets(15,15,15,15));
 		VBox readyList = new VBox(10);
 		readyList.setPadding(new Insets(10,0,0,10));
 		double price;
 		int amount;
 		// Header text
 		Label header = new Label(bundle.getString("chosenProducts"));
-		header.setFont(new Font(25));
+		header.setFont(new Font(mainFont, 25));
 		header.setUnderline(true);
-		readyList.getChildren().add(header);
 		// Removed ingredients text
 		String infoIngredient = "";
 		// Iterate all shopping cart items
@@ -242,7 +255,7 @@ public class MenuView implements IMenuView {
 			amount = controller.getAmount(shoppingCartItems[i].getItemId());
 			price = shoppingCartItems[i].getPrice();
 			Label payItem = new Label(shoppingCartItems[i].getName() + ", " + amount + " " + bundle.getString("summaryText") + " " + amount*price + "0 e");
-			payItem.setFont(new Font(14));
+			payItem.setFont(new Font(secondaryFont, 14));
 			Label ingredients = new Label();
 			// if item has ingredients (null exception)
 			if (controller.getOriginalIngredients(shoppingCartItems[i]) != null) {
@@ -267,13 +280,15 @@ public class MenuView implements IMenuView {
 			readyList.getChildren().addAll(readySingleItem, ingredients);
 		}
 		Label sumText = new Label(bundle.getString("sumText") + ": " + controller.getShoppingCartSum() + "0 " + bundle.getString("eurosText"));
-		sumText.setFont(new Font(23));
+		sumText.setFont(new Font(secondaryFont, 28));
 		CheckBox takeaway = new CheckBox("Takeaway?");
 		takeaway.setMinSize(50, 50);
+		takeaway.setFont(new Font(secondaryFont, 18));
 		Button payButton = new Button(bundle.getString("payShopcartText"));
-		payButton.setFont(new Font(20));
+		payButton.setFont(new Font(secondaryFont, 20));
 		payButton.setStyle("-fx-background-color: green;");
 		payButton.setTextFill(Color.WHITE);
+		payButton.setMinSize(400, 50);
 		
 		// If shopping cart is empty, set buttons disable
 		if (shoppingCartItems.length == 0) {
@@ -281,11 +296,14 @@ public class MenuView implements IMenuView {
 			takeaway.setDisable(true);
 		}
 		Button cancelButton = new Button(bundle.getString("cancelText"));
-		cancelButton.setFont(new Font(17));
+		cancelButton.setFont(new Font(secondaryFont, 17));
 		cancelButton.setStyle("-fx-background-color: red;");
 		cancelButton.setTextFill(Color.WHITE);
+		cancelButton.setMinSize(400, 50);
 		String infoIngredient2 = infoIngredient;
-		readyList.getChildren().addAll(sumText, takeaway, payButton, cancelButton);
+		sPane.setContent(readyList);
+
+		wholeBox.getChildren().addAll(header, sPane, sumText, takeaway, payButton, cancelButton);
 		
 		EventHandler<MouseEvent> pay = new EventHandler<MouseEvent>() {
 			@Override
@@ -310,19 +328,19 @@ public class MenuView implements IMenuView {
 		};
 		payButton.addEventHandler(MouseEvent.MOUSE_PRESSED, pay);
 		cancelButton.setOnAction(event -> readyToPay.close());
-		sPane.setContent(readyList);
 
 		// Popup height
-		int heightWindow = 240 + 70*shoppingCartItems.length;
+		int heightWindow = 300 + 60*shoppingCartItems.length;
 		if (heightWindow > 700) {
 			heightWindow = 700;
 		}
-		Scene payScene = new Scene(sPane, 600, heightWindow);
+		Scene payScene = new Scene(wholeBox, 450, heightWindow);
 		payScene.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
 			if(start != null)
 				start.timeoutWake();
 		});
 		readyToPay.setScene(payScene);
+		readyToPay.centerOnScreen();
 		readyToPay.initModality(Modality.APPLICATION_MODAL);
 		readyToPay.initStyle(StageStyle.UNDECORATED);
 		readyToPay.show();
@@ -390,8 +408,10 @@ public class MenuView implements IMenuView {
 				iv.setFitHeight(150);
 				iv.setFitWidth(150);
 				Label itemName = new Label(fItem.getName());
+				itemName.setFont(new Font(secondaryFont, 15));
 				
 				Label priceTag = new Label(Double.toString(fItem.getPrice()) + " e");
+				priceTag.setFont(new Font(secondaryFont, 15));
 				GridPane.setHalignment(itemName, HPos.CENTER);
 				GridPane.setHalignment(priceTag, HPos.CENTER);
 				menuItem.add(itemName, 0, 0);
@@ -419,7 +439,7 @@ public class MenuView implements IMenuView {
 	private void menuButtonHandler(FoodItem foodItem) {
 		// Shopping cart element button properties
 		Button sCartItem = new Button("");
-		sCartItem.setFont(new Font(15));
+		sCartItem.setFont(new Font(secondaryFont, 15));
 		sCartItem.setMinSize(390, 60);
 		sCartItem.getStyleClass().add("cartbutton");
 		
@@ -431,6 +451,9 @@ public class MenuView implements IMenuView {
 		increase.setFont(new Font(20));
 		increase.setMinSize(50, 60);
 		increase.getStyleClass().add("amountbutton");
+		increase.setTooltip(
+				new Tooltip(bundle.getString("plusInfoText"))
+		);
 		
 		Button decrease = new Button("-");
 		decrease.setFont(new Font(20));
@@ -444,6 +467,9 @@ public class MenuView implements IMenuView {
 		delete.setFont(new Font(20));
 		delete.setMinSize(50, 60);
 		delete.getStyleClass().add("deletebutton");
+		delete.setTooltip(
+				new Tooltip(bundle.getString("deleteInfoText"))
+		);
 		
 		HBox itemBox = new HBox(sCartItem);
 
@@ -456,6 +482,10 @@ public class MenuView implements IMenuView {
 			Button modify = new Button();
 			modify.setMinSize(50, 60);
 			modify.getStyleClass().add("modifybutton");
+			modify.setTooltip(
+					new Tooltip(bundle.getString("modifyInfoText"))
+			);
+			
 			itemBox.getChildren().addAll(modify, increase, decrease, delete);
 			
 			//Create a new FoodItem copy with negative id, starting from -1.
@@ -686,21 +716,23 @@ public class MenuView implements IMenuView {
 	 */	
 	private void editItem(Button button, FoodItem foodItem) {
 		Stage popUp = new Stage();
-		int height = 500; // default height of the popup
 		
 		Label nameLabel = new Label(foodItem.getName());
-		nameLabel.setFont(new Font(18));
-		nameLabel.setPadding(new Insets(10,0,0,10));
+		nameLabel.setFont(new Font(mainFont, 25));
+		nameLabel.setPadding(new Insets(10,0,0,0));
 		
-		VBox boxWhole = new VBox(20);
-		HBox boxOkCancel = new HBox(20);
-		boxOkCancel.setPadding(new Insets(0,0,0,10));
-
+		VBox boxWhole = new VBox(10);
+		HBox boxOkCancel = new HBox(10);
 		VBox boxIngredient = new VBox(20);
 		
 		// Database ingredients.
 		List<String> ingredientsOfDatabase = new ArrayList<String>(Arrays.asList(controller.getOriginalIngredients(foodItem)));
 				
+		int height = ingredientsOfDatabase.size() * 83; // height of the popup
+		if (height > 600) {
+			height = 600;
+		}
+
 		boxIngredient.setPadding(new Insets(10,0,0,10));
 		// Local ingredients.
 		ArrayList<String> ingredientsOfObject = getObjectIngredients(foodItem);
@@ -709,13 +741,15 @@ public class MenuView implements IMenuView {
 		System.out.println("ingredientsOfObject on " + ingredientsOfObject);
 
 		Label header = new Label(bundle.getString("ingredientsText"));
-		header.setFont(new Font(17));
+		header.setFont(new Font(secondaryFont, 17));
 		boxIngredient.getChildren().add(header);
 
 		for (int j = 0; j < ingredientsOfDatabase.size(); j++) {
 			HBox boxIngredient2 = new HBox(20);
+			boxIngredient2.setPadding(new Insets(10,0,0,10));
 			String name = ingredientsOfDatabase.get(j);
 			Label newIngredient = new Label(name);
+			newIngredient.setFont(new Font(secondaryFont, 13));
 			CheckBox included = new CheckBox();
 			
 			// Comparing local ingredients to the database ingredients. If ingredient has not been deleted, mark check for checkbox (included).
@@ -740,9 +774,6 @@ public class MenuView implements IMenuView {
 		Button okay = new Button(bundle.getString("okayText"));
 		okay.setFont(new Font(20));
 		okay.setMinSize(80, 80);
-		/*Button cancel = new Button(bundle.getString("cancelText"));
-		cancel.setFont(new Font(20));
-		cancel.setMinSize(80, 80);*/
 		
 		okay.setOnAction(event -> {
 			String removedIngredients =foodItem.getRemovedIngredientsAsString();
@@ -757,13 +788,12 @@ public class MenuView implements IMenuView {
 			button.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "\n" + itemIngredientsLabel.getText());
 			popUp.close();
 		});
-		/*cancel.setOnAction(event -> {
-			popUp.close();
-		});*/
 		
+		boxOkCancel.setPadding(new Insets(10,0,0,0));
 		boxOkCancel.getChildren().add(okay);
 		
 		boxWhole.getChildren().addAll(nameLabel, boxIngredient, boxOkCancel);
+		boxWhole.setPadding(new Insets(10, 30, 30, 30));
 		Scene popUpScene = new Scene(boxWhole, 400, height);
 		popUp.setScene(popUpScene);
 		popUp.initModality(Modality.APPLICATION_MODAL);

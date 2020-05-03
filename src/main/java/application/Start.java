@@ -148,6 +148,7 @@ public class Start extends Application implements IStart {
 			primaryStage.setHeight(600.0);
 			primaryStage.setWidth(1440.0);
 			primaryStage.setScene(scene);
+			primaryStage.centerOnScreen();
 			primaryStage.show();
 			RestaurantKeeper controller = loader.getController();
 		} catch (IOException e) {
@@ -172,9 +173,10 @@ public class Start extends Application implements IStart {
 					}
 				}
 			});
-			primaryStage.setMinWidth(1200);
-			primaryStage.setMinHeight(600);
+			primaryStage.setWidth(1200);
+			primaryStage.setHeight(600);
 			primaryStage.setScene(scene);
+			primaryStage.centerOnScreen();
 			primaryStage.show();
 			OrdersViewController ordersViewController = loader.getController();
 			ordersViewController.setStart(this);
@@ -199,6 +201,7 @@ public class Start extends Application implements IStart {
 		primaryStage.setHeight(300.0);
 		primaryStage.setWidth(600.0);
 		primaryStage.setScene(scene);
+		primaryStage.centerOnScreen();
 		primaryStage.show();
 		Start instance = this;
 		EventHandler<MouseEvent> goCustomer = new EventHandler<MouseEvent>() {

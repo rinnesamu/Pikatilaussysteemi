@@ -2,12 +2,17 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.StartViewController">
+<AnchorPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: black;" stylesheets="@StartView.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.StartViewController">
    <children>
-      <Button layoutX="477.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#startOrdering" prefHeight="82.0" prefWidth="146.0" text="%startOrderText" />
-      <Button layoutX="968.0" layoutY="39.0" mnemonicParsing="false" onMouseClicked="#setLanguageEn" text="Eng" />
-      <Button layoutX="926.0" layoutY="39.0" mnemonicParsing="false" onMouseClicked="#setLanguageFi" text="Fin" />
+      <Button alignment="CENTER" layoutX="-2.0" layoutY="-3.0" mnemonicParsing="false" onMouseClicked="#startOrdering" prefHeight="706.0" prefWidth="1105.0" styleClass="startbutton" text="%startOrderText" textFill="WHITE">
+         <font>
+            <Font name="Chalkduster" size="95.0" />
+         </font></Button>
+      <Button layoutX="875.0" layoutY="42.0" minHeight="100.0" minWidth="160.0" mnemonicParsing="false" onMouseClicked="#setLanguageEn" styleClass="engbutton" />
+      <Button layoutX="665.0" layoutY="41.0" minHeight="100.0" minWidth="160.0" mnemonicParsing="false" onMouseClicked="#setLanguageFi" styleClass="finbutton" />
+      <Pane layoutX="467.0" layoutY="431.0" prefHeight="186.0" prefWidth="187.0" styleClass="logoplacer" />
    </children>
 </AnchorPane>
