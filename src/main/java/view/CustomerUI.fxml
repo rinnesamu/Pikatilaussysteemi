@@ -79,7 +79,13 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Pane fx:id="rightPart" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0" />
+            <Pane fx:id="rightPart" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets right="30.0" top="20.0" />
+               </HBox.margin></Pane>
          </children>
       </HBox>
    </top>

@@ -176,11 +176,11 @@ public class MenuView implements IMenuView {
 		iv1.setFitWidth(100);
 		leftPart.getChildren().add(iv1);
 		
-		File file2 = new File(this.getClass().getResource("/imgs/rect4547.png").getFile());
+		File file2 = new File(this.getClass().getResource("/imgs/logo2.png").getFile());
 		Image image2 = new Image(file2.toURI().toString());
 		ImageView iv2 = new ImageView(image2);
-		iv2.setFitHeight(50);
-		iv2.setFitWidth(50);
+		iv2.setFitHeight(67);
+		iv2.setFitWidth(92);
 		rightPart.getChildren().add(iv2);
 		controller.initMenu();
 	}
