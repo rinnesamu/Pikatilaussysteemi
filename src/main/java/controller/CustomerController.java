@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +149,9 @@ public class CustomerController implements ICustomerController {
 		for (int i = 0; i < foodItemsWithIngredients.length; i++) {
 			// look for a "fooditem with ingredients" of the same name
 			if (foodItemsWithIngredients[i].getName().equals(searchableFoodItem.getName())) {
-				return foodItemsWithIngredients[i].getIngredientsAsList();
+				String[] ingredients = foodItemsWithIngredients[i].getIngredientsAsList();
+				Arrays.sort(ingredients);
+				return ingredients;
 			}
 		}
 		return null;
@@ -192,33 +196,7 @@ public class CustomerController implements ICustomerController {
 		order.setTakeaway(takeaway);
 		orderDao.createOrder(order);
 	}
-
-	
-	// KORVATTU getFoodItemWithIngredients - METODILLA
-	/**
-	 * Removable ingredients of an item are retrieved from the database ie. original ingredients.
-	 * @param foodItem Fooditem of which ingredients are retrieved.
-	 * @return Ingredients of the database object.
-	 */
-	/*
-	 * @Override public ArrayList<String> getDatabaseIngredients(FoodItem foodItem)
-	 * {
-	 * 
-	 * ArrayList<String> ingredientsOfItem = new ArrayList<String>(); String[]
-	 * ingredientsNames;
-	 * 
-	 * // If foodItem has no ingredients in the database return null. if
-	 * (foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList() ==
-	 * null ) { return null; } else { ingredientsNames =
-	 * foodDao.readFoodItemByName(foodItem.getName()).getIngredientsAsList();
-	 * 
-	 * // Checks which ingredients are removable for (int i = 0; i <
-	 * ingredientsNames.length; i++) { Ingredient ingredientsAsIngredients=
-	 * ingredientDao.readIngredientByName(ingredientsNames[i]); if
-	 * (ingredientsAsIngredients.isRemoveable()) {
-	 * ingredientsOfItem.add(ingredientsNames[i]); } }
-	 * Collections.sort(ingredientsOfItem); return ingredientsOfItem; } }
-	 */
+	 
 	
 	/**
 	 * Method for emptying the shopping cart object.

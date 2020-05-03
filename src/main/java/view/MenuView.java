@@ -613,11 +613,15 @@ public class MenuView implements IMenuView {
 	 * @return Ingredients of the local foodItem object.
 	 */
 	private ArrayList<String> getObjectIngredients(FoodItem foodItem) {
-		ArrayList<String> ingredientsOfItem;
+		ArrayList<String> ingredientsOfItem = new ArrayList<String>();
 		
 		// Return the ingredients of the foodItem.
-		ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
-		Collections.sort(ingredientsOfItem);
+		if (foodItem.getIngredientsAsList() != null) {
+	
+			ingredientsOfItem = new ArrayList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
+			
+			Collections.sort(ingredientsOfItem);
+		}
 		return ingredientsOfItem;
 	}	
 	
