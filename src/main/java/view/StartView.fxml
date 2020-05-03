@@ -13,6 +13,6 @@
          </font></Button>
       <Button layoutX="875.0" layoutY="42.0" minHeight="100.0" minWidth="160.0" mnemonicParsing="false" onMouseClicked="#setLanguageEn" styleClass="engbutton" />
       <Button layoutX="665.0" layoutY="41.0" minHeight="100.0" minWidth="160.0" mnemonicParsing="false" onMouseClicked="#setLanguageFi" styleClass="finbutton" />
-      <Pane layoutX="467.0" layoutY="431.0" prefHeight="186.0" prefWidth="187.0" styleClass="logoplacer" />
+      <Pane layoutX="467.0" layoutY="431.0" onMouseClicked="#startOrdering" prefHeight="186.0" prefWidth="187.0" styleClass="logoplacer" />
    </children>
 </AnchorPane>
