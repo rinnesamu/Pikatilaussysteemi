@@ -13,6 +13,7 @@ public interface ICustomerController {
 	public void readCategories(String name);
 	public String[] getOriginalIngredients(FoodItem searchableFoodItem);
 	public void setFoodItemsWithIngredients();
+	public FoodItem[] getFoodItemsWithIngredients();
 	public void createOrder(int orderNumber, Map<FoodItem, Integer> shoppingCart, String additionalInfo, boolean takeaway);
 	public void emptyShoppingCart();
 	public int[] getAllItemId();

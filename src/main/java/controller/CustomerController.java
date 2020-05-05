@@ -175,6 +175,14 @@ public class CustomerController implements ICustomerController {
 		}
 		this.foodItemsWithIngredients = foodItemsArray.toArray(new FoodItem[foodItemsArray.size()]);
 	}
+	
+	/**
+	 * Gets the array of FoodItems in menu which have ingredients.
+	 */
+	public FoodItem[] getFoodItemsWithIngredients () {
+		System.out.println(this.foodItemsWithIngredients);
+		return this.foodItemsWithIngredients;
+	}
 
 	/**
 	 * Method for creating a new order to the database. Creates a new shopping cart copy without duplicate foodItems to be added to the database.

@@ -197,7 +197,8 @@ public class MenuView implements IMenuView {
 	 */
 	public void setElementRemovedIngredients(Object observable, String removedIngredients) {
 		FoodItem foodItem = (FoodItem) observable;
-		if (foodItem.getIngredientsAsList() == null) {
+		// When updating language with the method, skip the fooditems without ingredients.
+		if (controller.getOriginalIngredients(foodItem) == null) {
 			return;
 		}
 		int id = foodItem.getItemId();
