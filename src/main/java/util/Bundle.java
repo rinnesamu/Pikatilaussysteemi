@@ -11,17 +11,33 @@ import java.util.ResourceBundle;
 
 public class Bundle {
 
+	/**
+	 * Singleton instance
+	 */
 	private static ResourceBundle INSTANCE = null;
+	/**
+	 * 	Locale object (language and country)
+	 */
 	private static Locale curLocale;
 	
 	private Bundle() {
 	}
+	
+	/**
+	 * Singleton implementation
+	 * @return Singleton instance
+	 */
 	public static synchronized ResourceBundle getInstance() {
 		if (INSTANCE == null) {
 			changeBundle(curLocale);
 		}
 		return INSTANCE;
 	}
+	
+	/**
+	 * Change the Locale object
+	 * @param curLocale The new Locale object.
+	 */
 	public static synchronized void changeBundle(Locale curLocale) {
 		try {
 			INSTANCE = ResourceBundle.getBundle("TextResources", curLocale);

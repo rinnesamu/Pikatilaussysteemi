@@ -661,7 +661,6 @@ public class MenuView implements IMenuView {
 		return ingredientsOfItem;
 	}	
 	
-	
 	/**
 	 * Method to update the ingredients of a Fooditem.
 	 * @param foodItem FoodItem of which ingredients are updated.
@@ -820,13 +819,18 @@ public class MenuView implements IMenuView {
         .showWarning();
 	}
 	
+	/**
+	 * Sets the elements to Finnish language.
+	 */
 	@FXML 
 	public void setLanguageFi() {
 		 start.setLanguageCustomer("languageFi", "countryFi");
 		 bundle = Bundle.getInstance();
 		 updateElements();
 	 }
-	
+	/**
+	 * Sets the elements to English language.
+	 */
 	@FXML 
 	public void setLanguageEn() {
 		 start.setLanguageCustomer("languageEn", "countryEn");
@@ -834,6 +838,9 @@ public class MenuView implements IMenuView {
 		 updateElements();
 	 }
 	
+	/**
+	 * Updates the language of permanent elements.
+	 */
 	private void updateElements() {
 		emptyButton.setText(bundle.getString("emptyShopcartText"));
 		customerHeaderText.setText(bundle.getString("customerHeader"));

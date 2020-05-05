@@ -10,10 +10,13 @@ import java.util.*;
  **/
 
 public class ShoppingCart extends Observable {
+	/**
+	 * Map object for Fooditem and its amount.
+	 */
 	private Map<FoodItem, Integer> cartList;
 
 	/**
-	 * Creates a new shopping cart object.
+	 * Creates a new shopping cart HashMap object.
 	 */
 	public ShoppingCart() {
 		cartList = new HashMap<FoodItem, Integer>();
@@ -239,6 +242,9 @@ public class ShoppingCart extends Observable {
 		return cartList.entrySet().toString();
 	}
 	
+	/**
+	 * Method to notify all the observers.
+	 */
 	public void notifyObserver() {
 		setChanged();
 		notifyObservers();

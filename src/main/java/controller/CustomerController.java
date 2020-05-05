@@ -33,6 +33,7 @@ public class CustomerController implements ICustomerController {
 	private ShoppingCart shoppingCart;
 	// View layer
 	private IMenuView menuView;
+	// Array of FoodItems with ingredients (retrieved with DAO)
 	private FoodItem[] foodItemsWithIngredients;
 
 	/**
@@ -46,6 +47,7 @@ public class CustomerController implements ICustomerController {
 		this.orderDao = new OrderAccessObject();
 		this.ingredientDao = new IngredientAccessObject();
 		this.shoppingCart = new ShoppingCart();
+		// Create shopping cart observer to update the sum of the shopping cart element in MenuView.
 		ShopCartObserver shopCartObserver = new ShopCartObserver();
 		this.shoppingCart.registerObserver(shopCartObserver);
 	}
@@ -55,6 +57,7 @@ public class CustomerController implements ICustomerController {
 	 */
 	@Override
 	public void initMenu() {
+		// Retrieve all the FoodItems with ingredients from database.
 		setFoodItemsWithIngredients();
 		Category[] allCategories = categoryDao.readCategories();
 		menuView.createCategoryList(allCategories);
@@ -72,6 +75,9 @@ public class CustomerController implements ICustomerController {
 		}
 	}
 	
+	/**
+	 * Create new FoodItem observer for updating the removed ingredients element of a certain FoodItem in shopping cart element.
+	 */
 	public void createFoodItemObserver(FoodItem foodItem) {
 		FoodItemObserver fItemObserver = new FoodItemObserver();
 		foodItem.registerObserver(fItemObserver);
@@ -141,7 +147,7 @@ public class CustomerController implements ICustomerController {
 	}
 	
 	/**
-	 * Get the original ingredients of a certain fooditem using the array with all the foodItems with ingredients.
+	 * Get the original ingredients of a certain fooditem by comparing to the array of all foodItems with ingredients.
 	 * If fooditem has no ingredients, return null. 
 	 */
 	public String[] getOriginalIngredients(FoodItem searchableFoodItem) {
@@ -157,7 +163,7 @@ public class CustomerController implements ICustomerController {
 	}
 	
 	/**
-	 * Search and set an array with all the foodItems with ingredients in database
+	 * Set an array of FoodItems which have ingredients from database with DAO.
 	 */
 	public void setFoodItemsWithIngredients() {
 		FoodItem[] allFoodItems = foodDao.readFoodItems();
@@ -299,6 +305,9 @@ public class CustomerController implements ICustomerController {
 		return shoppingCart.getFoodItems();
 	}
 	
+	/**
+	 * Ask the shopping cart to notify its observers.
+	 */
 	public void notifyShoppingcartObserver() {
 		shoppingCart.notifyObserver();
 	}
