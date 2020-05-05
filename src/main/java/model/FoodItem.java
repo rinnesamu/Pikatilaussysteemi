@@ -221,7 +221,7 @@ public class FoodItem extends Observable {
 	}
 	
 	/**
-	 * Sets path to pictrue
+	 * Sets path to picture
 	 * @param path path to picture
 	 */
 	public void setPath(String path) {

@@ -24,7 +24,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -38,7 +37,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -186,7 +184,7 @@ public class MenuView implements IMenuView {
 	}
 	
 	/**
-	 * Method for updating the sum of the shopping cart on the shopping cart list item.
+	 * Observer's update method for the sum element of the shopping cart list.
 	 * 
 	 */
 	public void setSum(double value) {
@@ -194,17 +192,42 @@ public class MenuView implements IMenuView {
 		sumShoppingCart.setFont(new Font(secondaryFont, 35));
 	}
 	
+	/**
+	 * Observer's update method for the shopcart element's removed ingredients. Creates the buttons again.
+	 */
 	public void setElementRemovedIngredients(Object observable, String removedIngredients) {
 		FoodItem foodItem = (FoodItem) observable;
+		if (foodItem.getIngredientsAsList() == null) {
+			return;
+		}
 		int id = foodItem.getItemId();
-		//System.out.println("ID ON " + id);
-		// Another observer, not finished #############
-		/*		
+		System.out.println("ID ON " + id);
+		
+		Button[] buttons = createButtonForShopCart(foodItem);
+		Button sCartItem = buttons[0];
+
+		HBox itemBox = new HBox(sCartItem);
+		Button increase = buttons[1];
+		Button decrease = buttons[2];
+		Button delete = buttons[3];
+		Button modify = buttons[4];
+		
+		sCartItem.setMinSize(340, 60);
+		
+		itemBox.getChildren().addAll(modify, increase, decrease, delete);
+		String idNumber=Integer.toString(id);
+		// Set negative id of newItem for itemBox
+		itemBox.setId(idNumber);
+		//String removedIngredients2=foodItem.getRemovedIngredientsAsString();
+
+		sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "\n" + bundle.getString("removedText") + removedIngredients);
+				
 		for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-			if (id == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-				shoppingCartList.getChildren().set(i, itemBox);
-			}
-		}*/
+			if (id ==Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+				shoppingCartList.getChildren().set(i, itemBox); 
+			} 
+		}
+		 
 	}
 
 	/**
@@ -436,141 +459,144 @@ public class MenuView implements IMenuView {
 		}
 	}
 	
+	private Button[] createButtonForShopCart(FoodItem foodItem) {
+		// Shopping cart element button properties
+		Button sCartItem = new Button("");
+		sCartItem.setFont(new Font(secondaryFont, 15));
+		sCartItem.setMinSize(390, 60);
+		sCartItem.getStyleClass().add("cartbutton");
+
+		Button increase = new Button("+");
+		increase.setFont(new Font(20));
+		increase.setMinSize(50, 60);
+		increase.getStyleClass().add("amountbutton");
+		
+		Button decrease = new Button("-");
+		decrease.setFont(new Font(20));
+		decrease.setMinSize(50, 60);
+		decrease.getStyleClass().add("amountbutton");
+		
+		if (foodItem.getIngredientsAsList() != null) {
+
+			// Methods for increase and decrease buttons of a fooditem with ingredients.
+			increase.setOnAction(event -> {
+				controller.addOneToShoppingCart(foodItem);
+				sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "\n" + bundle.getString("removedText") + foodItem.getRemovedIngredientsAsString());
+	
+			});
+			decrease.setOnAction(event -> {
+				controller.removeOneFromShoppingCart(foodItem);
+				sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "\n" + bundle.getString("removedText") + foodItem.getRemovedIngredientsAsString());
+			});
+		} else {
+			// Methods for increase and decrease buttons of a fooditem without ingredients.
+			increase.setOnAction(event -> {
+				controller.addOneToShoppingCart(foodItem);
+				sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
+	
+			});
+			decrease.setOnAction(event -> {
+				controller.removeOneFromShoppingCart(foodItem);
+				sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
+			});
+		}
+		
+		Button delete = new Button("X");
+		delete.setFont(new Font(20));
+		delete.setMinSize(50, 60);
+		delete.getStyleClass().add("deletebutton");
+		delete.setOnAction(event -> {
+			Alert options = new Alert(AlertType.CONFIRMATION);
+			options.setTitle(bundle.getString("removalText"));
+			options.setHeaderText(bundle.getString("deleteConfirmText") + " " + foodItem.getName() + " " + bundle.getString("fromCartText"));
+		
+			ButtonType okayDel = new ButtonType("OK");
+			ButtonType cancelDel = new ButtonType("Cancel");
+			
+			options.getButtonTypes().setAll(okayDel, cancelDel);
+			Optional<ButtonType> result = options.showAndWait();
+			
+			if (result.get() == okayDel) {
+				controller.removeFromShoppingCart(foodItem);
+
+				for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
+					if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
+						shoppingCartList.getChildren().remove(i);
+					}
+				}
+			}
+		});
+
+		Button modify = new Button();
+		modify.setMinSize(50, 60);
+		modify.getStyleClass().add("modifybutton");
+		modify.setOnAction(event -> editItem(sCartItem, foodItem));
+
+		Button[] buttons = {sCartItem, increase, decrease, delete, modify};
+		
+		return buttons;
+	}
+	
 
 	/**
 	 *  Button handler for the menubuttons. Adds items to the shopping cart.
 	 * 
 	 * @param foodItem The fooditem tied to the particular button.
 	 */
-	private void menuButtonHandler(FoodItem foodItem) {
-		// Shopping cart element button properties
-		Button sCartItem = new Button("");
-		sCartItem.setFont(new Font(secondaryFont, 15));
-		sCartItem.setMinSize(390, 60);
-		sCartItem.getStyleClass().add("cartbutton");
+	private void menuButtonHandler(FoodItem foodItem) {		
 		
-		// Labels for the shopping cart element buttons (amount + price & removed ingredients)
-		Label itemNameLabel = new Label();
-		Label itemIngredientsLabel = new Label();
-		
-		Button increase = new Button("+");
-		increase.setFont(new Font(20));
-		increase.setMinSize(50, 60);
-		increase.getStyleClass().add("amountbutton");
-		increase.setTooltip(
-				new Tooltip(bundle.getString("plusInfoText"))
-		);
-		
-		Button decrease = new Button("-");
-		decrease.setFont(new Font(20));
-		decrease.setMinSize(50, 60);
-		decrease.getStyleClass().add("amountbutton");
-		decrease.setTooltip(
-				new Tooltip(bundle.getString("minusInfoText"))
-		);
-		
-		Button delete = new Button("X");
-		delete.setFont(new Font(20));
-		delete.setMinSize(50, 60);
-		delete.getStyleClass().add("deletebutton");
-		delete.setTooltip(
-				new Tooltip(bundle.getString("deleteInfoText"))
-		);
-		
-		HBox itemBox = new HBox(sCartItem);
-
 		// If item has ingredients, create a fooditem with negative id number, reset ingredients and removed ingredients of the fooditem.
-
 		if (foodItem.getIngredientsAsList() != null) {
-			
-			sCartItem.setMinSize(340, 60);
-
-			Button modify = new Button();
-			modify.setMinSize(50, 60);
-			modify.getStyleClass().add("modifybutton");
-			modify.setTooltip(
-					new Tooltip(bundle.getString("modifyInfoText"))
-			);
-			
-			itemBox.getChildren().addAll(modify, increase, decrease, delete);
-			
 			//Create a new FoodItem copy with negative id, starting from -1.
 			newId -= 1;
 			FoodItem newItem = new FoodItem(foodItem.getName(), foodItem.getPrice(), true, newId);
 			
 			// Create observer for each FoodItem with ingredients added to the shopping cart.
-			//controller.createFoodItemObserver(newItem);
-			
+			controller.createFoodItemObserver(newItem);
 			// Set the right image path.
-			newItem.setPath(foodItem.getPath());
 			
+			newItem.setPath(foodItem.getPath());
 			// Reset the removed ingredients.
 			String[] reset = new String[0];
 			newItem.setRemovedIngredients(reset);
-			
 			// Reset ingredients.
 			newItem.setIngredients(controller.getOriginalIngredients(foodItem));
 
 			controller.addToShoppingCart(newItem, 1);
+			Button[] buttons = createButtonForShopCart(newItem);
+
+			Button sCartItem = buttons[0];
+			HBox itemBox = new HBox(sCartItem);
+			Button increase = buttons[1];
+			Button decrease = buttons[2];
+			Button delete = buttons[3];
+			Button modify = buttons[4];
 			
-			// Set negative id of newItem
+			sCartItem.setMinSize(340, 60);
+			
+			itemBox.getChildren().addAll(modify, increase, decrease, delete);
+			
+			// Set negative id of newItem for itemBox
 			itemBox.setId(Integer.toString(newId));
-									
-			itemNameLabel.setText(controller.getAmount(newItem.getItemId()) + " x " + newItem.getName());
-			sCartItem.setText(itemNameLabel.getText() + "\n" + itemIngredientsLabel.getText());
+			String removedIngredients=newItem.getRemovedIngredientsAsString();
+
+			sCartItem.setText(controller.getAmount(newItem.getItemId()) + " x " + newItem.getName() + "\n" + bundle.getString("removedText") + removedIngredients);
 			
 			shoppingCartList.getChildren().add(itemBox);
 			
-			// Adding a handler for the shopping cart item buttons.
 			System.out.println(controller.shoppingCartToString());
-			modify.setOnAction(event -> editItem(sCartItem, newItem));
-			
-			increase.setOnAction(event -> {
-				int amount = controller.addOneToShoppingCart(newItem);
-				String removedIngredients =newItem.getRemovedIngredientsAsString();
-				// Set the item's name and amount + possible ingredients to shopping cart element button.
-				if (removedIngredients.length() != 0) {
-					itemIngredientsLabel.setText(bundle.getString("removedText") + removedIngredients);
-				} else {
-					itemIngredientsLabel.setText("");
-				}
-				sCartItem.setText(amount + " x " + newItem.getName() + "\n" + itemIngredientsLabel.getText());
-			});
-			decrease.setOnAction(event -> {
-				int amount = controller.removeOneFromShoppingCart(newItem);
-				String removedIngredients2 =newItem.getRemovedIngredientsAsString();
-				if (removedIngredients2.length() != 0) {
-					itemIngredientsLabel.setText(bundle.getString("removedText") + removedIngredients2);
-				} else {
-					itemIngredientsLabel.setText("");
-				}
-				sCartItem.setText(amount + " x " + newItem.getName() + "\n" + itemIngredientsLabel.getText());
-			});
-			delete.setOnAction(event -> {
-				Alert options = new Alert(AlertType.CONFIRMATION);
-				options.setTitle(bundle.getString("removalText"));
-				options.setHeaderText(bundle.getString("deleteConfirmText") + " " + newItem.getName() + " " + bundle.getString("fromCartText"));
-			
-				ButtonType okayDel = new ButtonType("OK");
-				ButtonType cancelDel = new ButtonType("Cancel");
-				
-				options.getButtonTypes().setAll(okayDel, cancelDel);
-				Optional<ButtonType> result = options.showAndWait();
-				
-				if (result.get() == okayDel) {
-					controller.removeFromShoppingCart(newItem);
-
-					for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-						if (newItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-							shoppingCartList.getChildren().remove(i);
-						}
-					}
-				}
-			});
 			
 		} 
 		// If item does not have ingredients, add the original foodItem.
 		else {
+			Button[] buttons = createButtonForShopCart(foodItem);
+			Button sCartItem = buttons[0];
+
+			HBox itemBox = new HBox(sCartItem);
+			Button increase = buttons[1];
+			Button decrease = buttons[2];
+			Button delete = buttons[3];
+			
 			itemBox.getChildren().addAll(increase, decrease, delete);
 			int id = foodItem.getItemId();
 			// Get all the item numbers of the shopping cart and check whether the item already exists in the shopping cart.
@@ -601,45 +627,8 @@ public class MenuView implements IMenuView {
 				controller.addToShoppingCart(foodItem, 1);
 				shoppingCartList.getChildren().add(itemBox);
 			}
-			itemNameLabel.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
-			sCartItem.setText(itemNameLabel.getText() + "\n" + itemIngredientsLabel.getText());
-
-			// Adding a handler for the shopping cart item buttons.
+			sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName());
 			
-			increase.setOnAction(event -> {
-				int amount = controller.addOneToShoppingCart(foodItem);
-
-				// Set the item's amount and name
-				sCartItem.setText(amount + " x " + foodItem.getName());
-			});
-			decrease.setOnAction(event -> {
-				int amount = controller.removeOneFromShoppingCart(foodItem);
-
-				// Set the item's amount and name
-				sCartItem.setText(amount + " x " + foodItem.getName());
-			});
-			delete.setOnAction(event -> {
-				Alert options = new Alert(AlertType.CONFIRMATION);
-				options.setTitle(bundle.getString("removalText"));
-				options.setHeaderText(bundle.getString("deleteConfirmText") + " " + foodItem.getName() + " " + bundle.getString("fromCartText"));
-			
-				ButtonType okayDel = new ButtonType("OK");
-				ButtonType cancelDel = new ButtonType("Cancel");
-				
-				options.getButtonTypes().setAll(okayDel, cancelDel);
-				Optional<ButtonType> result = options.showAndWait();
-				
-				if (result.get() == okayDel) {
-					controller.removeFromShoppingCart(foodItem);
-
-					for (int i = 0; i < shoppingCartList.getChildren().size(); i++) {
-						if (foodItem.getItemId() == Integer.parseInt(shoppingCartList.getChildren().get(i).getId())) {
-							shoppingCartList.getChildren().remove(i);
-						}
-					}
-				}
-
-			});
 		}
 	}
 	
@@ -847,7 +836,10 @@ public class MenuView implements IMenuView {
 		buyButton.setText(bundle.getString("payShopcartText"));
 		shopcartHeader.setText(bundle.getString("headerShopcartText"));
 		controller.notifyShoppingcartObserver();
-		
+		FoodItem[] allItems = controller.getFoodItems();
+		for (int i = 0; i < allItems.length; i++) {
+			setElementRemovedIngredients(allItems[i], allItems[i].getRemovedIngredientsAsString());
+		}
 	}
 
 }
