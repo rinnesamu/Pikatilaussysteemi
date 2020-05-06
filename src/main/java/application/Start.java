@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
@@ -28,6 +29,12 @@ import view.OrdersViewController;
 import view.RestaurantKeeper;
 import view.StartViewController;
 
+/**
+ * Class for starting the demo program.
+ * 
+ * @author Samu Rinne
+ *
+ */
 public class Start extends Application implements IStart {
 
 	private Stage primaryStage;
@@ -40,6 +47,9 @@ public class Start extends Application implements IStart {
 	String appConfigPath = "app.properties";
 	Properties properties;
 
+	/**
+	 * init method for Start
+	 */
 	@Override
 	public void init() {
 		properties = new Properties();
@@ -58,6 +68,9 @@ public class Start extends Application implements IStart {
 		bundle = Bundle.getInstance();
 	}
 
+	/**
+	 * Start method for start
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -65,6 +78,9 @@ public class Start extends Application implements IStart {
 		startDemo();
 	}
 
+	/**
+	 * Opens default window for customer ui
+	 */
 	public void initUI() {
 		try {
 			loader = new FXMLLoader();
@@ -80,7 +96,7 @@ public class Start extends Application implements IStart {
 					}
 				}
 			});
-			if(timeOut != null)
+			if (timeOut != null)
 				timeOut.reset();
 			primaryStage.setHeight(700.0);
 			primaryStage.setWidth(1100.0);
@@ -94,6 +110,9 @@ public class Start extends Application implements IStart {
 		}
 	}
 
+	/**
+	 * Opens menu windor for customer ui
+	 */
 	public void startOrder() {
 		timeoutWake();
 		BorderPane menuLayout;
@@ -102,14 +121,14 @@ public class Start extends Application implements IStart {
 			loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
 			loader.setResources(bundle);
 			menuLayout = (BorderPane) loader.load();
-			
+
 			Scene scene = new Scene(menuLayout);
 			scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 				@Override
 				public void handle(KeyEvent t) {
 					if (t.getCode() == KeyCode.ESCAPE) {
 						startDemo();
-						if(timeOut != null)
+						if (timeOut != null)
 							timeOut.cease();
 						System.out.println("Esc");
 					}
@@ -130,6 +149,9 @@ public class Start extends Application implements IStart {
 		}
 	}
 
+	/**
+	 * Opens Restaurants owner ui.
+	 */
 	public void startRestaurant() {
 		try {
 			loader = new FXMLLoader();
@@ -156,7 +178,10 @@ public class Start extends Application implements IStart {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Opens orders ui
+	 */
 	public void startOrders() {
 		try {
 			loader = new FXMLLoader();
@@ -181,11 +206,14 @@ public class Start extends Application implements IStart {
 			primaryStage.show();
 			OrdersViewController ordersViewController = loader.getController();
 			ordersViewController.setStart(this);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Opens demo ui.
+	 */
 	public void startDemo() {
 		TilePane tile = new TilePane();
 		tile.setAlignment(Pos.CENTER);
@@ -208,7 +236,7 @@ public class Start extends Application implements IStart {
 		EventHandler<MouseEvent> goCustomer = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(timeOut == null)
+				if (timeOut == null)
 					timeOut = new TimingController();
 				timeOut.setControllable(instance);
 				timeOut.setDaemon(true);
@@ -234,6 +262,9 @@ public class Start extends Application implements IStart {
 
 	}
 
+	/**
+	 * Changes language in default customer window.
+	 */
 	public void setLanguage(String l, String c) {
 		String language = properties.getProperty(l);
 		String country = properties.getProperty(c);
@@ -245,6 +276,10 @@ public class Start extends Application implements IStart {
 		initUI();
 	}
 	
+	/**
+	 * Changes language in menu view.
+	 */
+
 	public void setLanguageCustomer(String l, String c) {
 		System.out.println("Kieli vaihdetaan " + l + " " + c);
 		String language = properties.getProperty(l);
@@ -255,7 +290,10 @@ public class Start extends Application implements IStart {
 		bundle = Bundle.getInstance();
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 	}
-	
+
+	/**
+	 * Changes language in owners ui
+	 */
 	public void setLanguageRestaurantKeeper(String l, String c) {
 		String language = properties.getProperty(l);
 		String country = properties.getProperty(c);
@@ -266,17 +304,27 @@ public class Start extends Application implements IStart {
 		this.primaryStage.setTitle(bundle.getString("headerText"));
 		startRestaurant();
 	}
-	
+
+	/**
+	 * Starts timer.
+	 */
 	public void timeoutWake() {
-		if(timeOut != null)
+		if (timeOut != null)
 			timeOut.update();
 	}
-	
+
+	/**
+	 * Gives warning if you have idled too long
+	 */
 	public void timeOutWarning() {
 		MenuView menuViewController = loader.getController();
 		menuViewController.timeOutWarning();
 	}
 
+	/**
+	 * main
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
