@@ -3,21 +3,16 @@ package view;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.Notifications;
 
 import application.IStart;
 import controller.IRKController;
 import controller.RKController;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,7 +30,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.StackPane;
@@ -352,7 +346,6 @@ public class RestaurantKeeper {
 		deleteColumn.setCellFactory(deleteFoodItemCellFactory);
 		saveEditColumn.setCellFactory(editFoodItemCellFactory);
 		categoriesColumn.setCellFactory(categoryFoodItemCellFactory);
-		//ingredientColumn.setCellFactory(ingredientsFoodItemCellFactory);
 		refreshFoodItems();
 		
 		// add Item cellFactories for addFoodItemTableView
@@ -369,7 +362,6 @@ public class RestaurantKeeper {
 		addFoodItemInMenuColumn.setCellFactory(addFoodItemInMenuCellFactory);
 		addFoodItemButtonColumn.setCellFactory(addFoodItemButtonCellFactory);
 		addFoodItemCategoryColumn.setCellFactory(addFoodItemCategoryCBCellFactory);
-		//addFoodItemIngredientsColumn.setCellFactory(addFoodItemIngredientsCCBFactory);
 		refreshDummyFoodItem();
 	}
 	
@@ -781,71 +773,6 @@ public class RestaurantKeeper {
 		};
 		// editbutton ends
 		
-		// ingredients choicecheckbox cellfactory
-		//TODO TRY TO FIX THIS MESS
-		/*
-		ingredientsFoodItemCellFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-					Button button = new Button(bundle.getString("ingrtedientsButton"));
-					{
-                        button.setOnAction((ActionEvent event) -> {
-                        	FoodItem foodItem = getTableView().getItems().get(getIndex());
-                        	List<String> ingredientInFoodItemList;
-                        	if(foodItem.getIngredientsAsList() != null) {
-                        		ingredientInFoodItemList = new LinkedList<String>(Arrays.asList(foodItem.getIngredientsAsList()));
-                        	}else {
-                        		ingredientInFoodItemList = new LinkedList<String>();
-                        	}
-    						ListView<Ingredient> listView = new ListView<Ingredient>();
-    						listView.setItems(ingredientObList);
-    						listView.setCellFactory(CheckBoxListCell.forListView(new Callback<Ingredient, ObservableValue<Boolean>>() {
-    				            @Override
-    				            public ObservableValue<Boolean> call(Ingredient item) {
-    				                BooleanProperty observable = new SimpleBooleanProperty();
-    				                observable.set(ingredientInFoodItemList.contains(item.getName()));
-    				                observable.addListener((obs, wasSelected, isNowSelected) -> {
-    				                    System.out.println("Check box for "+item+" changed from "+wasSelected+" to "+isNowSelected);
-    				                    
-    				                    if(!isNowSelected) {
-    				                    	ingredientInFoodItemList.remove(item.getName());
-    				                    }else {
-    				                    	ingredientInFoodItemList.add(item.getName());
-    				                    }
-    				                    String[] ingredientInFoodItemArr = new String[ingredientInFoodItemList.size()];
-    				                    ingredientInFoodItemArr = ingredientInFoodItemList.toArray(ingredientInFoodItemArr);
-    				                    foodItem.setIngredients(ingredientInFoodItemArr);
-    				                });
-    				                return observable;
-    				            }
-    				        }));
-    						
-    						StackPane stackPane = new StackPane(listView);
-    	            		Stage popUp = new Stage();
-    	            		Scene popUpScene = new Scene(stackPane, 150, 400);
-    	            		popUp.setScene(popUpScene);
-    	            		popUp.initModality(Modality.APPLICATION_MODAL);	
-    	            		
-                    		popUp.show();
-                        });
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-
-                        } else {        	
-                        	setGraphic(button);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		*/
-		// ingredients choicecheckbox ends
-		
 	}
 
 	/**
@@ -955,43 +882,6 @@ public class RestaurantKeeper {
 		};
 		// category choice box ends
 		
-		// TODO delete ccb solution, and replace it with something better
-		// ingredients choicecheckbox cellfactory
-		/*
-		addFoodItemIngredientsCCBFactory = new Callback<TableColumn<FoodItem, Void>, TableCell<FoodItem, Void>>(){
-			@Override
-			public TableCell<FoodItem, Void> call(TableColumn<FoodItem, Void> arg0) {
-				TableCell<FoodItem, Void> cell = new TableCell<FoodItem, Void>() {
-					CheckComboBox<Ingredient> ingredientsCCB = new CheckComboBox<Ingredient>(ingredientObList);
-					{
-						ingredientsCCB.getCheckModel().getCheckedItems().addListener(new ListChangeListener<Ingredient>(){
-						     public void onChanged(ListChangeListener.Change<? extends Ingredient> c) {
-						    	 ArrayList<String> ingredientList = new ArrayList<String>();
-						    	 for(Ingredient i : ingredientsCCB.getCheckModel().getCheckedItems()) {
-						    		 ingredientList.add(i.getName());
-						    	 }
-						    	 // everytime new item is checked the current fooditem's ingredientlist is updated
-						    	 FoodItem foodItem = getTableView().getItems().get(getIndex());
-						    	 foodItem.setIngredients(ingredientList.toArray(new String[ingredientList.size()]));
-						     }
-						});
-                    }
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-
-                        } else {   	
-                        	ingredientsCCB.getCheckModel().clearChecks();
-                        	setGraphic(ingredientsCCB);
-                        }
-                    }
-                };
-				return cell;
-			}
-		};
-		*/
-		// ingredients choicecheckbox ends
 	}
 	
 	/**
