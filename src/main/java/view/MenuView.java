@@ -166,16 +166,15 @@ public class MenuView implements IMenuView {
 		// The font of the categories and menu
 		mainFont = "Chalkduster";
 		secondaryFont = "Gurmukhi Sangam MN";
-		
 		File file1 = new File(this.getClass().getResource("/imgs/logo.png").getFile());
-		Image image1 = new Image(file1.toURI().toString());
+		Image image1 = new Image("/imgs/logo.png");
 		ImageView iv1 = new ImageView(image1);
 		iv1.setFitHeight(100);
 		iv1.setFitWidth(100);
 		leftPart.getChildren().add(iv1);
 		
 		File file2 = new File(this.getClass().getResource("/imgs/logo2.png").getFile());
-		Image image2 = new Image(file2.toURI().toString());
+		Image image2 = new Image("/imgs/logo2.png");
 		ImageView iv2 = new ImageView(image2);
 		iv2.setFitHeight(67);
 		iv2.setFitWidth(92);
@@ -301,8 +300,9 @@ public class MenuView implements IMenuView {
 				}
 			}
 			// Small fooditem pictures
+			String path = "/imgs/" + shoppingCartItems[i].getPath();
 			File file = new File(this.getClass().getResource("/imgs/" + shoppingCartItems[i].getPath()).getFile());
-			Image image = new Image(file.toURI().toString());
+			Image image = new Image(path);
 			ImageView iv = new ImageView(image);
 			iv.setFitHeight(20);
 			iv.setFitWidth(20);
@@ -427,13 +427,16 @@ public class MenuView implements IMenuView {
 				menuItem.getStyleClass().add("menubutton");
 				File file;
 				// Adding the menubutton (with the picture, text, size, handler) to the menulist.
+				String path = "";
 				try {
+					path = "/imgs/" + fItem.getPath();
 					file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
 				} catch (Exception e) {
 					fItem.setPath("defaultpic.jpg");
 					file = new File(this.getClass().getResource("/imgs/" + fItem.getPath()).getFile());
+					path = "/imgs/" + fItem.getPath();
 				}
-				Image image = new Image(file.toURI().toString());
+				Image image = new Image(path);
 				ImageView iv = new ImageView(image);
 				iv.setFitHeight(150);
 				iv.setFitWidth(150);

@@ -28,7 +28,7 @@ public class StartViewController {
 	 }
 	
 	/**
-	 * Changes language to Englis
+	 * Changes language to English
 	 */
 	@FXML 
 	public void setLanguageEn() {
