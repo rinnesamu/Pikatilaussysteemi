@@ -11,7 +11,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * Order class that is created by the user.
+ * Order class that is created by the customer in customer user interface. It contains information about the order such as the time of creation, order contents and the order number.
  * 
  * 
  * @author Arttu Seuna
