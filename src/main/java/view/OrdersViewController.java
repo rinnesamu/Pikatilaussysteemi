@@ -41,6 +41,9 @@ public class OrdersViewController {
 
 	private static List<Order> readyOrdersArrayList = new ArrayList<Order>();
 
+	/**
+	 * Updates ordersUI
+	 */
 	private void updateOrders() {
 		updateActiveOrders();
 		Order[] activeOrdersList = getPrimitiveList(activeOrdersArrayList);
@@ -119,11 +122,19 @@ public class OrdersViewController {
 		updateOrders();
 	}
 
+	/**
+	 * Transforms List object to primitive list
+	 * @param list List to be converted to primitive list
+	 * @return primitive list of order obejcts
+	 */
 	private Order[] getPrimitiveList(List list) {
 		Order[] returnOrders = new Order[list.size()];
 		return (Order[]) list.toArray(returnOrders);
 	}
 
+	/**
+	 * Updates ActiveOrdersArrayList
+	 */
 	private void updateActiveOrders() {
 		activeOrdersArrayList.clear();
 		activeOrders.getChildren().clear();
@@ -142,6 +153,10 @@ public class OrdersViewController {
 		this.start = s;
 	}
 
+	/**
+	 * Changes orders status from false to true
+	 * @param o Order to cahnge from false to true
+	 */
 	private void updateList(Order o) {
 		System.out.println(o.getOrderId());
 		o.setStatus(true);
@@ -150,6 +165,10 @@ public class OrdersViewController {
 		updateOrders();
 	}
 
+	/**
+	 * Removes order from ready side
+	 * @param o Order to be removed
+	 */
 	private void removeFromReady(Order o) {
 		readyOrdersArrayList.remove(o);
 		readyOrders.getChildren().clear();
