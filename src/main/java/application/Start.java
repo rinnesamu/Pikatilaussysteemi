@@ -84,7 +84,7 @@ public class Start extends Application implements IStart {
 	public void initUI() {
 		try {
 			loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/view/StartView.fxml"));
+			loader.setLocation(Start.class.getResource("/view/StartView.fxml"));
 			loader.setResources(bundle);
 			rootLayout = (AnchorPane) loader.load();
 			Scene scene = new Scene(rootLayout);
@@ -118,7 +118,7 @@ public class Start extends Application implements IStart {
 		BorderPane menuLayout;
 		try {
 			loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/view/CustomerUI.fxml"));
+			loader.setLocation(Start.class.getResource("/view/CustomerUI.fxml"));
 			loader.setResources(bundle);
 			menuLayout = (BorderPane) loader.load();
 
@@ -155,7 +155,7 @@ public class Start extends Application implements IStart {
 	public void startRestaurant() {
 		try {
 			loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/view/restaurantKeeperView.fxml"));
+			loader.setLocation(Start.class.getResource("/view/restaurantKeeperView.fxml"));
 			loader.setResources(bundle);
 			rootLayout = (AnchorPane) loader.load();
 			Scene scene = new Scene(rootLayout);
@@ -185,7 +185,7 @@ public class Start extends Application implements IStart {
 	public void startOrders() {
 		try {
 			loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("/view/orders.fxml"));
+			loader.setLocation(Start.class.getResource("/view/orders.fxml"));
 			loader.setResources(bundle);
 			orderUi = (GridPane) loader.load();
 			Scene scene = new Scene(orderUi);
