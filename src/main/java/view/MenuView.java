@@ -218,7 +218,6 @@ public class MenuView implements IMenuView {
 		String idNumber=Integer.toString(id);
 		// Set negative id of newItem for itemBox
 		itemBox.setId(idNumber);
-		//String removedIngredients2=foodItem.getRemovedIngredientsAsString();
 
 		sCartItem.setText(controller.getAmount(foodItem.getItemId()) + " x " + foodItem.getName() + "\n" + bundle.getString("removedText") + removedIngredients);
 				
