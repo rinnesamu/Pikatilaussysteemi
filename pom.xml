@@ -83,7 +83,7 @@
 		<dependency><!-- ja tuore Hibernate JPA -->
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.4.10.Final</version>
+			<version>5.4.24.Final</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
